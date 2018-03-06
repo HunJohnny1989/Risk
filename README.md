@@ -39,3 +39,9 @@
 - A szoftver maximum 6 klienst tud kezelni.
 - A szoftver Java nyelven kerül implementálásra.
 - A UI framework JavaFX.
+
+## Nem funkcionális követelmények
+
+- Könnyű áttekinthetőség: felhasználóbarát kinézet
+- Használhatóság: könnyű áttekinthetőség, játékszabályok megjelenítése
+- Megbízhatóság: csak csatlakozott kliensek tudjanak játszani
