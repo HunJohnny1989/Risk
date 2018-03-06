@@ -13,3 +13,6 @@
 **Fejlesztői eszközök:** NetBeans IDE, Enterprise Architect
 
 **Programnyelv:** Java
+
+## Projekt várható ütemezése
+[A projekt ütemezése ide kattintva megtekinthető!](https://docs.google.com/spreadsheets/d/1P_jhHhmncnhNFmenk3FIkTzbcDrHqRjHlk0aFfQaWfQ/edit?usp=sharing)
