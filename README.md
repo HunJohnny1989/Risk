@@ -17,6 +17,10 @@
 ## Projekt várható ütemezése
 [A projekt ütemezése ide kattintva megtekinthető!](https://docs.google.com/spreadsheets/d/1P_jhHhmncnhNFmenk3FIkTzbcDrHqRjHlk0aFfQaWfQ/edit?usp=sharing)
 
+## Játékszabályok
+[A játék szabályok ide kattintva megtekinthetőek!]
+(https://github.com/HunJohnny1989/Risk/blob/master/jatekszabalyok.pdf)
+
 ## Funkcionális követelmények
 
 **Felhasználói követelmények:** 
@@ -33,6 +37,5 @@
 **Rendszerkövetelmények:**
 - A szoftver használatához szükség van minimum 2 GB RAM-ra. A merevlemez szükséglet legalább 500 KB.
 - A szoftver Windows 8 és Windows 10 platformon működik.
-- A szoftver Google Chrome böngészőben működik.
 - A szoftver maximum 6 klienst tud kezelni.
 - A szoftver Java nyelven kerül implementálásra.
