@@ -38,7 +38,7 @@
 - A szoftver Windows 8 és Windows 10 platformon működik.
 - A szoftver maximum 6 klienst tud kezelni.
 - A szoftver Java nyelven kerül implementálásra.
-- A UI framework JavaFX.
+- A UI framework: Swing.
 
 ## Nem funkcionális követelmények
 
