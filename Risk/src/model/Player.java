@@ -8,13 +8,24 @@ import java.util.List;
  * @author orsi
  */
 public class Player {
+    private boolean hasOccupiedTerritoryThisRound;
     private String name;
-    private String color;
+    private int remainingPlaceableTroopCount;
+    private Color color;
     private MissionCard missionCard;
     private List<RiskCard> riskCards;
-    
-    public Player(String name, String color, MissionCard missionCard){
+    private int numOfInfantry;
+    private int numOfCavalry;
+    private int numOfArtillery;
+    private List<Territory> ownedTerritories;
+    private List<Continent> ownedContinents;
+        
+    public Player(String name, Color color, MissionCard missionCard){
+        this.ownedTerritories = new ArrayList<Territory>();
+        this.ownedContinents = new ArrayList<Continent>();
+        this.hasOccupiedTerritoryThisRound = false; //?
         this.name = name;
+        this.remainingPlaceableTroopCount = 0; //?
         this.color = color;
         this.missionCard = missionCard;
         this.riskCards = new ArrayList<RiskCard>();
@@ -24,8 +35,28 @@ public class Player {
         return this.name;
     }
     
-    public String getColor(){
+    public Color getColor(){
         return this.color;
+    }
+    
+    public int getNumOfInfantry(){
+        return this.numOfInfantry;
+    }
+    
+    public int getNumOfCavalry(){
+        return this.numOfCavalry;
+    }
+    
+    public int getNumOfArtillery(){
+        return this.numOfArtillery;
+    }
+    
+    public int getRemainingPlaceableTroopCount(){
+        return this.remainingPlaceableTroopCount;
+    }
+    
+    public boolean isOccupiedTerritoryThisRound(){
+        return this.hasOccupiedTerritoryThisRound;
     }
     
     public MissionCard getMissionCard(){
@@ -33,6 +64,64 @@ public class Player {
     }
     public List<RiskCard> getRiskCards(){
         return this.riskCards;
+    }
+    
+    public List<Territory> getOwnedTerritories(){
+        return this.ownedTerritories;
+    }
+    
+    public List<Continent> getOwnedContinents(){
+        return this.ownedContinents;
+    }
+    
+    public void addPlaceableTroops(int num){
+        this.remainingPlaceableTroopCount += num; //nem vegleges
+    }
+    
+    public void addRiskCard(RiskCard riskCard){
+        String type = riskCard.getType();
+        
+        switch(type){ //nem vegleges
+            case "artillery": 
+                this.numOfArtillery++;
+                break;
+            case "cavalry":
+                this.numOfCavalry++;
+                break;
+            case "infantry":
+                this.numOfInfantry++;
+                break;
+        }
+    }
+    
+    public void attack(Territory territory1, Territory territory2, int num){
+        //valami
+        /* Decide how many armies you are going to use in your attack
+        1 army = 1 die
+        2 armies = 2 dice
+        3 armies = 3 dice
+        */
+    }
+    
+    public boolean isMissionCompleted(){
+        return false; //nem vegleges
+    }
+    
+    public void placeTroops(int num, Territory territory){
+        //nem vegleges
+        if(num > this.remainingPlaceableTroopCount){
+            //nincs annyi had, adjon errort vagy valami
+        }else{
+            //
+        }
+    }
+    
+    public void redeemRiskCards(){
+        //nem vegleges
+    }
+    
+    public void transfer(Territory territory1, Territory territory2, int num){
+        //nem vegleges
     }
     
 }

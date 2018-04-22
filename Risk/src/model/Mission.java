@@ -13,12 +13,12 @@ public class Mission {
     public Mission(){
         this.missions = new ArrayList<String>();
         
-        this.missions.add("Kill a certain color: "); //amilyen szinek lesznek...
-        this.missions.add("Kill a certain color: ");
-        this.missions.add("Kill a certain color: ");
-        this.missions.add("Kill a certain color: ");
-        this.missions.add("Kill a certain color: ");
-        this.missions.add("Kill a certain color: ");
+        this.missions.add("Kill a certain color: PINK"); 
+        this.missions.add("Kill a certain color: GREEN");
+        this.missions.add("Kill a certain color: YELLOW");
+        this.missions.add("Kill a certain color: BLUE");
+        this.missions.add("Kill a certain color: BLACK");
+        this.missions.add("Kill a certain color: RED");
         
         this.missions.add("Conquer Asia and South America");
         this.missions.add("Conquer Asia and Africa");

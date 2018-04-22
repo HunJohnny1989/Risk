@@ -14,4 +14,8 @@ public class MissionCard {  //feladatkartya
     public String getMission(){
         return this.mission;
     }
+    
+    public boolean isCompleted(){
+        return false; //ide majd azt, amitol fugg
+    }
 }

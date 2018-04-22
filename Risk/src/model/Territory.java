@@ -8,25 +8,30 @@ import java.util.List;
  */
 public class Territory {
     private String name;
-    private boolean occupied; //elfoglalt-e
-    private List<Territory> neighbours; //szomszedos korzetek
+    private int troopCount;
+    private List<Territory> neighbourTerritories; //szomszedos korzetek
+    private Player occupiedPlayer;
     
-    public Territory(String name, List<Territory> neighbours){
+    public Territory(String name, List<Territory> neighbourTerritories){
         this.name = name;
-        this.occupied = false;
-        this.neighbours = neighbours;
+        this.troopCount = 0; //nem vegleges
+        this.neighbourTerritories = neighbourTerritories;
     }
     
     public String getName(){
         return this.name;
     }
     
-    public boolean isOccupied(){
-        return this.occupied;
+    public Player getOccupiedPlayer(){
+        return this.occupiedPlayer;
+    }
+   
+    public List<Territory> getNeighbourTerritories(){
+        return this.neighbourTerritories;
     }
     
-    public List<Territory> getNeighbours(){
-        return this.neighbours;
+    public void assignToPlayer(){
+        //nem vegleges
     }
     
 }
