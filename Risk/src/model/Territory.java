@@ -17,6 +17,10 @@ public class Territory {
         this.troopCount = 0; //nem vegleges
         this.neighbourTerritories = neighbourTerritories;
     }
+
+    public int getTroopCount() {
+        return troopCount;
+    }
     
     public String getName(){
         return this.name;

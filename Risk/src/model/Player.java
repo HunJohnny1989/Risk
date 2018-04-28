@@ -94,13 +94,13 @@ public class Player {
         }
     }
     
-    public void attack(Territory territory1, Territory territory2, int num){
-        //valami
-        /* Decide how many armies you are going to use in your attack
-        1 army = 1 die
-        2 armies = 2 dice
-        3 armies = 3 dice
-        */
+    /**
+    * @author Sajti Tamás
+    */
+    public BattleResult attack( Territory attackingTerritory, Territory defendingTerritory, int attackingTroopCount ){
+        Battle battle = new Battle( attackingTerritory, defendingTerritory, attackingTroopCount );
+        return battle.execute();
+        
     }
     
     public boolean isMissionCompleted(){
@@ -120,7 +120,7 @@ public class Player {
         //nem vegleges
     }
     
-    public void transfer(Territory territory1, Territory territory2, int num){
+    public void transfer(Territory fromTerritory, Territory toTerritory, int num){
         //nem vegleges
     }
     
