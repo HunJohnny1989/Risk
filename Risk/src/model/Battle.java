@@ -3,7 +3,6 @@ package model;
 import java.util.List;
 
 /**
- *
  * @author Sajti Tamás
  */
 public class Battle {
@@ -24,10 +23,16 @@ public class Battle {
         defendingTroopCount = Math.min( 3, defendingTerritory.getTroopCount() );
     }
    
+    // object not reusable after this finishes
     public BattleResult execute() {
         rollDice();
         computeLosses();
-        return new BattleResult( attackerTroopLossCount, defenderTroopLossCount, defendingTroopCount == defenderTroopLossCount );
+        boolean hasTerritoryBeenConquered = defendingTroopCount == defenderTroopLossCount;
+        if( hasTerritoryBeenConquered ) {
+            defendingTerritory.getOccupierPlayer().loseBattle( defenderTroopLossCount, defendingTerritory );
+            attackingTerritory.getOccupierPlayer().winBattle( attackerTroopLossCount, defendingTerritory );
+        }
+        return new BattleResult( attackerTroopLossCount, defenderTroopLossCount, hasTerritoryBeenConquered);
     }
 
     private void rollDice() {
@@ -39,10 +44,10 @@ public class Battle {
         
         orsi*/
         attackerDiceRolls = Dice.roll( attackingTroopCount );
-        if( defendingTroopCount < 3 )
+        if( defendingTroopCount == 1 )
             defenderDiceRolls = Dice.roll( 1 );
         else
-            defenderDiceRolls = Dice.roll( defendingTroopCount );
+            defenderDiceRolls = Dice.roll( defendingTroopCount - 1 ); // the rules fail to mentrion that with 3 defenders you get 2 rolls.
     }
     
     public BattleResult getBattleResult() {
@@ -52,10 +57,12 @@ public class Battle {
     private void computeLosses() {
         for( int i = 0; i < Math.max( attackerDiceRolls.size(), defenderDiceRolls.size() ); i++ ) {
             if( hasAttackerWon( i ) ) 
-                attackerTroopLossCount++;
-            else
                 defenderTroopLossCount++;
+            else
+                attackerTroopLossCount++;
         }
+        defenderTroopLossCount = Math.min( defenderTroopLossCount, defendingTroopCount );        
+        attackerTroopLossCount = Math.min( attackerTroopLossCount, attackingTroopCount );
     }
 
     private boolean hasAttackerWon( int i ) {
