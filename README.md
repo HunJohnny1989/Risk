@@ -15,7 +15,8 @@
 **Programnyelv:** Java
 
 ## Projekt várható ütemezése
-[A projekt ütemezése ide kattintva megtekinthető!](https://docs.google.com/spreadsheets/d/1P_jhHhmncnhNFmenk3FIkTzbcDrHqRjHlk0aFfQaWfQ/edit?usp=sharing)
+Részletes ütemterv a Wiki-ben:
+[Tovább a Wikire!](https://github.com/HunJohnny1989/Risk/wiki)
 
 ## Játékszabályok
 [A játék szabályok ide kattintva megtekinthetőek!](https://github.com/HunJohnny1989/Risk/blob/master/jatekszabalyok.pdf)
