@@ -45,3 +45,7 @@
 - Könnyű áttekinthetőség: felhasználóbarát kinézet
 - Használhatóság: könnyű áttekinthetőség, játékszabályok megjelenítése
 - Megbízhatóság: csak csatlakozott kliensek tudjanak játszani
+
+## Dokumentáció
+Részletes dokumentáció a Wiki-ben:
+[Tovább a Wikire!](https://github.com/HunJohnny1989/Risk/wiki)
