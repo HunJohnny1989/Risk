@@ -1,5 +1,11 @@
 package model;
 
+import model.dto.BattleResult;
+import model.dto.Territory;
+import model.dto.Continent;
+import model.dto.MissionCard;
+import model.dto.RiskCard;
+import model.dto.Color;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;

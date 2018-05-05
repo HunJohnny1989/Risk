@@ -1,5 +1,8 @@
 package model;
 
+import model.dto.Continent;
+import model.dto.Color;
+
 /**
  *
  * @author orsi

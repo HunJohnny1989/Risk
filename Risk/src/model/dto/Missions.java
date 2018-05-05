@@ -1,4 +1,4 @@
-package model;
+package model.dto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,11 +7,11 @@ import java.util.List;
  *
  * @author orsi
  */
-public class Mission {
+public class Missions {
     private List<String> missions;
     
-    public Mission(){
-        this.missions = new ArrayList<String>();
+    public Missions(){
+        this.missions = new ArrayList<>();
         
         this.missions.add("Kill a certain color: PINK"); 
         this.missions.add("Kill a certain color: GREEN");
@@ -29,8 +29,11 @@ public class Mission {
 
         this.missions.add("Occupy 18 territories with at least 2 armies in each territory");
        
-        this.missions.add("Occupy 24 territories (no restriction to 2 or more armies in each)");
-        
+        this.missions.add("Occupy 24 territories (no restriction to 2 or more armies in each)");        
+    }    
+    
+    public List<String> getMissions(){
+        return missions;
     }
     
 }

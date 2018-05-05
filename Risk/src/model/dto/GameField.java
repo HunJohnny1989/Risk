@@ -1,5 +1,6 @@
-package model;
+package model.dto;
 
+import model.dto.Continent;
 import java.util.ArrayList;
 import java.util.List;
 

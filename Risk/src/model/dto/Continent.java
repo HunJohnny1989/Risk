@@ -1,7 +1,8 @@
-package model;
+package model.dto;
 
 import java.util.List;
 import java.util.Objects;
+import model.Player;
 
 /**
  *
@@ -75,7 +76,7 @@ public class Continent {
     /**
     * @author Sajti Tamás
     */
-    void removePlayer() {
+    public void removePlayer() {
         occupierPlayer = null;
     }
     

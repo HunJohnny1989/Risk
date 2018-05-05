@@ -1,6 +1,8 @@
-package model;
+package model.dto;
 
+import model.dto.Continent;
 import java.util.List;
+import model.Player;
 
 /**
  *

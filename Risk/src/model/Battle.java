@@ -1,5 +1,7 @@
 package model;
 
+import model.dto.BattleResult;
+import model.dto.Territory;
 import java.util.List;
 
 /**
