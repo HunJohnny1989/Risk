@@ -1,7 +1,9 @@
 package model.dto;
 
+import java.awt.geom.*;
 import model.dto.Continent;
 import java.util.List;
+import java.util.Scanner;
 import model.Player;
 
 /**
@@ -14,6 +16,7 @@ public class Territory {
     private List<Territory> neighbourTerritories; //szomszedos korzetek
     private Player occupierPlayer;
     private Continent continent;
+    public GeneralPath shape;
     
     public Territory(String name, Continent continent, List<Territory> neighbourTerritories){
         this.name = name;
@@ -21,7 +24,21 @@ public class Territory {
         this.troopCount = 0; //nem vegleges
         this.neighbourTerritories = neighbourTerritories;
     }
+    
+    /**
+    * @author Eszti
+    */
+    public Territory(String name, String shape)
+    {
+        this.troopCount = 0;
+        this.name = name;
+        createShape(shape);
+    }
 
+    /**
+    *
+    * @author orsi
+    */
     public Continent getContinent() {
         return continent;
     }
@@ -49,4 +66,41 @@ public class Territory {
         occupierPlayer = player;
     }
 
+    /**
+    * @author Eszti
+    */
+    private Point2D getPointFromScanner(Scanner scanner)
+    {
+        return new Point2D.Double(scanner.nextDouble(), scanner.nextDouble());
+    }
+    
+    private void createShape(String shapeString)
+    {
+        shape = new GeneralPath();
+        Scanner scanner = new Scanner(shapeString);
+        scanner.useLocale(java.util.Locale.US);
+        scanner.useDelimiter("\\n|,|\\s* \\s*");
+        while (scanner.hasNext()) {
+            String nextToken = scanner.next();
+            switch(nextToken)
+            {
+                case "M":
+                    Point2D point = getPointFromScanner(scanner);
+                    shape.moveTo(point.getX(), point.getY());
+                    break;
+                case "C":
+                    do{
+                    Point2D controlPoint1 = getPointFromScanner(scanner);
+                    Point2D controlPoint2 = getPointFromScanner(scanner);
+                    Point2D endPoint = getPointFromScanner(scanner);
+                    shape.curveTo(controlPoint1.getX(), controlPoint1.getY(), controlPoint2.getX(), controlPoint2.getY(), endPoint.getX(), endPoint.getY());
+                    }while(scanner.hasNextDouble());
+                    break;
+                case "Z":
+                    shape.closePath();
+                    break;
+            }
+        }
+        scanner.close();
+    }
 }
