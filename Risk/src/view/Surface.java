@@ -5,22 +5,33 @@
  */
 package view;
 import java.awt.*;
-import java.awt.geom.GeneralPath;
+import java.awt.event.*;
+import java.awt.geom.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import model.dto.GameField;
 import model.dto.Territory;
 /**
  *
  * @author Eszti
  */
-public class Surface extends javax.swing.JPanel {
+public class Surface extends javax.swing.JPanel implements MouseListener {
 
     /**
      * Creates new form Surface
      */
-    GameField field;
+    private GameField field;
+    private Territory selectedTerritory;
+    private final AffineTransform transform = new AffineTransform();
+
     public Surface() {
+        transform.scale(1.75, 1.75);
+        transform.translate(60, 0);
         initComponents();
         field = new GameField("src\\Model\\MapShape.xml");
+        addMouseListener(this);
     }
 
     /**
@@ -32,7 +43,7 @@ public class Surface extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setBackground(new java.awt.Color(200, 200, 220));
+        setBackground(new java.awt.Color(153, 204, 255));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -60,17 +71,19 @@ public class Surface extends javax.swing.JPanel {
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
                              RenderingHints.VALUE_RENDER_QUALITY);
 
-        g2d.scale(1.75, 1.75);
+        g2d.transform(transform);
         for(Territory path : field.getTerritories())
         {
-            if (path.getName().equals("Kijelölés #36"))
-            {
-                g2d.setPaint(Color.BLUE);
+            g2d.setPaint(Color.MAGENTA);
+            g2d.fill(path.getShape());
+            g2d.setPaint(Color.BLACK);
+            if (path.getCenterPoint()!=null){
+                g2d.drawString(Integer.toString(path.getTroopCount()), path.getCenterPoint().x, path.getCenterPoint().y);
             }
-            else g2d.setPaint(Color.MAGENTA);
-            g2d.fill(path.shape);
-            //g2d.setPaint(Color.BLACK);
-            //g2d.draw(path.shape);
+        }
+        if (selectedTerritory != null){
+            g2d.setPaint(Color.BLACK);
+            g2d.draw(selectedTerritory.getShape());
         }
         g2d.dispose();
     }
@@ -80,5 +93,45 @@ public class Surface extends javax.swing.JPanel {
         super.paintComponent(g);
         
         doDrawing(g);
+    }    
+
+    @Override
+    public void mouseClicked(MouseEvent me) {
+    }
+
+    @Override
+    public void mousePressed(MouseEvent me) {
+        selectedTerritory = null;
+        Point2D transformedPoint = new Point2D.Double();
+        try {
+            transformedPoint = transform.inverseTransform(me.getPoint(), transformedPoint);
+        } catch (NoninvertibleTransformException ex) {
+            Logger.getLogger(Surface.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        for(Territory path : field.getTerritories())
+        {
+            if (path.getShape().contains(transformedPoint))
+            {
+                selectedTerritory = path;
+                PlaceTroops dialog = new PlaceTroops((JFrame)SwingUtilities.windowForComponent(this), true);
+                dialog.setLocation(me.getPoint());
+                dialog.setVisible(true);
+                this.repaint();
+                return;
+            }
+        }
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent me) {
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent me) {
+    }
+
+    @Override
+    public void mouseExited(MouseEvent me) {
     }
 }

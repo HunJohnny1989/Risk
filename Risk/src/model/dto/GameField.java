@@ -20,6 +20,7 @@ public class GameField {
     
     public GameField(){
         this.continents = new ArrayList<Continent>();
+        this.territories = new ArrayList<>();
     }
     
     /**
@@ -27,6 +28,8 @@ public class GameField {
     */
     public GameField(String fileName)
     {
+        this();
+        
         try
         {
             File fXmlFile = new File(fileName);
@@ -34,8 +37,7 @@ public class GameField {
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(fXmlFile);
             doc.getDocumentElement().normalize();
-
-            territories = new ArrayList<>();
+            
             //System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
             NodeList nList = doc.getElementsByTagName("path");
             for (int temp = 0; temp < nList.getLength(); temp++){

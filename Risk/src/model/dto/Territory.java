@@ -16,7 +16,8 @@ public class Territory {
     private List<Territory> neighbourTerritories; //szomszedos korzetek
     private Player occupierPlayer;
     private Continent continent;
-    public GeneralPath shape;
+    private GeneralPath shape;
+    private Point2D.Float centerPoint;
     
     public Territory(String name, Continent continent, List<Territory> neighbourTerritories){
         this.name = name;
@@ -101,6 +102,7 @@ public class Territory {
                 case "M":
                     Point2D point = getPointFromScanner(scanner);
                     shape.moveTo(point.getX(), point.getY());
+                    centerPoint = new Point2D.Float((float)point.getX(), (float)point.getY());
                     break;
                 case "C":
                     do{
@@ -118,5 +120,12 @@ public class Territory {
         scanner.close();
     }
 
-
+    public GeneralPath getShape()
+    {
+        return shape;
+    }
+    
+    public Point2D.Float getCenterPoint(){
+        return centerPoint;
+    }
 }
