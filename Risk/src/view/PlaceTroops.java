@@ -7,7 +7,7 @@ package view;
 
 /**
  *
- * @author Antal.Ungvari
+ * @author Eszti
  */
 public class PlaceTroops extends javax.swing.JDialog {
 
@@ -30,8 +30,8 @@ public class PlaceTroops extends javax.swing.JDialog {
 
         jLabel1 = new javax.swing.JLabel();
         jSlider1 = new javax.swing.JSlider();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        jButtonPlace = new javax.swing.JButton();
+        jButtonCancel = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Place troops");
@@ -46,9 +46,19 @@ public class PlaceTroops extends javax.swing.JDialog {
         jSlider1.setPaintTicks(true);
         jSlider1.setValue(1);
 
-        jButton1.setText("Place");
+        jButtonPlace.setText("Place");
+        jButtonPlace.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonPlaceActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText("Cancel");
+        jButtonCancel.setText("Cancel");
+        jButtonCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonCancelActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -62,9 +72,9 @@ public class PlaceTroops extends javax.swing.JDialog {
                 .addContainerGap(27, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1)
+                .addComponent(jButtonPlace)
                 .addGap(69, 69, 69)
-                .addComponent(jButton2)
+                .addComponent(jButtonCancel)
                 .addGap(81, 81, 81))
         );
         layout.setVerticalGroup(
@@ -76,13 +86,21 @@ public class PlaceTroops extends javax.swing.JDialog {
                     .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(jButtonPlace)
+                    .addComponent(jButtonCancel))
                 .addContainerGap(21, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButtonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelActionPerformed
+        setVisible(false);
+    }//GEN-LAST:event_jButtonCancelActionPerformed
+
+    private void jButtonPlaceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPlaceActionPerformed
+        setVisible(false);
+    }//GEN-LAST:event_jButtonPlaceActionPerformed
 
     /**
      * @param args the command line arguments
@@ -127,8 +145,8 @@ public class PlaceTroops extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButtonCancel;
+    private javax.swing.JButton jButtonPlace;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JSlider jSlider1;
     // End of variables declaration//GEN-END:variables
