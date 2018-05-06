@@ -51,7 +51,7 @@ public class Controller {
         //</editor-fold>
 
         //TODO Kirajzolni Játékos adatait bekérő oldalt
-        model = new Model();
+        model = new Model( "Eszti", "Orsi", "John", "Tomi" );
         
         /* Create and display the form */
         EventQueue.invokeLater(() -> {
@@ -59,11 +59,6 @@ public class Controller {
         });
     }
 
-    //Rákattintunk az új játékos létrehozása gombra
-    public void createNewPlayer(String name, Color color){
-        model.addPlayer(new Player(name, color, Model.getMissionCard()));        
-    }
-    
     //Rákattintunk a játék kezdése gombra
     public void startGame(ActionEvent event){
         //TODO Kirajzolni a táblát, ekkor a játékos lerakhatja a kezdeti katonáit

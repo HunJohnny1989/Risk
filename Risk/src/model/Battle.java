@@ -30,11 +30,12 @@ public class Battle {
         rollDice();
         computeLosses();
         boolean hasTerritoryBeenConquered = defendingTroopCount == defenderTroopLossCount;
+        boolean hasDefenderLost = false;
         if( hasTerritoryBeenConquered ) {
-            defendingTerritory.getOccupierPlayer().loseBattle( defenderTroopLossCount, defendingTerritory );
+            hasDefenderLost = defendingTerritory.getOccupierPlayer().loseBattle( defenderTroopLossCount, defendingTerritory );
             attackingTerritory.getOccupierPlayer().winBattle( attackerTroopLossCount, defendingTerritory );
         }
-        return new BattleResult( attackerTroopLossCount, defenderTroopLossCount, hasTerritoryBeenConquered);
+        return new BattleResult( attackerTroopLossCount, defenderTroopLossCount, hasTerritoryBeenConquered, hasDefenderLost );
     }
 
     private void rollDice() {
@@ -57,12 +58,11 @@ public class Battle {
     }
 
     private void computeLosses() {
-        for( int i = 0; i < Math.max( attackerDiceRolls.size(), defenderDiceRolls.size() ); i++ ) {
+        for( int i = 0; i < Math.max( attackerDiceRolls.size(), defenderDiceRolls.size() ); i++ )
             if( hasAttackerWon( i ) ) 
                 defenderTroopLossCount++;
             else
                 attackerTroopLossCount++;
-        }
         defenderTroopLossCount = Math.min( defenderTroopLossCount, defendingTroopCount );        
         attackerTroopLossCount = Math.min( attackerTroopLossCount, attackingTroopCount );
     }

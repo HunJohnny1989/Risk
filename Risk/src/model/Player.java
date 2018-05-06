@@ -15,7 +15,8 @@ import java.util.Objects;
  *
  * @author orsi
  */
-public class Player implements MissionAgent {
+public class Player implements MissionAgent, ControllerPlayer {
+    
     private boolean hasOccupiedTerritoryThisRound;
     private String name;
     private int remainingPlaceableTroopCount;
@@ -50,24 +51,12 @@ public class Player implements MissionAgent {
     public Color getColor(){
         return this.color;
     }
-    
-    public int getNumOfInfantry(){
-        return this.numOfInfantry;
-    }
-    
-    public int getNumOfCavalry(){
-        return this.numOfCavalry;
-    }
-    
-    public int getNumOfArtillery(){
-        return this.numOfArtillery;
-    }
-    
+ 
     public int getRemainingPlaceableTroopCount(){
         return this.remainingPlaceableTroopCount;
     }
     
-    public boolean isOccupiedTerritoryThisRound(){
+    public boolean hasOccupiedTerritoryThisRound(){
         return this.hasOccupiedTerritoryThisRound;
     }
     
@@ -76,14 +65,6 @@ public class Player implements MissionAgent {
     }
     public List<RiskCard> getRiskCards(){
         return this.riskCards;
-    }
-    
-    public List<Territory> getOccupiedTerritories(){
-        return this.occupiedTerritories;
-    }
-    
-    public List<Continent> getOccupiedContinents(){
-        return this.occupiedContinents;
     }
     
     public void addPlaceableTroops(int num){
@@ -109,49 +90,65 @@ public class Player implements MissionAgent {
     /**
     * @author Sajti Tamás
     */
+    @Override
     public BattleResult attack( Territory attackingTerritory, Territory defendingTerritory, int attackingTroopCount ){
         Battle battle = new Battle( attackingTerritory, defendingTerritory, attackingTroopCount );
         final BattleResult battleResult = battle.execute();
         return battleResult;
     }
     
+    /**
+    * @author Sajti Tamás
+    */
+    @Override
     public boolean isMissionCompleted(){
-        return false; //nem vegleges
+        return missionCard.isCompleted();
     }
     
-    public void placeTroops(int num, Territory territory){
+    /**
+    * @author orsi, Sajti Tamás
+    */
+    @Override
+    public void placeTroops( Territory territory, int troopCount ){
         //nem vegleges
-        if(num > this.remainingPlaceableTroopCount){
+        if(troopCount > this.remainingPlaceableTroopCount){
             //nincs annyi had, adjon errort vagy valami
         }else{
-            //
+            territory.addTroops( troopCount );
         }
     }
     
+    @Override
     public void redeemRiskCards(){
         //nem vegleges
     }
     
-    public void transfer(Territory fromTerritory, Territory toTerritory, int num){
-        //nem vegleges
+    /**
+    * @author Sajti Tamás
+    */
+    @Override
+    public void transfer( Territory fromTerritory, Territory toTerritory, int troopCount ){
+        fromTerritory.removeTroops( troopCount );
+        toTerritory.addTroops( troopCount );
     }
 
     
     /**
     * @author Sajti Tamás
     */
-    public void loseBattle(int defenderTroopLossCount, Territory defendingTerritory) {
+    public boolean loseBattle( int defenderTroopLossCount, Territory defendingTerritory ) {
         troopCount -= defenderTroopLossCount;
-        // the defendingTerritory's new occupier player is set in winBattle
+        // the defendingTerritory's new occupier player is set in winBattle, no need to set that here
         occupiedTerritories.remove( defendingTerritory );
         
         Continent continent = defendingTerritory.getContinent();
         occupiedContinents.remove( continent );
         continent.removePlayer();
         
-        if( occupiedTerritories.isEmpty() ) {
+        boolean hasPlayerLost = occupiedTerritories.isEmpty();
+        if( hasPlayerLost )
             Model.getInstance().playerLost( this );
-        }
+        return hasPlayerLost;
     }
 
     /**
@@ -180,10 +177,9 @@ public class Player implements MissionAgent {
     @Override
     public int getTerritoryCountWithAtLeastTwoTroops() {
         int count = 0;
-        for( Territory t : occupiedTerritories ) {
+        for( Territory t : occupiedTerritories )
             if( t.getTroopCount() > 1 )
                 count++;
-        }
         return count;
     }
 

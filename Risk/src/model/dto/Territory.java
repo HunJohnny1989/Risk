@@ -67,6 +67,20 @@ public class Territory {
     }
 
     /**
+    * @author Sajti Tamás
+    */
+    public void addTroops( int troopCount ) {
+        this.troopCount += troopCount;
+    }
+    
+    /**
+    * @author Sajti Tamás
+    */
+    public void removeTroops(int troopCount) {
+        this.troopCount -= troopCount;
+    }
+    
+    /**
     * @author Eszti
     */
     private Point2D getPointFromScanner(Scanner scanner)
@@ -103,4 +117,6 @@ public class Territory {
         }
         scanner.close();
     }
+
+
 }
