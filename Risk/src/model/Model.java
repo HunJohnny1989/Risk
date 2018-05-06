@@ -5,7 +5,9 @@ import model.dto.Missions;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import model.dto.Color;
 import model.dto.MissionCard;
+import model.dto.RiskCard;
 
 /**
  *
@@ -15,14 +17,9 @@ public class Model {
 
     private static Model instance;
 
-    private int selectedPlayerIndex;
-    private List< Player> players;
-
-    public static MissionCard getMissionCard() {
-        Missions missions = new Missions();
-        Random r = new Random();
-        return new MissionCard(missions.getMissions().get(r.nextInt(missions.getMissions().size())));
-    }
+    private int currentPlayerIndex;
+    private List< Player > players;
+    private static Random random = new Random();
 
     public static Model getInstance() {
         return instance;
@@ -31,35 +28,41 @@ public class Model {
     /**
      * @author Sajti Tamás
      */
-    public Model() {
-        selectedPlayerIndex = 0;
+    public Model( String... playerNameList ) {
+        currentPlayerIndex = 0;
+        players = new ArrayList<>( playerNameList.length );
+        for( int i = 0; i < playerNameList.length; i++ )
+            players.add( new Player( playerNameList[ i ], Color.values()[ i ], randomMissionCard()) );
         instance = this;
     }
 
     /**
      * @author Sajti Tamás
      */
-    public Player getSelectedPlayer() {
-        return players.get(selectedPlayerIndex);
+    public PlayerInterface getCurrentPlayer() {
+        return getCurrentPlayerInternal();
     }
 
     /**
      * @author Sajti Tamás
      */
-    public void playerLost(Player player) {
+    public void playerLost( Player player ) {
         players.remove(player);
-        //controller.playerLost( player );
     }
 
+    /**
+     * @author Sajti Tamás
+     */
     public void giveRiskCardIfNecessary() {
-
+        if( getCurrentPlayerInternal().hasOccupiedTerritoryThisRound() ) 
+            getCurrentPlayerInternal().addRiskCard( randomRiskCard() );
     }
 
     /**
      * @author Sajti Tamás
      */
     public void selectNextPlayer() {
-        selectedPlayerIndex = (selectedPlayerIndex + 1) % players.size();
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
     }
 
     public void addPlayer(Player player) {
@@ -71,8 +74,20 @@ public class Model {
         return players;
     }
 
-    public void setPlayers(List<Player> players) {
-        this.players = players;
+    /**
+     * @author Sajti Tamás
+     */
+    private Player getCurrentPlayerInternal() {
+        return players.get(currentPlayerIndex);
+    }
+
+    private MissionCard randomMissionCard() {
+        return new MissionCard( Missions.getMissions().get( random.nextInt( Missions.getMissions().size() ) ) );
+    }
+
+    private RiskCard randomRiskCard() {   // todo
+//        random.nextInt( )
+        return new RiskCard("");
     }
 
 }
