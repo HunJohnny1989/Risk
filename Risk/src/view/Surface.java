@@ -24,14 +24,19 @@ public class Surface extends javax.swing.JPanel implements MouseListener {
      */
     private GameField field;
     private Territory selectedTerritory;
+    private java.util.List<Territory> subSelectedTerritories;
     private final AffineTransform transform = new AffineTransform();
+    private InternalMapAction internalMapAction; 
+    private PlaceTroops placeTroopsDialog;
 
     public Surface() {
         transform.scale(1.75, 1.75);
         transform.translate(60, 0);
         initComponents();
         field = new GameField("src\\Model\\MapShape.xml");
+        internalMapAction = InternalMapAction.SELECTNEIGHBOUR;
         addMouseListener(this);
+        placeTroopsDialog = new PlaceTroops((JFrame)SwingUtilities.windowForComponent(this), true);
     }
 
     /**
@@ -85,6 +90,13 @@ public class Surface extends javax.swing.JPanel implements MouseListener {
             g2d.setPaint(Color.BLACK);
             g2d.draw(selectedTerritory.getShape());
         }
+        if (subSelectedTerritories != null){
+            g2d.setPaint(Color.RED);
+            for(Territory territory:subSelectedTerritories)
+            {
+                g2d.draw(territory.getShape());
+            }
+        }
         g2d.dispose();
     }
 
@@ -101,6 +113,26 @@ public class Surface extends javax.swing.JPanel implements MouseListener {
 
     @Override
     public void mousePressed(MouseEvent me) {
+        if (me.getClickCount() > 1)
+        {
+            if (internalMapAction == InternalMapAction.PLACETROOPS)
+            {
+                internalMapAction = InternalMapAction.SELECTNEIGHBOUR;
+            }
+            else if (internalMapAction == InternalMapAction.SELECTNEIGHBOUR)
+            {
+                this.selectedTerritory = null;
+                this.subSelectedTerritories = null;
+                this.repaint();
+                internalMapAction = InternalMapAction.PLACETROOPS;
+            }
+            return;
+        }
+        if (internalMapAction == InternalMapAction.NONE)
+        {
+            return;
+        }
+        
         selectedTerritory = null;
         Point2D transformedPoint = new Point2D.Double();
         try {
@@ -113,10 +145,22 @@ public class Surface extends javax.swing.JPanel implements MouseListener {
         {
             if (path.getShape().contains(transformedPoint))
             {
-                selectedTerritory = path;
-                PlaceTroops dialog = new PlaceTroops((JFrame)SwingUtilities.windowForComponent(this), true);
-                dialog.setLocation(me.getPoint());
-                dialog.setVisible(true);
+                switch(internalMapAction)
+                {
+                    case NONE:
+                        return;
+                    case PLACETROOPS:
+                        selectedTerritory = path;
+                        repaint();
+                        placeTroopsDialog.setLocation(me.getPoint().x + 5, me.getPoint().y);
+                        placeTroopsDialog.setVisible(true);
+                        path.addTroops(placeTroopsDialog.getNumberOfPlacedTroops());
+                        break;
+                    case SELECTNEIGHBOUR:
+                        selectedTerritory = path;
+                        subSelectedTerritories = path.getNeighbourTerritories();
+                    break;
+                }
                 this.repaint();
                 return;
             }
@@ -134,4 +178,9 @@ public class Surface extends javax.swing.JPanel implements MouseListener {
     @Override
     public void mouseExited(MouseEvent me) {
     }
+}
+
+enum InternalMapAction
+{
+    NONE, SELECTNEIGHBOUR, PLACETROOPS 
 }

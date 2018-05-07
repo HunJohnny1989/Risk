@@ -11,12 +11,14 @@ package view;
  */
 public class PlaceTroops extends javax.swing.JDialog {
 
+    private int numberOfPlacedTroops;
     /**
      * Creates new form PlaceTroops
      */
     public PlaceTroops(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        numberOfPlacedTroops = 0;
     }
 
     /**
@@ -29,22 +31,21 @@ public class PlaceTroops extends javax.swing.JDialog {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jSlider1 = new javax.swing.JSlider();
+        jSliderNumberOfTroops = new javax.swing.JSlider();
         jButtonPlace = new javax.swing.JButton();
         jButtonCancel = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Place troops");
 
         jLabel1.setText("Number of troops:");
 
-        jSlider1.setMajorTickSpacing(1);
-        jSlider1.setMaximum(10);
-        jSlider1.setMinimum(1);
-        jSlider1.setMinorTickSpacing(1);
-        jSlider1.setPaintLabels(true);
-        jSlider1.setPaintTicks(true);
-        jSlider1.setValue(1);
+        jSliderNumberOfTroops.setMajorTickSpacing(1);
+        jSliderNumberOfTroops.setMaximum(10);
+        jSliderNumberOfTroops.setMinimum(1);
+        jSliderNumberOfTroops.setMinorTickSpacing(1);
+        jSliderNumberOfTroops.setPaintLabels(true);
+        jSliderNumberOfTroops.setPaintTicks(true);
+        jSliderNumberOfTroops.setValue(1);
 
         jButtonPlace.setText("Place");
         jButtonPlace.addActionListener(new java.awt.event.ActionListener() {
@@ -68,7 +69,7 @@ public class PlaceTroops extends javax.swing.JDialog {
                 .addGap(20, 20, 20)
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
-                .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jSliderNumberOfTroops, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(27, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -83,7 +84,7 @@ public class PlaceTroops extends javax.swing.JDialog {
                 .addGap(21, 21, 21)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
-                    .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jSliderNumberOfTroops, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButtonPlace)
@@ -95,10 +96,12 @@ public class PlaceTroops extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelActionPerformed
+        numberOfPlacedTroops = 0;
         setVisible(false);
     }//GEN-LAST:event_jButtonCancelActionPerformed
 
     private void jButtonPlaceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPlaceActionPerformed
+        numberOfPlacedTroops = jSliderNumberOfTroops.getValue();
         setVisible(false);
     }//GEN-LAST:event_jButtonPlaceActionPerformed
 
@@ -143,11 +146,22 @@ public class PlaceTroops extends javax.swing.JDialog {
             }
         });
     }
+    
+    public void setRange(int min, int max)
+    {
+        jSliderNumberOfTroops.setMinimum(min);
+        jSliderNumberOfTroops.setMaximum(max);
+    }
+    
+    public int getNumberOfPlacedTroops()
+    {
+        return numberOfPlacedTroops;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonCancel;
     private javax.swing.JButton jButtonPlace;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JSlider jSlider1;
+    private javax.swing.JSlider jSliderNumberOfTroops;
     // End of variables declaration//GEN-END:variables
 }

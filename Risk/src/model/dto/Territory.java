@@ -29,10 +29,11 @@ public class Territory {
     /**
     * @author Eszti
     */
-    public Territory(String name, String shape)
+    public Territory(String name, String shape, Point2D.Float centerPoint)
     {
         this.troopCount = 0;
         this.name = name;
+        this.centerPoint = centerPoint;
         createShape(shape);
     }
 
@@ -102,7 +103,6 @@ public class Territory {
                 case "M":
                     Point2D point = getPointFromScanner(scanner);
                     shape.moveTo(point.getX(), point.getY());
-                    centerPoint = new Point2D.Float((float)point.getX(), (float)point.getY());
                     break;
                 case "C":
                     do{
@@ -122,10 +122,15 @@ public class Territory {
 
     public GeneralPath getShape()
     {
-        return shape;
+        return this.shape;
     }
     
     public Point2D.Float getCenterPoint(){
-        return centerPoint;
+        return this.centerPoint;
+    }
+    
+    public void setNeighbourTerritories(List<Territory> neighbours)
+    {
+        this.neighbourTerritories = neighbours;
     }
 }

@@ -1,9 +1,11 @@
 package model.dto;
 
+import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileNotFoundException;
 import model.dto.Continent;
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -40,17 +42,33 @@ public class GameField {
             
             //System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
             NodeList nList = doc.getElementsByTagName("path");
-            for (int temp = 0; temp < nList.getLength(); temp++){
-                Node nNode = nList.item(temp);
+            String[] neighbours = new String[nList.getLength()];
+            for (int territoryNo = 0; territoryNo < nList.getLength(); territoryNo++){
+                Node nNode = nList.item(territoryNo);
                 //System.out.println("\nCurrent Element :" + nNode.getNodeName());
                 if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                     Element eElement = (Element) nNode;
-                    String countryName = eElement.getAttribute("id");
+                    //String id = eElement.getAttribute("id");
+                    String countryName = eElement.getAttribute("name");
+                    String centerPointX = eElement.getAttribute("x");
+                    String centerPointY = eElement.getAttribute("y");
+                    Point2D.Float centerPoint = new Point2D.Float(
+                            Float.valueOf(centerPointX), Float.valueOf(centerPointY));
+                    neighbours[territoryNo] = eElement.getAttribute("neighbours");
                     String shape = eElement.getAttribute("d");
-                    Territory territory = new Territory(countryName, shape);
+                    Territory territory = new Territory(countryName, shape, centerPoint);
                     territories.add(territory);
                     System.out.println(territory.getName() + " imported.");
                 }
+            }
+            for(int territoryNo = 0; territoryNo < neighbours.length; territoryNo++){
+                List<Territory> neighbourTerritories = new ArrayList<>();
+                String[] neighbourIDs = neighbours[territoryNo].split(" ");
+                for(String neighbourID:neighbourIDs)
+                {
+                    neighbourTerritories.add(territories.get(Integer.valueOf(neighbourID)-1));
+                }
+                territories.get(territoryNo).setNeighbourTerritories(neighbourTerritories);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
