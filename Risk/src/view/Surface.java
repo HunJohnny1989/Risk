@@ -30,7 +30,11 @@ public class Surface extends javax.swing.JPanel implements MouseListener {
     private PlaceTroops placeTroopsDialog;
 
     public Surface() {
-        transform.scale(1.75, 1.75);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        double width = 1+(screenSize.getWidth()/8000);
+        double height = 1+(screenSize.getHeight()/9000);
+        transform.scale(width, height);
+        //transform.scale(1.75, 1.75);
         transform.translate(60, 0);
         initComponents();
         field = new GameField("src\\Model\\MapShape.xml");
