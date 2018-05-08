@@ -182,8 +182,11 @@ public class Surface extends javax.swing.JPanel implements MouseListener {
     @Override
     public void mouseExited(MouseEvent me) {
     }
-}
 
+    public GameField getField() {
+        return field;
+    }
+ }
 enum InternalMapAction
 {
     NONE, SELECTNEIGHBOUR, PLACETROOPS 

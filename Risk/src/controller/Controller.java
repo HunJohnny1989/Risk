@@ -21,8 +21,8 @@ import view.MainWindow;
  */
 public class Controller {
 
-    public static Model model;
-    
+    private static Model model;
+    private static MainWindow mainWindow;
     /**
      * @param args the command line arguments
      */
@@ -52,11 +52,14 @@ public class Controller {
 
         //TODO Kirajzolni Játékos adatait bekérő oldalt
         model = new Model( "Eszti", "Orsi", "John", "Tomi" );
-        
+ 
         /* Create and display the form */
-        EventQueue.invokeLater(() -> {
-            new MainWindow().setVisible(true);
-        });
+       // EventQueue.invokeLater(() -> {
+            mainWindow = new MainWindow();
+            mainWindow.setVisible(true);
+        //});
+        model.divideRandomTerritories(mainWindow.getSurface1().getField().getTerritories());
+        
     }
 
     //Rákattintunk a játék kezdése gombra

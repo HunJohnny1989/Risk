@@ -114,6 +114,8 @@ public class Player implements MissionAgent, PlayerInterface {
         if(troopCount > this.remainingPlaceableTroopCount){
             //nincs annyi had, adjon errort vagy valami
         }else{
+            this.remainingPlaceableTroopCount = this.remainingPlaceableTroopCount - troopCount;
+            this.occupiedTerritories.add(territory);
             territory.addTroops( troopCount );
         }
     }
@@ -228,6 +230,10 @@ public class Player implements MissionAgent, PlayerInterface {
             return false;
         }
         return true;
+    }
+
+    public void setRemainingPlaceableTroopCount(int remainingPlaceableTroopCount) {
+        this.remainingPlaceableTroopCount = remainingPlaceableTroopCount;
     }
     
 }

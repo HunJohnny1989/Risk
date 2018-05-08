@@ -69,4 +69,8 @@ public class MainWindow extends JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private view.Surface surface1;
     // End of variables declaration//GEN-END:variables
+
+    public Surface getSurface1() {
+        return surface1;
+    }
 }
