@@ -116,6 +116,10 @@ public class Player implements MissionAgent, PlayerInterface {
         }else{
             this.remainingPlaceableTroopCount = this.remainingPlaceableTroopCount - troopCount;
             this.occupiedTerritories.add(territory);
+            if (territory.getTroopCount()==0)
+            {
+                territory.assignToPlayer(this);
+            }
             territory.addTroops( troopCount );
         }
     }

@@ -13,6 +13,7 @@ import java.util.List;
 import javax.swing.UIManager;
 import model.*;
 import model.dto.Color;
+import model.dto.GameField;
 import view.MainWindow;
 
 /**
@@ -58,8 +59,9 @@ public class Controller {
             mainWindow = new MainWindow();
             mainWindow.setVisible(true);
         //});
-        model.divideRandomTerritories(mainWindow.getSurface1().getField().getTerritories());
-        
+        GameField field = new GameField("src\\Model\\MapShape.xml");
+        model.divideRandomTerritories(field.getTerritories());
+        mainWindow.setGameField(field);
     }
 
     //Rákattintunk a játék kezdése gombra

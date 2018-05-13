@@ -1,5 +1,6 @@
 package model.dto;
 
+import java.awt.Dimension;
 import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -18,11 +19,13 @@ import org.w3c.dom.*;
 public class GameField {
     private List<Continent> continents;
     private List<Territory> territories;
+    private Dimension dimension;
     //
     
     public GameField(){
         this.continents = new ArrayList<Continent>();
         this.territories = new ArrayList<>();
+        dimension = new Dimension();
     }
     
     /**
@@ -39,7 +42,9 @@ public class GameField {
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(fXmlFile);
             doc.getDocumentElement().normalize();
-            
+            String[] viewBox = doc.getDocumentElement().getAttribute("viewBox").split(" ");
+            dimension.setSize(Integer.valueOf(viewBox[2])- Integer.valueOf(viewBox[0]),
+                    Integer.valueOf(viewBox[3])- Integer.valueOf(viewBox[1]));
             //System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
             NodeList nList = doc.getElementsByTagName("path");
             String[] neighbours = new String[nList.getLength()];
@@ -81,5 +86,10 @@ public class GameField {
     
     public List<Territory> getTerritories(){
         return territories;
+    }
+    
+    public Dimension getDimension()
+    {
+        return dimension;
     }
 }

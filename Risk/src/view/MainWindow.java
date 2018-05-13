@@ -6,6 +6,8 @@
 package view;
 import java.awt.*;
 import javax.swing.*;
+import model.Player;
+import model.dto.GameField;
 /**
  *
  * @author Eszti
@@ -17,6 +19,7 @@ public class MainWindow extends JFrame {
      */
     public MainWindow() {
         initComponents();
+        toolBar.add(Box.createHorizontalGlue(), toolBar.getComponentIndex(jButtonAction));
     }
 
     /**
@@ -29,6 +32,10 @@ public class MainWindow extends JFrame {
     private void initComponents() {
 
         surface1 = new view.Surface();
+        toolBar = new javax.swing.JToolBar();
+        jLabel1 = new javax.swing.JLabel();
+        jLabelActualPlayer = new javax.swing.JLabel();
+        jButtonAction = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Rizikó");
@@ -37,26 +44,54 @@ public class MainWindow extends JFrame {
         setResizable(false);
         setSize(Toolkit.getDefaultToolkit().getScreenSize());
 
+        surface1.setPreferredSize(new java.awt.Dimension(0, 0));
+
         javax.swing.GroupLayout surface1Layout = new javax.swing.GroupLayout(surface1);
         surface1.setLayout(surface1Layout);
         surface1Layout.setHorizontalGroup(
             surface1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 433, Short.MAX_VALUE)
+            .addGap(0, 480, Short.MAX_VALUE)
         );
         surface1Layout.setVerticalGroup(
             surface1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 229, Short.MAX_VALUE)
+            .addGap(0, 195, Short.MAX_VALUE)
         );
+
+        toolBar.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        toolBar.setFloatable(false);
+        toolBar.setRollover(true);
+
+        jLabel1.setText("Aktuális játékos: ");
+        toolBar.add(jLabel1);
+
+        jLabelActualPlayer.setText("Senki");
+        toolBar.add(jLabelActualPlayer);
+
+        jButtonAction.setText("Támadás befejezése");
+        jButtonAction.setFocusable(false);
+        jButtonAction.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButtonAction.setMargin(new java.awt.Insets(5, 7, 5, 7));
+        jButtonAction.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButtonAction.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonActionActionPerformed(evt);
+            }
+        });
+        toolBar.add(jButtonAction);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(surface1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(surface1, javax.swing.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
+            .addComponent(toolBar, javax.swing.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(surface1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(toolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(surface1, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE))
         );
 
         surface1.getAccessibleContext().setAccessibleDescription("");
@@ -64,13 +99,30 @@ public class MainWindow extends JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButtonActionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonActionActionPerformed
+        System.out.println("Action gomb megnyomva");
+    }//GEN-LAST:event_jButtonActionActionPerformed
+
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonAction;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabelActualPlayer;
     private view.Surface surface1;
+    private javax.swing.JToolBar toolBar;
     // End of variables declaration//GEN-END:variables
 
-    public Surface getSurface1() {
-        return surface1;
+   
+    public void setActualPlayer(Player player)
+    {
+        this.jLabelActualPlayer.setText(player.getName());
+        //this.jLabelActualPlayer.setForeground(player.getColor());
+        this.jLabelActualPlayer.setForeground(Color.GREEN);
+    }
+    
+    public void setGameField(GameField gameField)
+    {
+        surface1.setGameField(gameField);
     }
 }

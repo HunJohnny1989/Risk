@@ -7,6 +7,8 @@ package view;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
+import java.awt.image.BufferedImage;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -28,19 +30,24 @@ public class Surface extends javax.swing.JPanel implements MouseListener {
     private final AffineTransform transform = new AffineTransform();
     private InternalMapAction internalMapAction; 
     private PlaceTroops placeTroopsDialog;
+    private static final int HORIZONTALPADDING = 60;
+    private static final int VERTICALPADDING = 60;
+    private HashMap<model.dto.Color, Color> playerColors;
+    private TexturePaint hatchTexturePaint;
 
     public Surface() {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        double width = 1+(screenSize.getWidth()/8000);
-        double height = 1+(screenSize.getHeight()/9000);
-        transform.scale(width, height);
-        //transform.scale(1.75, 1.75);
-        transform.translate(60, 0);
         initComponents();
-        field = new GameField("src\\Model\\MapShape.xml");
         internalMapAction = InternalMapAction.SELECTNEIGHBOUR;
         addMouseListener(this);
         placeTroopsDialog = new PlaceTroops((JFrame)SwingUtilities.windowForComponent(this), true);
+        playerColors = new HashMap<model.dto.Color, Color>() {{
+            put(model.dto.Color.BLACK, Color.BLACK);
+            put(model.dto.Color.BLUE, Color.BLUE);
+            put(model.dto.Color.GREEN, Color.GREEN);
+            put(model.dto.Color.PINK, Color.MAGENTA);
+            put(model.dto.Color.RED, Color.RED);
+            put(model.dto.Color.YELLOW, Color.YELLOW);}};
+        hatchTexturePaint = getHatchPaint(Color.MAGENTA, Color.BLACK);
     }
 
     /**
@@ -70,8 +77,31 @@ public class Surface extends javax.swing.JPanel implements MouseListener {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 
+    private TexturePaint getHatchPaint(Color backColor, Color stripeColor)
+    {
+        BufferedImage bufferedImage = new BufferedImage(5, 5, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = bufferedImage.createGraphics();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                             RenderingHints.VALUE_ANTIALIAS_ON);
+
+        g2.setRenderingHint(RenderingHints.KEY_RENDERING,
+                             RenderingHints.VALUE_RENDER_QUALITY);
+        /*g2.setColor(backColor);
+        g2.fillRect(0, 0, 5, 5);*/
+        g2.setColor(stripeColor);
+        g2.drawLine(0, 2, 4, 2); // \
+        //g2.drawLine(0, 5, 5, 0); // /
+
+        // paint with the texturing brush
+        Rectangle2D rect = new Rectangle2D.Double(0, 0, 5, 5);
+        return new TexturePaint(bufferedImage, rect);
+    }
+    
     private void doDrawing(Graphics g) {
-        
+        if (field == null)
+        {
+            return;
+        }
         Graphics2D g2d = (Graphics2D) g.create();
 
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
@@ -81,24 +111,45 @@ public class Surface extends javax.swing.JPanel implements MouseListener {
                              RenderingHints.VALUE_RENDER_QUALITY);
 
         g2d.transform(transform);
-        for(Territory path : field.getTerritories())
+        for(Territory territory : field.getTerritories())
         {
-            g2d.setPaint(Color.MAGENTA);
-            g2d.fill(path.getShape());
-            g2d.setPaint(Color.BLACK);
-            if (path.getCenterPoint()!=null){
-                g2d.drawString(Integer.toString(path.getTroopCount()), path.getCenterPoint().x, path.getCenterPoint().y);
+            g2d.setPaint(new Color(210,180,140));
+            g2d.fill(territory.getShape());
+            if (territory.getOccupierPlayer() != null){
+                g2d.setPaint(playerColors.get(territory.getOccupierPlayer().getColor()));
+                if (territory.getCenterPoint()!=null){
+                    g2d.drawString(Integer.toString(territory.getTroopCount()), territory.getCenterPoint().x, territory.getCenterPoint().y);
+                }
             }
         }
         if (selectedTerritory != null){
+            g2d.setPaint(this.hatchTexturePaint);
+            g2d.fill(selectedTerritory.getShape());
             g2d.setPaint(Color.BLACK);
             g2d.draw(selectedTerritory.getShape());
+            if (selectedTerritory.getOccupierPlayer() != null){
+                g2d.setPaint(playerColors.get(selectedTerritory.getOccupierPlayer().getColor()));
+                if (selectedTerritory.getCenterPoint()!=null){
+                    g2d.drawString(Integer.toString(selectedTerritory.getTroopCount()), selectedTerritory.getCenterPoint().x, selectedTerritory.getCenterPoint().y);
+                }
+            }
         }
         if (subSelectedTerritories != null){
-            g2d.setPaint(Color.RED);
             for(Territory territory:subSelectedTerritories)
             {
+                Color playerColor = playerColors.get(territory.getOccupierPlayer().getColor());
+                g2d.setPaint(playerColor);
                 g2d.draw(territory.getShape());
+                /*g2d.setPaint(this.hatchTexturePaint);
+                g2d.fill(territory.getShape());
+                g2d.setPaint(playerColor);
+                g2d.draw(territory.getShape());
+                if (territory.getOccupierPlayer() != null){
+                    g2d.setPaint(playerColor);
+                    if (territory.getCenterPoint()!=null){
+                        g2d.drawString(Integer.toString(territory.getTroopCount()), territory.getCenterPoint().x, territory.getCenterPoint().y);
+                    }
+                }*/
             }
         }
         g2d.dispose();
@@ -132,7 +183,7 @@ public class Surface extends javax.swing.JPanel implements MouseListener {
             }
             return;
         }
-        if (internalMapAction == InternalMapAction.NONE)
+        if (field == null || internalMapAction == InternalMapAction.NONE)
         {
             return;
         }
@@ -145,24 +196,31 @@ public class Surface extends javax.swing.JPanel implements MouseListener {
             Logger.getLogger(Surface.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        for(Territory path : field.getTerritories())
+        for(Territory territory : field.getTerritories())
         {
-            if (path.getShape().contains(transformedPoint))
+            if (territory.getShape().contains(transformedPoint))
             {
                 switch(internalMapAction)
                 {
                     case NONE:
                         return;
                     case PLACETROOPS:
-                        selectedTerritory = path;
+                        selectedTerritory = territory;
                         repaint();
-                        placeTroopsDialog.setLocation(me.getPoint().x + 5, me.getPoint().y);
-                        placeTroopsDialog.setVisible(true);
-                        path.addTroops(placeTroopsDialog.getNumberOfPlacedTroops());
+                        //if (territory.getOccupierPlayer() == null){
+                            placeTroopsDialog.setLocation(me.getPoint().x + 5, me.getPoint().y);
+                            placeTroopsDialog.setVisible(true);
+                            //int troops = placeTroopsDialog.getNumberOfPlacedTroops();
+                            //if (troops!=0)
+                           // {
+                                territory.addTroops(placeTroopsDialog.getNumberOfPlacedTroops());
+                                //territory.assignToPlayer(new model.Player("Eszti", model.dto.Color.GREEN, null));
+                            //}
+                        //}
                         break;
                     case SELECTNEIGHBOUR:
-                        selectedTerritory = path;
-                        subSelectedTerritories = path.getNeighbourTerritories();
+                        selectedTerritory = territory;
+                        subSelectedTerritories = territory.getNeighbourTerritories();
                     break;
                 }
                 this.repaint();
@@ -183,8 +241,16 @@ public class Surface extends javax.swing.JPanel implements MouseListener {
     public void mouseExited(MouseEvent me) {
     }
 
-    public GameField getField() {
-        return field;
+    void setGameField(GameField field)
+    {
+        this.field = field;
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        double horizontalScale = (screenSize.getWidth() - 2 * HORIZONTALPADDING)/field.getDimension().getWidth();
+        double verticalScale = (screenSize.getHeight() - 2 * VERTICALPADDING)/field.getDimension().getHeight();
+        double scale = Math.min(horizontalScale, verticalScale);
+        transform.scale(scale, scale);
+        transform.translate((screenSize.getWidth()-scale * field.getDimension().getWidth())/2 - 15, 0);
+        repaint();
     }
  }
 enum InternalMapAction
