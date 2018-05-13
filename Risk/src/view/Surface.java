@@ -4,6 +4,8 @@
  * and open the template in the editor.
  */
 package view;
+import controller.Controller;
+import controller.MyViewEvent;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
@@ -34,11 +36,13 @@ public class Surface extends javax.swing.JPanel implements MouseListener {
     private static final int VERTICALPADDING = 60;
     private HashMap<model.dto.Color, Color> playerColors;
     private TexturePaint hatchTexturePaint;
+    private Controller controller = new Controller();
 
     public Surface() {
         initComponents();
         internalMapAction = InternalMapAction.SELECTNEIGHBOUR;
         addMouseListener(this);
+        
         placeTroopsDialog = new PlaceTroops((JFrame)SwingUtilities.windowForComponent(this), true);
         playerColors = new HashMap<model.dto.Color, Color>() {{
             put(model.dto.Color.BLACK, Color.BLACK);
@@ -168,6 +172,8 @@ public class Surface extends javax.swing.JPanel implements MouseListener {
 
     @Override
     public void mousePressed(MouseEvent me) {
+        
+        controller.placeUnitTest();
         if (me.getClickCount() > 1)
         {
             if (internalMapAction == InternalMapAction.PLACETROOPS)

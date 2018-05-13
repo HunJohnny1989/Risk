@@ -20,7 +20,7 @@ import view.MainWindow;
  *
  * @author Johnny
  */
-public class Controller {
+public class Controller implements MyViewEvent{
 
     private static Model model;
     private static MainWindow mainWindow;
@@ -95,6 +95,12 @@ public class Controller {
                 break;
         }
 
+    }
+
+    @Override
+    public void placeUnitTest() {
+        System.out.println("placeUnitTest");
+       // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
