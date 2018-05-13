@@ -17,7 +17,7 @@ public class PlaceTroops extends javax.swing.JDialog {
      */
     public PlaceTroops(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
-        initComponents();
+        initComponents(); 
         numberOfPlacedTroops = 0;
     }
 
@@ -118,6 +118,10 @@ public class PlaceTroops extends javax.swing.JDialog {
     {
         jSliderNumberOfTroops.setMinimum(min);
         jSliderNumberOfTroops.setMaximum(max);
+    }
+    
+    public void setValue(int value){
+        jSliderNumberOfTroops.setValue(value);
     }
     
     public int getNumberOfPlacedTroops()

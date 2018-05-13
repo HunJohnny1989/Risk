@@ -1,6 +1,7 @@
 package model.dto;
 
 import java.awt.geom.*;
+import java.util.ArrayList;
 import model.dto.Continent;
 import java.util.List;
 import java.util.Scanner;
@@ -11,6 +12,7 @@ import model.Player;
  * @author orsi
  */
 public class Territory {
+
     private String name;
     private int troopCount;
     private List<Territory> neighbourTerritories; //szomszedos korzetek
@@ -18,19 +20,18 @@ public class Territory {
     private Continent continent;
     private GeneralPath shape;
     private Point2D.Float centerPoint;
-    
-    public Territory(String name, Continent continent, List<Territory> neighbourTerritories){
+
+    public Territory(String name, Continent continent, List<Territory> neighbourTerritories) {
         this.name = name;
         this.continent = continent;
         this.troopCount = 0; //nem vegleges
         this.neighbourTerritories = neighbourTerritories;
     }
-    
+
     /**
-    * @author Eszti
-    */
-    public Territory(String name, String shape, Point2D.Float centerPoint)
-    {
+     * @author Eszti
+     */
+    public Territory(String name, String shape, Point2D.Float centerPoint) {
         this.troopCount = 0;
         this.name = name;
         this.centerPoint = centerPoint;
@@ -38,9 +39,9 @@ public class Territory {
     }
 
     /**
-    *
-    * @author orsi
-    */
+     *
+     * @author orsi
+     */
     public Continent getContinent() {
         return continent;
     }
@@ -48,69 +49,78 @@ public class Territory {
     public int getTroopCount() {
         return troopCount;
     }
-    
-    public String getName(){
+
+    public String getName() {
         return this.name;
     }
-    
-    public Player getOccupierPlayer(){
+
+    public Player getOccupierPlayer() {
         return this.occupierPlayer;
     }
-   
-    public List<Territory> getNeighbourTerritories(){
+
+    public List<Territory> getNeighbourTerritories() {
         return this.neighbourTerritories;
     }
-    
+
+    public List<Territory> getNeighbourPlayerTerritories() {
+        List<Territory> ours = new ArrayList<Territory>();
+        if (neighbourTerritories != null) {
+            for (Territory t : this.neighbourTerritories) {
+                if (t.getOccupierPlayer().equals(occupierPlayer)) {
+                    ours.add(t);
+                }
+            }
+        }
+        return ours;
+    }
+
     /**
-    * @author Sajti Tamás
-    */
-    public void assignToPlayer( Player player ){
+     * @author Sajti Tamás
+     */
+    public void assignToPlayer(Player player) {
         occupierPlayer = player;
     }
 
     /**
-    * @author Sajti Tamás
-    */
-    public void addTroops( int troopCount ) {
+     * @author Sajti Tamás
+     */
+    public void addTroops(int troopCount) {
         this.troopCount += troopCount;
     }
-    
+
     /**
-    * @author Sajti Tamás
-    */
+     * @author Sajti Tamás
+     */
     public void removeTroops(int troopCount) {
         this.troopCount -= troopCount;
     }
-    
+
     /**
-    * @author Eszti
-    */
-    private Point2D getPointFromScanner(Scanner scanner)
-    {
+     * @author Eszti
+     */
+    private Point2D getPointFromScanner(Scanner scanner) {
         return new Point2D.Double(scanner.nextDouble(), scanner.nextDouble());
     }
-    
-    private void createShape(String shapeString)
-    {
+
+    private void createShape(String shapeString) {
         shape = new GeneralPath();
         Scanner scanner = new Scanner(shapeString);
         scanner.useLocale(java.util.Locale.US);
         scanner.useDelimiter("\\n|,|\\s* \\s*");
         while (scanner.hasNext()) {
             String nextToken = scanner.next();
-            switch(nextToken)
-            {
+            switch (nextToken) {
                 case "M":
                     Point2D point = getPointFromScanner(scanner);
                     shape.moveTo(point.getX(), point.getY());
                     break;
                 case "C":
-                    do{
-                    Point2D controlPoint1 = getPointFromScanner(scanner);
-                    Point2D controlPoint2 = getPointFromScanner(scanner);
-                    Point2D endPoint = getPointFromScanner(scanner);
-                    shape.curveTo(controlPoint1.getX(), controlPoint1.getY(), controlPoint2.getX(), controlPoint2.getY(), endPoint.getX(), endPoint.getY());
-                    }while(scanner.hasNextDouble());
+                    do {
+                        Point2D controlPoint1 = getPointFromScanner(scanner);
+                        Point2D controlPoint2 = getPointFromScanner(scanner);
+                        Point2D endPoint = getPointFromScanner(scanner);
+                        shape.curveTo(controlPoint1.getX(), controlPoint1.getY(), controlPoint2.getX(), controlPoint2.getY(), endPoint.getX(), endPoint.getY());
+                    } while (scanner.hasNextDouble());
                     break;
                 case "Z":
                     shape.closePath();
@@ -120,17 +130,15 @@ public class Territory {
         scanner.close();
     }
 
-    public GeneralPath getShape()
-    {
+    public GeneralPath getShape() {
         return this.shape;
     }
-    
-    public Point2D.Float getCenterPoint(){
+
+    public Point2D.Float getCenterPoint() {
         return this.centerPoint;
     }
-    
-    public void setNeighbourTerritories(List<Territory> neighbours)
-    {
+
+    public void setNeighbourTerritories(List<Territory> neighbours) {
         this.neighbourTerritories = neighbours;
     }
 }

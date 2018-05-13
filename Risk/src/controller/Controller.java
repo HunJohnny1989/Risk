@@ -5,25 +5,23 @@
  */
 package controller;
 
-import java.awt.Event;
-import java.awt.EventQueue;
-import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.List;
 import javax.swing.UIManager;
 import model.*;
-import model.dto.Color;
+import model.dto.BattleResult;
 import model.dto.GameField;
+import model.dto.Phase;
+import model.dto.Territory;
 import view.MainWindow;
 
 /**
  *
  * @author Johnny
  */
-public class Controller implements MyViewEvent{
+public class Controller implements ControllerInterface {
 
     private static Model model;
     private static MainWindow mainWindow;
+
     /**
      * @param args the command line arguments
      */
@@ -52,55 +50,62 @@ public class Controller implements MyViewEvent{
         //</editor-fold>
 
         //TODO Kirajzolni Játékos adatait bekérő oldalt
-        model = new Model( "Eszti", "Orsi", "John", "Tomi" );
- 
+        model = new Model("Eszti", "Orsi", "John", "Tomi");
+
         /* Create and display the form */
-       // EventQueue.invokeLater(() -> {
-            mainWindow = new MainWindow();
-            mainWindow.setVisible(true);
+        // EventQueue.invokeLater(() -> {
+        mainWindow = new MainWindow();
+        mainWindow.setVisible(true);
         //});
         GameField field = new GameField("src\\Model\\MapShape.xml");
         model.divideRandomTerritories(field.getTerritories());
         mainWindow.setGameField(field);
-    }
-
-    //Rákattintunk a játék kezdése gombra
-    public void startGame(ActionEvent event){
-        //TODO Kirajzolni a táblát, ekkor a játékos lerakhatja a kezdeti katonáit
-        
-        //ha elfogytak a "kézben" lévő katonák kezdődik a kör        
-        
-    }
-    
-    public void handleEvent(Event event) {
-
-        /*Kölönböző esetek amiket le kell kezelni
-        1. Támad
-        2. Passzol
-        3. Átcsoportosít
-        4. Erősít
-        */
-        switch (event.id) {
-            case Event.KEY_PRESS:
-                break;
-            case Event.KEY_ACTION:
-                break;
-            case Event.KEY_RELEASE:
-                break;
-            case Event.MOUSE_DOWN:
-                break;
-            case Event.MOUSE_UP:
-                break;
-            case Event.MOUSE_DRAG:
-                break;
-        }
+        mainWindow.setPLayer(model.getCurrentPlayer().getName(), model.getCurrentPlayer().getColor().name());
+        mainWindow.setGamePhase(model.getCurrentPhaseName());
 
     }
 
     @Override
-    public void placeUnitTest() {
-        System.out.println("placeUnitTest");
-       // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public int getPlayerRemainingTroopCount() {
+        return model.getCurrentPlayer().getRemainingPlaceableTroopCount();
     }
 
+    @Override
+    public void removeAvailableTroops(int troopCount) {
+        Player currentPlayer = model.getCurrentPlayer();
+        currentPlayer.setRemainingPlaceableTroopCount(currentPlayer.getRemainingPlaceableTroopCount() - troopCount);
+        if (currentPlayer.getRemainingPlaceableTroopCount() == 0) {
+            model.selectNextPlayer();
+            if (model.getCurrentPlayer().getRemainingPlaceableTroopCount() == 0) {
+                model.nextPhase();
+            }
+            mainWindow.setPLayer(model.getCurrentPlayer().getName(), model.getCurrentPlayer().getColor().name());
+        }
+    }
+
+    @Override
+    public Player getCurrentPlayer() {
+        return model.getCurrentPlayer();
+    }
+
+    @Override
+    public Phase getCurrentPhase() {
+        return model.getCurrentPhase();
+    }
+
+    @Override
+    public BattleResult attackTerritory(Territory from, Territory to, int troopCount) {
+        return model.getCurrentPlayer().attack(from, to, troopCount);
+    }
+
+    @Override
+    public void transfer(Territory from, Territory to, int troopCount) {
+        model.getCurrentPlayer().transfer(from, to, troopCount);
+    }
+    
+    @Override
+    public void finishAttack(){
+        model.finishAttack();
+        mainWindow.setPLayer(model.getCurrentPlayer().getName(), model.getCurrentPlayer().getColor().name());
+    }
 }

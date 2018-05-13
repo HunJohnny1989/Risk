@@ -43,9 +43,26 @@ public class Model {
         instance = this;
     }
 
+    public String getCurrentPhaseName() {
+        switch (getCurrentPhase()) {
+            case PLACE_TROOPS:
+                return "Csapatok elhelyezése";
+            case ATTACK:
+                return "Támadás";
+            case REGROUP:
+                return "Átcsoportosítás";
+        }
+        return null;
+    }
+
+    public Phase getCurrentPhase() {
+        return currentPhase;
+    }
+
     /**
      * Split randomly 1 unit on each territory
-     * @param list 
+     *
+     * @param list
      */
     public void divideRandomTerritories(List<Territory> list) {
         if (players == null) {
@@ -60,7 +77,9 @@ public class Model {
         for (Territory t : list) {
             players.get(i).placeTroops(t, 1);
             i++;
-            if(i == players.size()) i = 0;            
+            if (i == players.size()) {
+                i = 0;
+            }
         }
         System.out.println("Randomly splitted the troops between Territories");
     }
@@ -68,7 +87,7 @@ public class Model {
     /**
      * @author Sajti Tamás
      */
-    public PlayerInterface getCurrentPlayer() {
+    public Player getCurrentPlayer() {
         return getCurrentPlayerInternal();
     }
 
@@ -93,6 +112,38 @@ public class Model {
      */
     public void selectNextPlayer() {
         currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+    }
+
+    public void nextPhase() {
+        if (currentPhase.equals(Phase.ATTACK)) {
+            currentPhase = Phase.REGROUP;
+        } else if (currentPhase.equals(Phase.PLACE_TROOPS)) {
+            currentPhase = Phase.ATTACK;
+        } else if (currentPhase.equals(Phase.REGROUP)) {
+            currentPhase = Phase.PLACE_TROOPS;
+            for (Player p : getPlayers()) {
+                p.setRemainingPlaceableTroopCount(5);
+                //TODO kiszámolni hány katona jár a playereknek és odaadni nekik
+                //p.setRemainingPlaceableTroopCount(p.get);
+            }
+        }
+    }
+
+    public void finishAttack() {
+        getCurrentPlayer().setFinishedAttack(true);
+        boolean allFinished = true;
+        for (Player p : players) {
+            if (!p.isFinishedAttack()) {
+                allFinished = false;
+            }
+        }
+        if (allFinished) {
+            for (Player p : players) {
+                p.setFinishedAttack(false);
+            }
+            nextPhase();
+        }
+        selectNextPlayer();
     }
 
     public void addPlayer(Player player) {

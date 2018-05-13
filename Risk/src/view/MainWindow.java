@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package view;
+import controller.Controller;
 import java.awt.*;
 import javax.swing.*;
 import model.Player;
@@ -13,6 +14,8 @@ import model.dto.GameField;
  * @author Eszti
  */
 public class MainWindow extends JFrame {
+    
+    private Controller controller = new Controller();
 
     /**
      * Creates new form MainWindow
@@ -100,7 +103,8 @@ public class MainWindow extends JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonActionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonActionActionPerformed
-        System.out.println("Action gomb megnyomva");
+        controller.finishAttack();
+        surface1.resetSurface();
     }//GEN-LAST:event_jButtonActionActionPerformed
 
     
@@ -125,4 +129,14 @@ public class MainWindow extends JFrame {
     {
         surface1.setGameField(gameField);
     }
+
+    public void setPLayer(String name, String color) {
+        jLabelActualPlayer = (JLabel) toolBar.getComponent(1);
+        jLabelActualPlayer.setText(name + " (" + color + ")");
+    }
+    
+    public void setGamePhase(String status){
+        System.out.println("Játék státusza: " + status);        
+    }
+   
 }

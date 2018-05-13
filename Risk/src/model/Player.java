@@ -30,6 +30,7 @@ public class Player implements MissionAgent, PlayerInterface {
     private List<Continent> occupiedContinents;
     private List<Color> killedPlayers;
     private int troopCount;
+    private boolean finishedAttack;
         
     public Player(String name, Color color, MissionCard missionCard){
         this.occupiedTerritories = new LinkedList<Territory>();
@@ -148,8 +149,8 @@ public class Player implements MissionAgent, PlayerInterface {
         occupiedTerritories.remove( defendingTerritory );
         
         Continent continent = defendingTerritory.getContinent();
-        occupiedContinents.remove( continent );
-        continent.removePlayer();
+        //occupiedContinents.remove( continent );
+        //continent.removePlayer();
         
         boolean hasPlayerLost = occupiedTerritories.isEmpty();
         if( hasPlayerLost )
@@ -238,6 +239,14 @@ public class Player implements MissionAgent, PlayerInterface {
 
     public void setRemainingPlaceableTroopCount(int remainingPlaceableTroopCount) {
         this.remainingPlaceableTroopCount = remainingPlaceableTroopCount;
+    }
+
+    public boolean isFinishedAttack() {
+        return finishedAttack;
+    }
+
+    public void setFinishedAttack(boolean finishedAttack) {
+        this.finishedAttack = finishedAttack;
     }
     
 }

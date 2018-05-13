@@ -18,4 +18,5 @@ interface PlayerInterface {
     void placeTroops( Territory territory, int troopCount );
     void redeemRiskCards();
     void transfer(Territory fromTerritory, Territory toTerritory, int troopCount );
+    
 }

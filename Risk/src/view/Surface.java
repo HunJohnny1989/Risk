@@ -4,8 +4,8 @@
  * and open the template in the editor.
  */
 package view;
+
 import controller.Controller;
-import controller.MyViewEvent;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
@@ -17,6 +17,10 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import model.dto.GameField;
 import model.dto.Territory;
+import controller.ControllerInterface;
+import model.dto.BattleResult;
+import model.dto.Phase;
+
 /**
  *
  * @author Eszti
@@ -28,9 +32,10 @@ public class Surface extends javax.swing.JPanel implements MouseListener {
      */
     private GameField field;
     private Territory selectedTerritory;
+    private Territory targetedTerritory;
     private java.util.List<Territory> subSelectedTerritories;
     private final AffineTransform transform = new AffineTransform();
-    private InternalMapAction internalMapAction; 
+    private InternalMapAction internalMapAction;
     private PlaceTroops placeTroopsDialog;
     private static final int HORIZONTALPADDING = 60;
     private static final int VERTICALPADDING = 60;
@@ -40,17 +45,20 @@ public class Surface extends javax.swing.JPanel implements MouseListener {
 
     public Surface() {
         initComponents();
-        internalMapAction = InternalMapAction.SELECTNEIGHBOUR;
+        internalMapAction = InternalMapAction.NONE;
         addMouseListener(this);
-        
-        placeTroopsDialog = new PlaceTroops((JFrame)SwingUtilities.windowForComponent(this), true);
-        playerColors = new HashMap<model.dto.Color, Color>() {{
-            put(model.dto.Color.BLACK, Color.BLACK);
-            put(model.dto.Color.BLUE, Color.BLUE);
-            put(model.dto.Color.GREEN, Color.GREEN);
-            put(model.dto.Color.PINK, Color.MAGENTA);
-            put(model.dto.Color.RED, Color.RED);
-            put(model.dto.Color.YELLOW, Color.YELLOW);}};
+
+        placeTroopsDialog = new PlaceTroops((JFrame) SwingUtilities.windowForComponent(this), true);
+        playerColors = new HashMap<model.dto.Color, Color>() {
+            {
+                put(model.dto.Color.BLACK, Color.BLACK);
+                put(model.dto.Color.BLUE, Color.BLUE);
+                put(model.dto.Color.GREEN, Color.GREEN);
+                put(model.dto.Color.PINK, Color.MAGENTA);
+                put(model.dto.Color.RED, Color.RED);
+                put(model.dto.Color.YELLOW, Color.YELLOW);
+            }
+        };
         hatchTexturePaint = getHatchPaint(Color.MAGENTA, Color.BLACK);
     }
 
@@ -80,16 +88,14 @@ public class Surface extends javax.swing.JPanel implements MouseListener {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
-
-    private TexturePaint getHatchPaint(Color backColor, Color stripeColor)
-    {
+    private TexturePaint getHatchPaint(Color backColor, Color stripeColor) {
         BufferedImage bufferedImage = new BufferedImage(5, 5, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2 = bufferedImage.createGraphics();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                             RenderingHints.VALUE_ANTIALIAS_ON);
+                RenderingHints.VALUE_ANTIALIAS_ON);
 
         g2.setRenderingHint(RenderingHints.KEY_RENDERING,
-                             RenderingHints.VALUE_RENDER_QUALITY);
+                RenderingHints.VALUE_RENDER_QUALITY);
         /*g2.setColor(backColor);
         g2.fillRect(0, 0, 5, 5);*/
         g2.setColor(stripeColor);
@@ -100,47 +106,44 @@ public class Surface extends javax.swing.JPanel implements MouseListener {
         Rectangle2D rect = new Rectangle2D.Double(0, 0, 5, 5);
         return new TexturePaint(bufferedImage, rect);
     }
-    
+
     private void doDrawing(Graphics g) {
-        if (field == null)
-        {
+        if (field == null) {
             return;
         }
         Graphics2D g2d = (Graphics2D) g.create();
 
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                             RenderingHints.VALUE_ANTIALIAS_ON);
+                RenderingHints.VALUE_ANTIALIAS_ON);
 
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
-                             RenderingHints.VALUE_RENDER_QUALITY);
+                RenderingHints.VALUE_RENDER_QUALITY);
 
         g2d.transform(transform);
-        for(Territory territory : field.getTerritories())
-        {
-            g2d.setPaint(new Color(210,180,140));
+        for (Territory territory : field.getTerritories()) {
+            g2d.setPaint(new Color(210, 180, 140));
             g2d.fill(territory.getShape());
-            if (territory.getOccupierPlayer() != null){
+            if (territory.getOccupierPlayer() != null) {
                 g2d.setPaint(playerColors.get(territory.getOccupierPlayer().getColor()));
-                if (territory.getCenterPoint()!=null){
+                if (territory.getCenterPoint() != null) {
                     g2d.drawString(Integer.toString(territory.getTroopCount()), territory.getCenterPoint().x, territory.getCenterPoint().y);
                 }
             }
         }
-        if (selectedTerritory != null){
+        if (selectedTerritory != null) {
             g2d.setPaint(this.hatchTexturePaint);
             g2d.fill(selectedTerritory.getShape());
             g2d.setPaint(Color.BLACK);
             g2d.draw(selectedTerritory.getShape());
-            if (selectedTerritory.getOccupierPlayer() != null){
+            if (selectedTerritory.getOccupierPlayer() != null) {
                 g2d.setPaint(playerColors.get(selectedTerritory.getOccupierPlayer().getColor()));
-                if (selectedTerritory.getCenterPoint()!=null){
+                if (selectedTerritory.getCenterPoint() != null) {
                     g2d.drawString(Integer.toString(selectedTerritory.getTroopCount()), selectedTerritory.getCenterPoint().x, selectedTerritory.getCenterPoint().y);
                 }
             }
         }
-        if (subSelectedTerritories != null){
-            for(Territory territory:subSelectedTerritories)
-            {
+        if (subSelectedTerritories != null) {
+            for (Territory territory : subSelectedTerritories) {
                 Color playerColor = playerColors.get(territory.getOccupierPlayer().getColor());
                 g2d.setPaint(playerColor);
                 g2d.draw(territory.getShape());
@@ -162,77 +165,116 @@ public class Surface extends javax.swing.JPanel implements MouseListener {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        
+
         doDrawing(g);
-    }    
+    }
 
     @Override
     public void mouseClicked(MouseEvent me) {
     }
+    
+    public void resetSurface(){
+            this.selectedTerritory = null;
+            this.subSelectedTerritories = null;
+            this.repaint();
+            internalMapAction = InternalMapAction.NONE;
+    }
 
     @Override
     public void mousePressed(MouseEvent me) {
-        
-        controller.placeUnitTest();
-        if (me.getClickCount() > 1)
-        {
-            if (internalMapAction == InternalMapAction.PLACETROOPS)
-            {
-                internalMapAction = InternalMapAction.SELECTNEIGHBOUR;
-            }
-            else if (internalMapAction == InternalMapAction.SELECTNEIGHBOUR)
-            {
-                this.selectedTerritory = null;
-                this.subSelectedTerritories = null;
-                this.repaint();
-                internalMapAction = InternalMapAction.PLACETROOPS;
-            }
+
+        if (me.getClickCount() > 1) {
+            resetSurface();
             return;
         }
-        if (field == null || internalMapAction == InternalMapAction.NONE)
-        {
-            return;
-        }
-        
-        selectedTerritory = null;
+
         Point2D transformedPoint = new Point2D.Double();
         try {
             transformedPoint = transform.inverseTransform(me.getPoint(), transformedPoint);
         } catch (NoninvertibleTransformException ex) {
             Logger.getLogger(Surface.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        for(Territory territory : field.getTerritories())
-        {
-            if (territory.getShape().contains(transformedPoint))
-            {
-                switch(internalMapAction)
-                {
-                    case NONE:
-                        return;
-                    case PLACETROOPS:
-                        selectedTerritory = territory;
-                        repaint();
-                        //if (territory.getOccupierPlayer() == null){
-                            placeTroopsDialog.setLocation(me.getPoint().x + 5, me.getPoint().y);
-                            placeTroopsDialog.setVisible(true);
-                            //int troops = placeTroopsDialog.getNumberOfPlacedTroops();
-                            //if (troops!=0)
-                           // {
-                                territory.addTroops(placeTroopsDialog.getNumberOfPlacedTroops());
-                                //territory.assignToPlayer(new model.Player("Eszti", model.dto.Color.GREEN, null));
-                            //}
-                        //}
-                        break;
-                    case SELECTNEIGHBOUR:
-                        selectedTerritory = territory;
-                        subSelectedTerritories = territory.getNeighbourTerritories();
-                    break;
+        selectedTerritory = null;
+        boolean myTerritory = false;
+        for (Territory territory : field.getTerritories()) {
+            if (territory.getShape().contains(transformedPoint)) {
+                if (internalMapAction.equals(InternalMapAction.SELECT_NEIGHBOUR_ATTACK) || internalMapAction.equals(InternalMapAction.SELECT_NEIGHBOUR_REGROUP)) {
+                    targetedTerritory = territory;
+                } else {
+                    selectedTerritory = territory;
                 }
-                this.repaint();
-                return;
+                if (territory.getOccupierPlayer().equals(controller.getCurrentPlayer())) {
+                    myTerritory = true;
+                }
             }
         }
+
+        switch (controller.getCurrentPhase()) {
+            case PLACE_TROOPS:
+                if (!myTerritory) {
+                    return;
+                }
+                internalMapAction = InternalMapAction.PLACETROOPS;
+                break;
+            case ATTACK:
+                if (internalMapAction.equals(InternalMapAction.NONE) && myTerritory) {
+                    internalMapAction = InternalMapAction.SELECT_NEIGHBOUR_ATTACK;
+                } else if (internalMapAction.equals(InternalMapAction.SELECT_NEIGHBOUR_ATTACK) && subSelectedTerritories != null && subSelectedTerritories.contains(targetedTerritory)) {
+                    internalMapAction = InternalMapAction.ATTACK;
+                } else {
+                    return;
+                }
+                break;
+            case REGROUP:
+                if (internalMapAction.equals(InternalMapAction.NONE) && myTerritory) {
+                    internalMapAction = InternalMapAction.SELECT_NEIGHBOUR_REGROUP;
+                } else if (internalMapAction.equals(InternalMapAction.SELECT_NEIGHBOUR_REGROUP) && subSelectedTerritories != null && subSelectedTerritories.contains(targetedTerritory)) {
+                    internalMapAction = InternalMapAction.REGROUP;
+                } else {
+                    return;
+                }
+                break;
+        }
+
+        switch (internalMapAction) {
+            case NONE:
+                return;
+            case PLACETROOPS:
+                repaint();
+                placeTroopsDialog.setLocation(me.getPoint().x + 5, me.getPoint().y);
+                placeTroopsDialog.setRange(1, controller.getPlayerRemainingTroopCount());
+                placeTroopsDialog.setVisible(true);
+                addTroopToTerritory(selectedTerritory, placeTroopsDialog.getNumberOfPlacedTroops());
+                internalMapAction = InternalMapAction.NONE;
+                break;
+            case SELECT_NEIGHBOUR_ATTACK:
+                subSelectedTerritories = selectedTerritory.getNeighbourTerritories();
+                break;
+            case SELECT_NEIGHBOUR_REGROUP:
+                subSelectedTerritories = selectedTerritory.getNeighbourPlayerTerritories();
+                break;
+            case ATTACK:
+                //TODO hány katonával támadsz még 1 panel mint a troopsdialog és kész
+                BattleResult result = controller.attackTerritory(selectedTerritory, targetedTerritory, 4);
+                selectedTerritory.removeTroops(result.getAttackerTroopLossCount());
+                targetedTerritory.removeTroops(result.getDefenderTroopLossCount());
+                internalMapAction = InternalMapAction.SELECT_NEIGHBOUR_ATTACK;
+                break;
+            case REGROUP:
+                //TODO lehet hazsnálni az attack troopcountolo panljét
+                subSelectedTerritories = selectedTerritory.getNeighbourPlayerTerritories();
+                controller.transfer(selectedTerritory, targetedTerritory, 4);
+                internalMapAction = InternalMapAction.SELECT_NEIGHBOUR_REGROUP;
+                break;
+        }
+        this.repaint();
+        return;
+
+    }
+
+    private void addTroopToTerritory(Territory territory, int count) {
+        controller.removeAvailableTroops(count);
+        territory.addTroops(count);
     }
 
     @Override
@@ -247,19 +289,18 @@ public class Surface extends javax.swing.JPanel implements MouseListener {
     public void mouseExited(MouseEvent me) {
     }
 
-    void setGameField(GameField field)
-    {
+    void setGameField(GameField field) {
         this.field = field;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        double horizontalScale = (screenSize.getWidth() - 2 * HORIZONTALPADDING)/field.getDimension().getWidth();
-        double verticalScale = (screenSize.getHeight() - 2 * VERTICALPADDING)/field.getDimension().getHeight();
+        double horizontalScale = (screenSize.getWidth() - 2 * HORIZONTALPADDING) / field.getDimension().getWidth();
+        double verticalScale = (screenSize.getHeight() - 2 * VERTICALPADDING) / field.getDimension().getHeight();
         double scale = Math.min(horizontalScale, verticalScale);
         transform.scale(scale, scale);
-        transform.translate((screenSize.getWidth()-scale * field.getDimension().getWidth())/2 - 15, 0);
+        transform.translate((screenSize.getWidth() - scale * field.getDimension().getWidth()) / 2 - 15, 0);
         repaint();
     }
- }
-enum InternalMapAction
-{
-    NONE, SELECTNEIGHBOUR, PLACETROOPS 
+}
+
+enum InternalMapAction {
+    NONE, SELECT_NEIGHBOUR_ATTACK, SELECT_NEIGHBOUR_REGROUP, PLACETROOPS, ATTACK, REGROUP
 }
