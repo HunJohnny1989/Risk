@@ -121,11 +121,9 @@ public class Model {
             currentPhase = Phase.ATTACK;
         } else if (currentPhase.equals(Phase.REGROUP)) {
             currentPhase = Phase.PLACE_TROOPS;
-            for (Player p : getPlayers()) {
-                p.setRemainingPlaceableTroopCount(5);
-                //TODO kiszámolni hány katona jár a playereknek és odaadni nekik
-                //p.setRemainingPlaceableTroopCount(p.get);
-            }
+            final Player currentPlayer = players.get( currentPlayerIndex );
+            currentPlayer.setRemainingPlaceableTroopCount( Math.max( 3, currentPlayer.getOccupiedTerritoryCount() / 3 ) );
+            //TODO kiszámolni hány katona jár a playereknek és odaadni nekik. continent kell me'g
         }
     }
 
@@ -144,13 +142,6 @@ public class Model {
             nextPhase();
         }
         selectNextPlayer();
-    }
-
-    public void addPlayer(Player player) {
-        if (players == null) {
-            players = new ArrayList<>();
-        }
-        players.add(player);
     }
 
     public List<Player> getPlayers() {
