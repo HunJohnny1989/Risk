@@ -248,5 +248,12 @@ public class Player implements MissionAgent, PlayerInterface {
     public void setFinishedAttack(boolean finishedAttack) {
         this.finishedAttack = finishedAttack;
     }
+
+    /**
+    * @author Sajti Tamás
+    */
+    public int getContinentalTroopBonusTotal() {
+        return occupiedContinents.stream().map( continent -> continent.getTroopBonusCount() ).reduce( 0, ( Integer x, Integer y ) -> x + y );
+    }
     
 }
