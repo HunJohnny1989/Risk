@@ -253,7 +253,7 @@ public class Player implements MissionAgent, PlayerInterface {
     * @author Sajti Tamás
     */
     public int getContinentalTroopBonusTotal() {
-        return occupiedContinents.stream().map( continent -> continent.getTroopBonusCount() ).reduce( 0, ( Integer x, Integer y ) -> x + y );
+        return occupiedContinents.stream().mapToInt( continent -> continent.getTroopBonusCount() ).sum();
     }
     
 }

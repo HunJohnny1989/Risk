@@ -122,7 +122,8 @@ public class Model {
         } else if (currentPhase.equals(Phase.REGROUP)) {
             currentPhase = Phase.PLACE_TROOPS;
             final Player currentPlayer = players.get( currentPlayerIndex );
-            currentPlayer.setRemainingPlaceableTroopCount( Math.max( 3, currentPlayer.getOccupiedTerritoryCount() / 3 ) );
+            currentPlayer.setRemainingPlaceableTroopCount( 
+                    Math.max( 3, currentPlayer.getOccupiedTerritoryCount() / 3 ) + currentPlayer.getContinentalTroopBonusTotal() );
             //TODO kiszámolni hány katona jár a playereknek és odaadni nekik. continent kell me'g
         }
     }
