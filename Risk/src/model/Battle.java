@@ -7,6 +7,7 @@ import java.util.List;
 /**
  * @author Sajti Tamás
  */
+// executes an attack
 public class Battle {
     private Territory attackingTerritory;
     private int attackingTroopCount;
@@ -35,7 +36,8 @@ public class Battle {
             hasDefenderLost = defendingTerritory.getOccupierPlayer().loseBattle( defenderTroopLossCount, defendingTerritory );
             attackingTerritory.getOccupierPlayer().winBattle( attackerTroopLossCount, defendingTerritory );
         }
-        return new BattleResult( attackerTroopLossCount, defenderTroopLossCount, hasTerritoryBeenConquered, hasDefenderLost );
+        return new BattleResult( attackerTroopLossCount, defenderTroopLossCount, hasTerritoryBeenConquered, hasDefenderLost, 
+                                attackerDiceRolls, defenderDiceRolls );
     }
 
     private void rollDice() {
@@ -50,7 +52,7 @@ public class Battle {
         if( defendingTroopCount == 1 )
             defenderDiceRolls = Dice.roll( 1 );
         else
-            defenderDiceRolls = Dice.roll( defendingTroopCount - 1 ); // the rules fail to mentrion that with 3 defenders you get 2 rolls.
+            defenderDiceRolls = Dice.roll( defendingTroopCount - 1 ); // the rules fail to mention that with 3 defenders you get 2 rolls.
     }
     
     public BattleResult getBattleResult() {
