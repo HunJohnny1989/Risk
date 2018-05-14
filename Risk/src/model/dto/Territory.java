@@ -73,6 +73,18 @@ public class Territory {
         }
         return ours;
     }
+    
+        public List<Territory> getNeighbourEnemyTerritories() {
+        List<Territory> enemies = new ArrayList<Territory>();
+        if (neighbourTerritories != null) {
+            for (Territory t : this.neighbourTerritories) {
+                if (!t.getOccupierPlayer().equals(occupierPlayer)) {
+                    enemies.add(t);
+                }
+            }
+        }
+        return enemies;
+    }
 
     /**
      * @author Sajti Tamás
