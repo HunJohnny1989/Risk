@@ -25,7 +25,7 @@ import model.dto.Phase;
  *
  * @author Eszti
  */
-public class Surface extends javax.swing.JPanel implements MouseListener {
+public class Surface extends javax.swing.JPanel{
 
     /**
      * Creates new form Surface
@@ -37,6 +37,8 @@ public class Surface extends javax.swing.JPanel implements MouseListener {
     private final AffineTransform transform = new AffineTransform();
     private InternalMapAction internalMapAction;
     private PlaceTroops placeTroopsDialog;
+    private AttackTerritory attackTerritoryDialog;
+    private RegroupTroops regroupTroopsDialog;
     private static final int HORIZONTALPADDING = 60;
     private static final int VERTICALPADDING = 60;
     private HashMap<model.dto.Color, Color> playerColors;
@@ -47,9 +49,10 @@ public class Surface extends javax.swing.JPanel implements MouseListener {
     public Surface() {
         initComponents();
         internalMapAction = InternalMapAction.NONE;
-        addMouseListener(this);
 
         placeTroopsDialog = new PlaceTroops((JFrame) SwingUtilities.windowForComponent(this), true, this);
+        attackTerritoryDialog = new AttackTerritory((JFrame) SwingUtilities.windowForComponent(this), true, this);
+        regroupTroopsDialog = new RegroupTroops((JFrame) SwingUtilities.windowForComponent(this), true, this);
         playerColors = new HashMap<model.dto.Color, Color>() {
             {
                 put(model.dto.Color.BLACK, Color.BLACK);
@@ -73,6 +76,11 @@ public class Surface extends javax.swing.JPanel implements MouseListener {
     private void initComponents() {
 
         setBackground(new java.awt.Color(153, 204, 255));
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                formMousePressed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -85,6 +93,121 @@ public class Surface extends javax.swing.JPanel implements MouseListener {
             .addGap(0, 300, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
+        if (field == null)
+        {
+            return;
+        }
+        if (evt.getClickCount() > 1) {
+            resetSurface();
+            return;
+        }
+
+        Point2D transformedPoint = new Point2D.Double();
+        try {
+            transformedPoint = transform.inverseTransform(evt.getPoint(), transformedPoint);
+        } catch (NoninvertibleTransformException ex) {
+            Logger.getLogger(Surface.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        boolean myTerritory = false;
+        for (Territory territory : field.getTerritories()) {
+            if (territory.getShape().contains(transformedPoint)) {
+                if (internalMapAction.equals(InternalMapAction.SELECT_NEIGHBOUR_ATTACK) || internalMapAction.equals(InternalMapAction.SELECT_NEIGHBOUR_REGROUP)) {
+                    targetedTerritory = territory;
+                } else {
+                    selectedTerritory = territory;
+                }
+                if (territory.getOccupierPlayer().equals(controller.getCurrentPlayer())) {
+                    myTerritory = true;
+                }
+            }
+        }
+
+        switch (controller.getCurrentPhase()) {
+            case PLACE_TROOPS:
+                if (!myTerritory) {
+                    return;
+                }
+                internalMapAction = InternalMapAction.PLACETROOPS;
+                break;
+            case ATTACK:
+                if (internalMapAction.equals(InternalMapAction.NONE) && myTerritory) {
+                    internalMapAction = InternalMapAction.SELECT_NEIGHBOUR_ATTACK;
+                } else if (internalMapAction.equals(InternalMapAction.SELECT_NEIGHBOUR_ATTACK) && subSelectedTerritories != null && subSelectedTerritories.contains(targetedTerritory)) {
+                    internalMapAction = InternalMapAction.ATTACK;
+                } else {
+                    return;
+                }
+                break;
+            case REGROUP:
+                if (internalMapAction.equals(InternalMapAction.NONE) && myTerritory) {
+                    internalMapAction = InternalMapAction.SELECT_NEIGHBOUR_REGROUP;
+                } else if (internalMapAction.equals(InternalMapAction.SELECT_NEIGHBOUR_REGROUP) && subSelectedTerritories != null && subSelectedTerritories.contains(targetedTerritory)) {
+                    internalMapAction = InternalMapAction.REGROUP;
+                } else {
+                    return;
+                }
+                break;
+        }
+
+        switch (internalMapAction) {
+            case NONE:
+                return;
+            case PLACETROOPS:
+                repaint();
+                placeTroopsDialog.setLocation(evt.getPoint().x + 5, evt.getPoint().y);
+                placeTroopsDialog.setRange(1, controller.getPlayerRemainingTroopCount());
+                placeTroopsDialog.setVisible(true);
+                addTroopToTerritory(selectedTerritory, placeTroopsDialog.getNumberOfTroops());
+                internalMapAction = InternalMapAction.NONE;
+                break;
+            case SELECT_NEIGHBOUR_ATTACK:
+                subSelectedTerritories = selectedTerritory.getNeighbourEnemyTerritories();
+                break;
+            case SELECT_NEIGHBOUR_REGROUP:
+                subSelectedTerritories = selectedTerritory.getNeighbourPlayerTerritories();
+                break;
+            case ATTACK:
+                //TODO hány katonával támadsz még 1 panel mint a troopsdialog és kész
+                attackTerritoryDialog.setLocation(evt.getPoint().x + 5, evt.getPoint().y);
+                attackTerritoryDialog.setRange(1, selectedTerritory.getTroopCount() - 1);//Legalább egy katonának maradnia kell
+                attackTerritoryDialog.setVisible(true);
+
+                if (cancelledAction || attackTerritoryDialog.getNumberOfTroops() == 0) {
+                    cancelledAction = false;
+                    return;
+                }
+
+                BattleResult result = controller.attackTerritory(selectedTerritory, targetedTerritory, placeTroopsDialog.getNumberOfTroops());
+
+                if (result.hasTerritoryBeenConquered()) {
+                    attackTerritoryDialog.setLocation(evt.getPoint().x + 5, evt.getPoint().y);
+                    attackTerritoryDialog.setRange(1, selectedTerritory.getTroopCount() - result.getAttackerTroopLossCount() - 1);//Legalább egy katonának maradnia kell
+                    attackTerritoryDialog.setVisible(true);
+                    transferTroopToTerritory(selectedTerritory, targetedTerritory, attackTerritoryDialog.getNumberOfTroops());
+                    subSelectedTerritories = selectedTerritory.getNeighbourEnemyTerritories();
+                }
+
+                internalMapAction = InternalMapAction.SELECT_NEIGHBOUR_ATTACK;
+                break;
+            case REGROUP:
+                regroupTroopsDialog.setLocation(evt.getPoint().x + 5, evt.getPoint().y);
+                regroupTroopsDialog.setRange(1, selectedTerritory.getTroopCount() - 1);//Legalább egy katonának maradnia kell
+                regroupTroopsDialog.setVisible(true);
+
+                if (cancelledAction || regroupTroopsDialog.getNumberOfTroops() == 0) {
+                    cancelledAction = false;
+                    return;
+                }
+                controller.transfer(selectedTerritory, targetedTerritory, regroupTroopsDialog.getNumberOfTroops());
+                targetedTerritory = null;
+                internalMapAction = InternalMapAction.SELECT_NEIGHBOUR_REGROUP;
+                break;
+        }
+        this.repaint();
+    }//GEN-LAST:event_formMousePressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -170,131 +293,12 @@ public class Surface extends javax.swing.JPanel implements MouseListener {
         doDrawing(g);
     }
 
-    @Override
-    public void mouseClicked(MouseEvent me) {
-    }
-
     public void resetSurface() {
         this.selectedTerritory = null;
         this.targetedTerritory = null;
         this.subSelectedTerritories = null;
         this.repaint();
         internalMapAction = InternalMapAction.NONE;
-    }
-
-    @Override
-    public void mousePressed(MouseEvent me) {
-
-        if (me.getClickCount() > 1) {
-            resetSurface();
-            return;
-        }
-
-        Point2D transformedPoint = new Point2D.Double();
-        try {
-            transformedPoint = transform.inverseTransform(me.getPoint(), transformedPoint);
-        } catch (NoninvertibleTransformException ex) {
-            Logger.getLogger(Surface.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        boolean myTerritory = false;
-        for (Territory territory : field.getTerritories()) {
-            if (territory.getShape().contains(transformedPoint)) {
-                if (internalMapAction.equals(InternalMapAction.SELECT_NEIGHBOUR_ATTACK) || internalMapAction.equals(InternalMapAction.SELECT_NEIGHBOUR_REGROUP)) {
-                    targetedTerritory = territory;
-                } else {
-                    selectedTerritory = territory;
-                }
-                if (territory.getOccupierPlayer().equals(controller.getCurrentPlayer())) {
-                    myTerritory = true;
-                }
-            }
-        }
-
-        switch (controller.getCurrentPhase()) {
-            case PLACE_TROOPS:
-                if (!myTerritory) {
-                    return;
-                }
-                internalMapAction = InternalMapAction.PLACETROOPS;
-                break;
-            case ATTACK:
-                if (internalMapAction.equals(InternalMapAction.NONE) && myTerritory) {
-                    internalMapAction = InternalMapAction.SELECT_NEIGHBOUR_ATTACK;
-                } else if (internalMapAction.equals(InternalMapAction.SELECT_NEIGHBOUR_ATTACK) && subSelectedTerritories != null && subSelectedTerritories.contains(targetedTerritory)) {
-                    internalMapAction = InternalMapAction.ATTACK;
-                } else {
-                    return;
-                }
-                break;
-            case REGROUP:
-                if (internalMapAction.equals(InternalMapAction.NONE) && myTerritory) {
-                    internalMapAction = InternalMapAction.SELECT_NEIGHBOUR_REGROUP;
-                } else if (internalMapAction.equals(InternalMapAction.SELECT_NEIGHBOUR_REGROUP) && subSelectedTerritories != null && subSelectedTerritories.contains(targetedTerritory)) {
-                    internalMapAction = InternalMapAction.REGROUP;
-                } else {
-                    return;
-                }
-                break;
-        }
-
-        switch (internalMapAction) {
-            case NONE:
-                return;
-            case PLACETROOPS:
-                repaint();
-                placeTroopsDialog.setLocation(me.getPoint().x + 5, me.getPoint().y);
-                placeTroopsDialog.setRange(1, controller.getPlayerRemainingTroopCount());
-                placeTroopsDialog.setVisible(true);
-                addTroopToTerritory(selectedTerritory, placeTroopsDialog.getNumberOfPlacedTroops());
-                internalMapAction = InternalMapAction.NONE;
-                break;
-            case SELECT_NEIGHBOUR_ATTACK:
-                subSelectedTerritories = selectedTerritory.getNeighbourEnemyTerritories();
-                break;
-            case SELECT_NEIGHBOUR_REGROUP:
-                subSelectedTerritories = selectedTerritory.getNeighbourPlayerTerritories();
-                break;
-            case ATTACK:
-                //TODO hány katonával támadsz még 1 panel mint a troopsdialog és kész
-                placeTroopsDialog.setLocation(me.getPoint().x + 5, me.getPoint().y);
-                placeTroopsDialog.setRange(1, selectedTerritory.getTroopCount() - 1);//Legalább egy katonának maradnia kell
-                placeTroopsDialog.setVisible(true);
-
-                if (cancelledAction || placeTroopsDialog.getNumberOfPlacedTroops() == 0) {
-                    cancelledAction = false;
-                    return;
-                }
-
-                BattleResult result = controller.attackTerritory(selectedTerritory, targetedTerritory, placeTroopsDialog.getNumberOfPlacedTroops());
-
-                if (result.hasTerritoryBeenConquered()) {
-                    placeTroopsDialog.setLocation(me.getPoint().x + 5, me.getPoint().y);
-                    placeTroopsDialog.setRange(1, selectedTerritory.getTroopCount() - result.getAttackerTroopLossCount() - 1);//Legalább egy katonának maradnia kell
-                    placeTroopsDialog.setVisible(true);
-                    transferTroopToTerritory(selectedTerritory, targetedTerritory, placeTroopsDialog.getNumberOfPlacedTroops());
-                    subSelectedTerritories = selectedTerritory.getNeighbourEnemyTerritories();
-                }
-
-                internalMapAction = InternalMapAction.SELECT_NEIGHBOUR_ATTACK;
-                break;
-            case REGROUP:
-                placeTroopsDialog.setLocation(me.getPoint().x + 5, me.getPoint().y);
-                placeTroopsDialog.setRange(1, selectedTerritory.getTroopCount() - 1);//Legalább egy katonának maradnia kell
-                placeTroopsDialog.setVisible(true);
-
-                if (cancelledAction || placeTroopsDialog.getNumberOfPlacedTroops() == 0) {
-                    cancelledAction = false;
-                    return;
-                }
-                controller.transfer(selectedTerritory, targetedTerritory, placeTroopsDialog.getNumberOfPlacedTroops());
-                targetedTerritory = null;
-                internalMapAction = InternalMapAction.SELECT_NEIGHBOUR_REGROUP;
-                break;
-        }
-        this.repaint();
-        return;
-
     }
 
     private void addTroopToTerritory(Territory territory, int count) {
@@ -304,18 +308,6 @@ public class Surface extends javax.swing.JPanel implements MouseListener {
 
     private void transferTroopToTerritory(Territory from, Territory to, int count) {
         controller.transfer(from, to, count);
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent me) {
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent me) {
-    }
-
-    @Override
-    public void mouseExited(MouseEvent me) {
     }
 
     void setGameField(GameField field) {

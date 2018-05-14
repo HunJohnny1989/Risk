@@ -62,7 +62,7 @@ public class Controller implements ControllerInterface {
         model.divideRandomTerritories(field.getTerritories());
         mainWindow.setGameField(field);
         mainWindow.setPLayer(model.getCurrentPlayer().getName(), model.getCurrentPlayer().getColor().name());
-        mainWindow.setGamePhase(model.getCurrentPhaseName());
+        mainWindow.setGamePhase(model.getCurrentPhase());
 
     }
 
@@ -79,6 +79,7 @@ public class Controller implements ControllerInterface {
             model.selectNextPlayer();
             if (model.getCurrentPlayer().getRemainingPlaceableTroopCount() == 0) {
                 model.nextPhase();
+                 mainWindow.setGamePhase(model.getCurrentPhase());
             }
             mainWindow.setPLayer(model.getCurrentPlayer().getName(), model.getCurrentPlayer().getColor().name());
         }
@@ -111,5 +112,6 @@ public class Controller implements ControllerInterface {
     public void finishAttack(){
         model.finishAttack();
         mainWindow.setPLayer(model.getCurrentPlayer().getName(), model.getCurrentPlayer().getColor().name());
+         mainWindow.setGamePhase(model.getCurrentPhase());
     }
 }

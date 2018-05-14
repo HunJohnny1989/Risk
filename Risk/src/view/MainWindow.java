@@ -7,8 +7,8 @@ package view;
 import controller.Controller;
 import java.awt.*;
 import javax.swing.*;
-import model.Player;
 import model.dto.GameField;
+import model.dto.Phase;
 /**
  *
  * @author Eszti
@@ -22,7 +22,7 @@ public class MainWindow extends JFrame {
      */
     public MainWindow() {
         initComponents();
-        toolBar.add(Box.createHorizontalGlue(), toolBar.getComponentIndex(jButtonAction));
+        this.jButtonAction.setVisible(false);
     }
 
     /**
@@ -36,8 +36,12 @@ public class MainWindow extends JFrame {
 
         surface1 = new view.Surface();
         toolBar = new javax.swing.JToolBar();
+        jLabel2 = new javax.swing.JLabel();
+        jLabelCurrentAction = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JToolBar.Separator();
         jLabel1 = new javax.swing.JLabel();
-        jLabelActualPlayer = new javax.swing.JLabel();
+        jLabelCurrentPlayer = new javax.swing.JLabel();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
         jButtonAction = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -64,16 +68,26 @@ public class MainWindow extends JFrame {
         toolBar.setFloatable(false);
         toolBar.setRollover(true);
 
-        jLabel1.setText("Aktuális játékos: ");
+        jLabel2.setText("Current activity:");
+        toolBar.add(jLabel2);
+        jLabel2.getAccessibleContext().setAccessibleName("Current activity: ");
+
+        jLabelCurrentAction.setText("Nothing");
+        toolBar.add(jLabelCurrentAction);
+        toolBar.add(jSeparator1);
+
+        jLabel1.setText("Current player: ");
         toolBar.add(jLabel1);
 
-        jLabelActualPlayer.setText("Senki");
-        toolBar.add(jLabelActualPlayer);
+        jLabelCurrentPlayer.setText("Nobody");
+        toolBar.add(jLabelCurrentPlayer);
+        toolBar.add(filler1);
 
-        jButtonAction.setText("Támadás befejezése");
+        jButtonAction.setText("Finish attack");
+        jButtonAction.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jButtonAction.setFocusable(false);
         jButtonAction.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButtonAction.setMargin(new java.awt.Insets(5, 7, 5, 7));
+        jButtonAction.setMargin(new java.awt.Insets(5, 12, 5, 12));
         jButtonAction.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButtonAction.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -110,20 +124,16 @@ public class MainWindow extends JFrame {
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.Box.Filler filler1;
     private javax.swing.JButton jButtonAction;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabelActualPlayer;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabelCurrentAction;
+    private javax.swing.JLabel jLabelCurrentPlayer;
+    private javax.swing.JToolBar.Separator jSeparator1;
     private view.Surface surface1;
     private javax.swing.JToolBar toolBar;
     // End of variables declaration//GEN-END:variables
-
-   
-    public void setActualPlayer(Player player)
-    {
-        this.jLabelActualPlayer.setText(player.getName());
-        //this.jLabelActualPlayer.setForeground(player.getColor());
-        this.jLabelActualPlayer.setForeground(Color.GREEN);
-    }
     
     public void setGameField(GameField gameField)
     {
@@ -131,12 +141,35 @@ public class MainWindow extends JFrame {
     }
 
     public void setPLayer(String name, String color) {
-        jLabelActualPlayer = (JLabel) toolBar.getComponent(1);
-        jLabelActualPlayer.setText(name + " (" + color + ")");
+        jLabelCurrentPlayer.setText(name + " (" + color + ")");
+    }
+        
+    public void setGamePhase(Phase gamePhase){
+        jLabelCurrentAction.setText(gamePhase.toString());
+        String actionButtonString = null;
+        switch(gamePhase)
+        {
+            case PLACE_TROOPS:
+                actionButtonString = null;
+                break;
+            case ATTACK:
+                actionButtonString = "Finish attack";
+                break;
+            case REGROUP:
+                actionButtonString = "Cancel regroupping";
+                break;
+        }
+        this.setActionButtonString(actionButtonString);
     }
     
-    public void setGamePhase(String status){
-        System.out.println("Játék státusza: " + status);        
+    public void setActionButtonString(String actionButtonString)
+    {
+        if (actionButtonString == null){
+            this.jButtonAction.setVisible(false);
+        }
+        else{
+            this.jButtonAction.setText(actionButtonString);
+            this.jButtonAction.setVisible(true);
+        }        
     }
-   
 }

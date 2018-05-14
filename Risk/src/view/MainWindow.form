@@ -85,23 +85,53 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
       <SubComponents>
-        <Component class="javax.swing.JLabel" name="jLabel1">
+        <Component class="javax.swing.JLabel" name="jLabel2">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Aktu&#xe1;lis j&#xe1;t&#xe9;kos: "/>
+            <Property name="text" type="java.lang.String" value="Current activity:"/>
+          </Properties>
+          <AccessibilityProperties>
+            <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="Current activity: "/>
+          </AccessibilityProperties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabelCurrentAction">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Nothing"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JLabel" name="jLabelActualPlayer">
+        <Component class="javax.swing.JToolBar$Separator" name="jSeparator1">
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel1">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Senki"/>
+            <Property name="text" type="java.lang.String" value="Current player: "/>
           </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabelCurrentPlayer">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Nobody"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.Box$Filler" name="filler1">
+          <Properties>
+            <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[32767, 0]"/>
+            </Property>
+          </Properties>
+          <AuxValues>
+            <AuxValue name="classDetails" type="java.lang.String" value="Box.Filler.HorizontalGlue"/>
+          </AuxValues>
         </Component>
         <Component class="javax.swing.JButton" name="jButtonAction">
           <Properties>
-            <Property name="text" type="java.lang.String" value="T&#xe1;mad&#xe1;s befejez&#xe9;se"/>
+            <Property name="text" type="java.lang.String" value="Finish attack"/>
+            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+              <Border info="org.netbeans.modules.form.compat2.border.SoftBevelBorderInfo">
+                <BevelBorder/>
+              </Border>
+            </Property>
             <Property name="focusable" type="boolean" value="false"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
             <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-              <Insets value="[5, 7, 5, 7]"/>
+              <Insets value="[5, 12, 5, 12]"/>
             </Property>
             <Property name="verticalTextPosition" type="int" value="3"/>
           </Properties>
