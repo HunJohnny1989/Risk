@@ -12,13 +12,15 @@ package view;
 public class PlaceTroops extends javax.swing.JDialog {
 
     private int numberOfPlacedTroops;
+    private Surface surface;
     /**
      * Creates new form PlaceTroops
      */
-    public PlaceTroops(java.awt.Frame parent, boolean modal) {
+    public PlaceTroops(java.awt.Frame parent, boolean modal, Surface surface) {
         super(parent, modal);
         initComponents(); 
         numberOfPlacedTroops = 0;
+        this.surface = surface;
     }
 
     /**
@@ -102,6 +104,8 @@ public class PlaceTroops extends javax.swing.JDialog {
 
     private void jButtonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelActionPerformed
         setVisible(false);
+        this.surface.resetSurface();
+        this.surface.setCancelledAction(true);
     }//GEN-LAST:event_jButtonCancelActionPerformed
 
     private void jButtonPlaceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPlaceActionPerformed

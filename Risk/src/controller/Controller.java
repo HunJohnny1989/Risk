@@ -50,7 +50,8 @@ public class Controller implements ControllerInterface {
         //</editor-fold>
 
         //TODO Kirajzolni Játékos adatait bekérő oldalt
-        model = new Model("Eszti", "Orsi", "John", "Tomi");
+        //model = new Model("Eszti", "Orsi", "John", "Tomi");
+        model = new Model("Eszti", "Orsi");
 
         /* Create and display the form */
         // EventQueue.invokeLater(() -> {
@@ -95,7 +96,10 @@ public class Controller implements ControllerInterface {
 
     @Override
     public BattleResult attackTerritory(Territory from, Territory to, int troopCount) {
-        return model.getCurrentPlayer().attack(from, to, troopCount);
+        BattleResult result = model.getCurrentPlayer().attack(from, to, troopCount);
+        from.removeTroops(result.getAttackerTroopLossCount());
+        to.removeTroops(result.getDefenderTroopLossCount());
+        return result;
     }
 
     @Override

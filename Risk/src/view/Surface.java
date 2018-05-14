@@ -42,13 +42,14 @@ public class Surface extends javax.swing.JPanel implements MouseListener {
     private HashMap<model.dto.Color, Color> playerColors;
     private TexturePaint hatchTexturePaint;
     private Controller controller = new Controller();
+    private boolean cancelledAction = false;
 
     public Surface() {
         initComponents();
         internalMapAction = InternalMapAction.NONE;
         addMouseListener(this);
 
-        placeTroopsDialog = new PlaceTroops((JFrame) SwingUtilities.windowForComponent(this), true);
+        placeTroopsDialog = new PlaceTroops((JFrame) SwingUtilities.windowForComponent(this), true, this);
         playerColors = new HashMap<model.dto.Color, Color>() {
             {
                 put(model.dto.Color.BLACK, Color.BLACK);
@@ -172,12 +173,13 @@ public class Surface extends javax.swing.JPanel implements MouseListener {
     @Override
     public void mouseClicked(MouseEvent me) {
     }
-    
-    public void resetSurface(){
-            this.selectedTerritory = null;
-            this.subSelectedTerritories = null;
-            this.repaint();
-            internalMapAction = InternalMapAction.NONE;
+
+    public void resetSurface() {
+        this.selectedTerritory = null;
+        this.targetedTerritory = null;
+        this.subSelectedTerritories = null;
+        this.repaint();
+        internalMapAction = InternalMapAction.NONE;
     }
 
     @Override
@@ -194,7 +196,7 @@ public class Surface extends javax.swing.JPanel implements MouseListener {
         } catch (NoninvertibleTransformException ex) {
             Logger.getLogger(Surface.class.getName()).log(Level.SEVERE, null, ex);
         }
-        selectedTerritory = null;
+
         boolean myTerritory = false;
         for (Territory territory : field.getTerritories()) {
             if (territory.getShape().contains(transformedPoint)) {
@@ -248,22 +250,45 @@ public class Surface extends javax.swing.JPanel implements MouseListener {
                 internalMapAction = InternalMapAction.NONE;
                 break;
             case SELECT_NEIGHBOUR_ATTACK:
-                subSelectedTerritories = selectedTerritory.getNeighbourTerritories();
+                subSelectedTerritories = selectedTerritory.getNeighbourEnemyTerritories();
                 break;
             case SELECT_NEIGHBOUR_REGROUP:
                 subSelectedTerritories = selectedTerritory.getNeighbourPlayerTerritories();
                 break;
             case ATTACK:
                 //TODO hány katonával támadsz még 1 panel mint a troopsdialog és kész
-                BattleResult result = controller.attackTerritory(selectedTerritory, targetedTerritory, 4);
-                selectedTerritory.removeTroops(result.getAttackerTroopLossCount());
-                targetedTerritory.removeTroops(result.getDefenderTroopLossCount());
+                placeTroopsDialog.setLocation(me.getPoint().x + 5, me.getPoint().y);
+                placeTroopsDialog.setRange(1, selectedTerritory.getTroopCount() - 1);//Legalább egy katonának maradnia kell
+                placeTroopsDialog.setVisible(true);
+
+                if (cancelledAction || placeTroopsDialog.getNumberOfPlacedTroops() == 0) {
+                    cancelledAction = false;
+                    return;
+                }
+
+                BattleResult result = controller.attackTerritory(selectedTerritory, targetedTerritory, placeTroopsDialog.getNumberOfPlacedTroops());
+
+                if (result.hasTerritoryBeenConquered()) {
+                    placeTroopsDialog.setLocation(me.getPoint().x + 5, me.getPoint().y);
+                    placeTroopsDialog.setRange(1, selectedTerritory.getTroopCount() - result.getAttackerTroopLossCount() - 1);//Legalább egy katonának maradnia kell
+                    placeTroopsDialog.setVisible(true);
+                    transferTroopToTerritory(selectedTerritory, targetedTerritory, placeTroopsDialog.getNumberOfPlacedTroops());
+                    subSelectedTerritories = selectedTerritory.getNeighbourEnemyTerritories();
+                }
+
                 internalMapAction = InternalMapAction.SELECT_NEIGHBOUR_ATTACK;
                 break;
             case REGROUP:
-                //TODO lehet hazsnálni az attack troopcountolo panljét
-                subSelectedTerritories = selectedTerritory.getNeighbourPlayerTerritories();
-                controller.transfer(selectedTerritory, targetedTerritory, 4);
+                placeTroopsDialog.setLocation(me.getPoint().x + 5, me.getPoint().y);
+                placeTroopsDialog.setRange(1, selectedTerritory.getTroopCount() - 1);//Legalább egy katonának maradnia kell
+                placeTroopsDialog.setVisible(true);
+
+                if (cancelledAction || placeTroopsDialog.getNumberOfPlacedTroops() == 0) {
+                    cancelledAction = false;
+                    return;
+                }
+                controller.transfer(selectedTerritory, targetedTerritory, placeTroopsDialog.getNumberOfPlacedTroops());
+                targetedTerritory = null;
                 internalMapAction = InternalMapAction.SELECT_NEIGHBOUR_REGROUP;
                 break;
         }
@@ -275,6 +300,10 @@ public class Surface extends javax.swing.JPanel implements MouseListener {
     private void addTroopToTerritory(Territory territory, int count) {
         controller.removeAvailableTroops(count);
         territory.addTroops(count);
+    }
+
+    private void transferTroopToTerritory(Territory from, Territory to, int count) {
+        controller.transfer(from, to, count);
     }
 
     @Override
@@ -299,6 +328,15 @@ public class Surface extends javax.swing.JPanel implements MouseListener {
         transform.translate((screenSize.getWidth() - scale * field.getDimension().getWidth()) / 2 - 15, 0);
         repaint();
     }
+
+    public boolean isCancelledAction() {
+        return cancelledAction;
+    }
+
+    public void setCancelledAction(boolean cancelledAction) {
+        this.cancelledAction = cancelledAction;
+    }
+
 }
 
 enum InternalMapAction {

@@ -153,4 +153,9 @@ public class Territory {
     public void setNeighbourTerritories(List<Territory> neighbours) {
         this.neighbourTerritories = neighbours;
     }
+
+    public void setTroopCount(int troopCount) {
+        this.troopCount = troopCount;
+    }
+    
 }
