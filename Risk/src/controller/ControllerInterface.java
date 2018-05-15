@@ -29,4 +29,6 @@ public interface ControllerInterface {
     void transfer(Territory from, Territory to, int troopCount);
     
     void finishAttack();
+    
+    void finishRegroup();
 }

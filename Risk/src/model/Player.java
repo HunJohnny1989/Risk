@@ -31,6 +31,7 @@ public class Player implements MissionAgent, PlayerInterface {
     private List<Color> killedPlayers;
     private int troopCount;
     private boolean finishedAttack;
+    private boolean finishedRegroup;
         
     public Player(String name, Color color, MissionCard missionCard){
         this.occupiedTerritories = new LinkedList<Territory>();
@@ -278,6 +279,14 @@ public class Player implements MissionAgent, PlayerInterface {
     */
     public int getContinentalTroopBonusTotal() {
         return occupiedContinents.stream().mapToInt( continent -> continent.getTroopBonusCount() ).sum();
+    }
+
+    public boolean isFinishedRegroup() {
+        return finishedRegroup;
+    }
+
+    public void setFinishedRegroup(boolean finishedRegroup) {
+        this.finishedRegroup = finishedRegroup;
     }
     
 }

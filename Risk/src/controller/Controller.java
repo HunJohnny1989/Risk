@@ -50,8 +50,8 @@ public class Controller implements ControllerInterface {
         //</editor-fold>
 
         //TODO Kirajzolni Játékos adatait bekérő oldalt
-        //model = new Model("Eszti", "Orsi", "John", "Tomi");
-        model = new Model("Eszti", "Orsi");
+        model = new Model("Eszti", "Orsi", "John", "Tomi");
+        //model = new Model("Eszti", "Orsi");
 
         /* Create and display the form */
         // EventQueue.invokeLater(() -> {
@@ -112,6 +112,13 @@ public class Controller implements ControllerInterface {
     public void finishAttack(){
         model.finishAttack();
         mainWindow.setPLayer(model.getCurrentPlayer().getName(), model.getCurrentPlayer().getColor().name());
-         mainWindow.setGamePhase(model.getCurrentPhase());
+        mainWindow.setGamePhase(model.getCurrentPhase());
+    }
+    
+    @Override
+    public void finishRegroup(){
+        model.finisRegroup();
+        mainWindow.setPLayer(model.getCurrentPlayer().getName(), model.getCurrentPlayer().getColor().name());
+        mainWindow.setGamePhase(model.getCurrentPhase());
     }
 }

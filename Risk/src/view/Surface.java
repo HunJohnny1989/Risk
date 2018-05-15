@@ -318,6 +318,9 @@ public class Surface extends javax.swing.JPanel{
 
     private void addTroopToTerritory(Territory territory, int count) {
         controller.removeAvailableTroops(count);
+        if(territory == null){
+            System.out.println("ajaj");
+        }
         territory.addTroops(count);
     }
 

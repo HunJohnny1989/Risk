@@ -117,7 +117,12 @@ public class MainWindow extends JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonActionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonActionActionPerformed
-        controller.finishAttack();
+        if(Phase.ATTACK.equals(controller.getCurrentPhase())){
+            controller.finishAttack();    
+        }else{
+            controller.finishRegroup();
+        }
+        
         surface1.resetSurface();
     }//GEN-LAST:event_jButtonActionActionPerformed
 
