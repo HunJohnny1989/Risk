@@ -1,5 +1,6 @@
 package model;
 
+import java.util.Collections;
 import model.dto.BattleResult;
 import model.dto.Territory;
 import java.util.List;
@@ -21,7 +22,7 @@ public class Battle {
     
     public Battle( Territory attackingTerritory, Territory defendingTerritory, int attackingTroopCount ) {
         this.attackingTerritory = attackingTerritory;
-        this.attackingTroopCount = attackingTroopCount;
+        this.attackingTroopCount = Math.min( 3, attackingTroopCount );
         this.defendingTerritory = defendingTerritory;
         defendingTroopCount = Math.min( 3, defendingTerritory.getTroopCount() );
     }
@@ -30,7 +31,7 @@ public class Battle {
     public BattleResult execute() {
         rollDice();
         computeLosses();
-        boolean hasTerritoryBeenConquered = defendingTroopCount == defenderTroopLossCount;
+        boolean hasTerritoryBeenConquered = defendingTerritory.getTroopCount() == defenderTroopLossCount;
         boolean hasDefenderLost = false;
         if( hasTerritoryBeenConquered ) {
             hasDefenderLost = defendingTerritory.getOccupierPlayer().loseBattle( defenderTroopLossCount, defendingTerritory );
@@ -53,6 +54,13 @@ public class Battle {
             defenderDiceRolls = Dice.roll( 1 );
         else
             defenderDiceRolls = Dice.roll( defendingTroopCount - 1 ); // the rules fail to mention that with 3 defenders you get 2 rolls.
+        sortDescending( attackerDiceRolls );
+        sortDescending( defenderDiceRolls );
+    }
+
+    private void sortDescending(List<Integer> list) {
+        Collections.sort( list );
+        Collections.reverse( list );
     }
     
     public BattleResult getBattleResult() {

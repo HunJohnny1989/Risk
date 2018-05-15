@@ -180,7 +180,7 @@ public class Surface extends javax.swing.JPanel{
                     return;
                 }
 
-                BattleResult result = controller.attackTerritory(selectedTerritory, targetedTerritory, placeTroopsDialog.getNumberOfTroops());
+                BattleResult result = controller.attackTerritory(selectedTerritory, targetedTerritory, attackTerritoryDialog.getNumberOfTroops());
 
                 if (result.hasTerritoryBeenConquered()) {
                     attackTerritoryDialog.setLocation(evt.getPoint().x + 5, evt.getPoint().y);
