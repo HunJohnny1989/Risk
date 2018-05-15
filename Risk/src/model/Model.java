@@ -42,17 +42,12 @@ public class Model {
         }
         instance = this;
     }
-
+    
+    /**
+     * @author orsi
+     */
     public String getCurrentPhaseName() {
-        switch (getCurrentPhase()) {
-            case PLACE_TROOPS:
-                return "Csapatok elhelyezése";
-            case ATTACK:
-                return "Támadás";
-            case REGROUP:
-                return "Átcsoportosítás";
-        }
-        return null;
+        return getCurrentPhase().toString();
     }
 
     public Phase getCurrentPhase() {

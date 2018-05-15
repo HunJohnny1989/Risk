@@ -7,7 +7,7 @@ package model.dto;
 
 /**
  *
- * @author Johnny
+ * @author orsi
  */
 public enum Phase {
     PLACE_TROOPS, ATTACK, REGROUP;
@@ -16,11 +16,11 @@ public enum Phase {
     public String toString() {
         switch (this) {
             case PLACE_TROOPS:
-                return "Csapatok elhelyezése";
+                return "Place troops";
             case ATTACK:
-                return "Támadás";
+                return "Attack territory";
             case REGROUP:
-                return "Átcsoportosítás";
+                return "Regroup troops";
         }
         return null;
     }
