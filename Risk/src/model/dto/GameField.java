@@ -64,6 +64,7 @@ public class GameField {
                     Territory territory = new Territory(countryName, shape, centerPoint);
                     territories.add(territory);
                     System.out.println(territory.getName() + " imported.");
+                    createContinent(eElement, territory);
                 }
             }
             for(int territoryNo = 0; territoryNo < neighbours.length; territoryNo++){
@@ -91,5 +92,30 @@ public class GameField {
     public Dimension getDimension()
     {
         return dimension;
+    }
+    
+    /**
+    *
+    * @author orsi
+    */    
+    private void createContinent(Element eElement, Territory territory){
+        String continent = eElement.getAttribute("continent");
+        boolean hasAlready = false;
+        
+        for(Continent c : continents){
+            if(c.getName().equals(continent)){
+                hasAlready = true;
+                c.addTerritory(territory);
+                System.out.println("For " + c.getName() + " " + territory.getName() + " added");
+                break;
+            }
+        }
+        
+        if(!hasAlready){
+            Continent cont = new Continent(continent);
+            continents.add(cont);
+            cont.addTerritory(territory);
+            System.out.println(cont.getName() + " continent created and " + territory.getName() + " added");
+        }
     }
 }

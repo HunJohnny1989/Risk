@@ -1,5 +1,6 @@
 package model.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import model.Player;
@@ -10,15 +11,13 @@ import model.Player;
  */
 public class Continent {
     private String name;
-    private List<Territory> territories; //sajat korzetei
+    private List<Territory> territories = new ArrayList<>(); //sajat korzetei
     private int numOfTerritories; //korzeteinek szama
     private Player occupierPlayer;
     private int troopBonusCount;
     
-    public Continent(String name, List<Territory> territories){
+    public Continent(String name){
         this.name = name;
-        this.territories = territories;
-        this.numOfTerritories = this.territories.size();
         switch( name ) {
             case "North America":
             default:
@@ -60,6 +59,15 @@ public class Continent {
    
     public Player getOccupierPlayer(){
         return this.occupierPlayer;
+    }
+    
+    public void addTerritory(Territory territory){
+        this.territories.add(territory);
+        numOfTerritories++;
+    }
+    
+    public void setOccupierPlayer(Player player){
+        this.occupierPlayer = player;
     }
 
     /**
