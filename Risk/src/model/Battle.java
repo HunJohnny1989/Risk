@@ -68,7 +68,7 @@ public class Battle {
     }
 
     private void computeLosses() {
-        for( int i = 0; i < Math.max( attackerDiceRolls.size(), defenderDiceRolls.size() ); i++ )
+        for( int i = 0; i < attackerDiceRolls.size(); i++ )
             if( hasAttackerWon( i ) ) 
                 defenderTroopLossCount++;
             else
@@ -78,7 +78,6 @@ public class Battle {
     }
 
     private boolean hasAttackerWon( int i ) {
-        return defenderDiceRolls.size() < i + 1 || 
-                ( attackerDiceRolls.size() >= i + 1 && attackerDiceRolls.get( i ) > defenderDiceRolls.get( i ) );
+        return defenderDiceRolls.size() < i + 1 ||  attackerDiceRolls.get( i ) > defenderDiceRolls.get( i );
     }
 }
