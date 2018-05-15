@@ -106,6 +106,7 @@ public class GameField {
             if(c.getName().equals(continent)){
                 hasAlready = true;
                 c.addTerritory(territory);
+                territory.setContinent(c);
                 System.out.println("For " + c.getName() + " " + territory.getName() + " added");
                 break;
             }
@@ -113,6 +114,7 @@ public class GameField {
         
         if(!hasAlready){
             Continent cont = new Continent(continent);
+            territory.setContinent(cont);
             continents.add(cont);
             cont.addTerritory(territory);
             System.out.println(cont.getName() + " continent created and " + territory.getName() + " added");

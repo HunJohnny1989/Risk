@@ -148,9 +148,7 @@ public class Player implements MissionAgent, PlayerInterface {
         // the defendingTerritory's new occupier player is set in winBattle, no need to set that here
         occupiedTerritories.remove( defendingTerritory );
         
-        Continent continent = defendingTerritory.getContinent();
-        //occupiedContinents.remove( continent );
-        //continent.removePlayer();
+        removeOccupiedContinent(defendingTerritory);
         
         boolean hasPlayerLost = occupiedTerritories.isEmpty();
         if( hasPlayerLost )
@@ -166,8 +164,34 @@ public class Player implements MissionAgent, PlayerInterface {
         occupiedTerritories.add( defendingTerritory );
         defendingTerritory.assignToPlayer( this );
         hasOccupiedTerritoryThisRound = true;
+        checkDefendingContinentAndAddToList(defendingTerritory);
     }
 
+    /**
+    * @author orsi
+    */
+    private void checkDefendingContinentAndAddToList(Territory territory){
+        List<Territory> territories = territory.getContinent().getTerritories();
+        boolean hasAll = true;
+        for(Territory t : territories){
+            if(!this.occupiedTerritories.contains(t)){
+                hasAll = false;
+                break;
+            }            
+        }
+        if(hasAll){
+            territory.getContinent().setOccupierPlayer(this);
+            this.occupiedContinents.add(territory.getContinent());
+                System.out.println(this.name + " player all occupied all territories from " + territory.getContinent().getName());
+        }
+    }
+    
+    private void removeOccupiedContinent(Territory territory){
+        if(occupiedContinents.contains(territory.getContinent())){
+            occupiedContinents.remove(territory.getContinent());
+            territory.getContinent().removePlayer();        
+        }
+    }
     
     
     /**

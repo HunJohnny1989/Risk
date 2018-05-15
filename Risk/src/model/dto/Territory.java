@@ -42,6 +42,10 @@ public class Territory {
      *
      * @author orsi
      */
+    public void setContinent(Continent continent){
+        this.continent = continent;
+    }
+    
     public Continent getContinent() {
         return continent;
     }
