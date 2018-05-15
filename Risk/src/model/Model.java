@@ -49,7 +49,10 @@ public class Model {
     public String getCurrentPhaseName() {
         return getCurrentPhase().toString();
     }
-
+    
+    /**
+     * @author Sajti Tamás
+     */
     public Phase getCurrentPhase() {
         return currentPhase;
     }

@@ -248,6 +248,9 @@ public class Surface extends javax.swing.JPanel{
             g2d.setPaint(new Color(210, 180, 140));
             g2d.fill(territory.getShape());
             if (territory.getOccupierPlayer() != null) {
+                
+                colorOccupiedContinent(territory, g2d);       
+                
                 g2d.setPaint(playerColors.get(territory.getOccupierPlayer().getColor()));
                 if (territory.getCenterPoint() != null) {
                     g2d.drawString(Integer.toString(territory.getTroopCount()), territory.getCenterPoint().x, territory.getCenterPoint().y);
@@ -284,6 +287,18 @@ public class Surface extends javax.swing.JPanel{
             }
         }
         g2d.dispose();
+    }
+    
+    /**
+    *
+    * @author orsi
+    */
+    private void colorOccupiedContinent(Territory territory, Graphics2D g2d){
+        if(territory.getContinent().getOccupierPlayer() != null){
+                    Color c = playerColors.get(territory.getOccupierPlayer().getColor());
+                    g2d.setPaint(new Color(c.getRed(), c.getGreen(), c.getBlue(), 0x33));
+                    g2d.fill(territory.getShape());
+                }
     }
 
     @Override
