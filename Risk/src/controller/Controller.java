@@ -63,6 +63,7 @@ public class Controller implements ControllerInterface {
         mainWindow.setGameField(field);
         mainWindow.setPLayer(model.getCurrentPlayer().getName(), model.getCurrentPlayer().getColor().name());
         mainWindow.setGamePhase(model.getCurrentPhase());
+        mainWindow.setMissionString(model.getCurrentPlayer().getMissionCard().getMission());
 
     }
 
@@ -82,6 +83,7 @@ public class Controller implements ControllerInterface {
                  mainWindow.setGamePhase(model.getCurrentPhase());
             }
             mainWindow.setPLayer(model.getCurrentPlayer().getName(), model.getCurrentPlayer().getColor().name());
+            mainWindow.setMissionString(model.getCurrentPlayer().getMissionCard().getMission());
         }
     }
 
@@ -113,6 +115,7 @@ public class Controller implements ControllerInterface {
         model.finishAttack();
         mainWindow.setPLayer(model.getCurrentPlayer().getName(), model.getCurrentPlayer().getColor().name());
         mainWindow.setGamePhase(model.getCurrentPhase());
+        mainWindow.setMissionString(model.getCurrentPlayer().getMissionCard().getMission());
     }
     
     @Override
@@ -120,5 +123,6 @@ public class Controller implements ControllerInterface {
         model.finisRegroup();
         mainWindow.setPLayer(model.getCurrentPlayer().getName(), model.getCurrentPlayer().getColor().name());
         mainWindow.setGamePhase(model.getCurrentPhase());
+        mainWindow.setMissionString(model.getCurrentPlayer().getMissionCard().getMission());
     }
 }

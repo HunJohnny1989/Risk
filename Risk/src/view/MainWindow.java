@@ -41,6 +41,9 @@ public class MainWindow extends JFrame {
         jSeparator1 = new javax.swing.JToolBar.Separator();
         jLabel1 = new javax.swing.JLabel();
         jLabelCurrentPlayer = new javax.swing.JLabel();
+        jSeparator2 = new javax.swing.JToolBar.Separator();
+        jLabel3 = new javax.swing.JLabel();
+        jLabelMission = new javax.swing.JLabel();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
         jButtonAction = new javax.swing.JButton();
 
@@ -57,7 +60,7 @@ public class MainWindow extends JFrame {
         surface1.setLayout(surface1Layout);
         surface1Layout.setHorizontalGroup(
             surface1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 480, Short.MAX_VALUE)
+            .addGap(0, 520, Short.MAX_VALUE)
         );
         surface1Layout.setVerticalGroup(
             surface1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -68,12 +71,14 @@ public class MainWindow extends JFrame {
         toolBar.setFloatable(false);
         toolBar.setRollover(true);
 
-        jLabel2.setText("Current activity:");
+        jLabel2.setText("Current activity: ");
         toolBar.add(jLabel2);
         jLabel2.getAccessibleContext().setAccessibleName("Current activity: ");
 
         jLabelCurrentAction.setText("Nothing");
         toolBar.add(jLabelCurrentAction);
+
+        jSeparator1.setPreferredSize(new java.awt.Dimension(20, 0));
         toolBar.add(jSeparator1);
 
         jLabel1.setText("Current player: ");
@@ -81,6 +86,21 @@ public class MainWindow extends JFrame {
 
         jLabelCurrentPlayer.setText("Nobody");
         toolBar.add(jLabelCurrentPlayer);
+
+        jSeparator2.setMaximumSize(new java.awt.Dimension(10, 32767));
+        jSeparator2.setMinimumSize(new java.awt.Dimension(10, 10));
+        jSeparator2.setPreferredSize(new java.awt.Dimension(20, 0));
+        toolBar.add(jSeparator2);
+
+        jLabel3.setText("Your mission: ");
+        toolBar.add(jLabel3);
+
+        jLabelMission.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabelMission.setText("Nothing");
+        jLabelMission.setAlignmentX(0.5F);
+        jLabelMission.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        jLabelMission.setName(""); // NOI18N
+        toolBar.add(jLabelMission);
         toolBar.add(filler1);
 
         jButtonAction.setText("Finish attack");
@@ -100,8 +120,8 @@ public class MainWindow extends JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(surface1, javax.swing.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
-            .addComponent(toolBar, javax.swing.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
+            .addComponent(surface1, javax.swing.GroupLayout.DEFAULT_SIZE, 520, Short.MAX_VALUE)
+            .addComponent(toolBar, javax.swing.GroupLayout.DEFAULT_SIZE, 520, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -133,9 +153,12 @@ public class MainWindow extends JFrame {
     private javax.swing.JButton jButtonAction;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabelCurrentAction;
     private javax.swing.JLabel jLabelCurrentPlayer;
+    private javax.swing.JLabel jLabelMission;
     private javax.swing.JToolBar.Separator jSeparator1;
+    private javax.swing.JToolBar.Separator jSeparator2;
     private view.Surface surface1;
     private javax.swing.JToolBar toolBar;
     // End of variables declaration//GEN-END:variables
@@ -176,5 +199,10 @@ public class MainWindow extends JFrame {
             this.jButtonAction.setText(actionButtonString);
             this.jButtonAction.setVisible(true);
         }        
+    }
+    
+    public void setMissionString(String missionString)
+    {
+        this.jLabelMission.setText(missionString);
     }
 }

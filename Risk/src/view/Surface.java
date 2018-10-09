@@ -183,10 +183,10 @@ public class Surface extends javax.swing.JPanel{
                 BattleResult result = controller.attackTerritory(selectedTerritory, targetedTerritory, attackTerritoryDialog.getNumberOfTroops());
 
                 if (result.hasTerritoryBeenConquered()) {
-                    attackTerritoryDialog.setLocation(evt.getPoint().x + 5, evt.getPoint().y);
-                    attackTerritoryDialog.setRange(1, selectedTerritory.getTroopCount() - result.getAttackerTroopLossCount() - 1);//Legalább egy katonának maradnia kell
-                    attackTerritoryDialog.setVisible(true);
-                    transferTroopToTerritory(selectedTerritory, targetedTerritory, attackTerritoryDialog.getNumberOfTroops());
+                  /*regroupTroopsDialog.setLocation(evt.getPoint().x + 5, evt.getPoint().y);
+                    regroupTroopsDialog.setRange(1, attackTerritoryDialog.getNumberOfTroops() - result.getAttackerTroopLossCount());//Legalább egy katonának maradnia kell
+                    regroupTroopsDialog.setVisible(true);*/
+                    transferTroopToTerritory(selectedTerritory, targetedTerritory, attackTerritoryDialog.getNumberOfTroops() - result.getAttackerTroopLossCount());
                     subSelectedTerritories = selectedTerritory.getNeighbourEnemyTerritories();
                 }
 
