@@ -2,6 +2,7 @@ package model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import model.dto.Missions;
 import java.util.List;
 import java.util.Random;
@@ -23,7 +24,6 @@ public class Model {
 
     private int currentPlayerIndex;
     private List< Player> players;
-    private List< Player> livePlayers;
     private Phase currentPhase;
     private static Random random = new Random();
 
@@ -37,7 +37,7 @@ public class Model {
     public Model(String... playerNameList) {
         currentPlayerIndex = 0;
         currentPhase = Phase.PLACE_TROOPS;
-        players = new ArrayList<>(playerNameList.length);
+        players = new LinkedList<>();
         for (int i = 0; i < playerNameList.length; i++) {
             players.add(new Player(playerNameList[i], Color.values()[i], randomMissionCard()));
         }
@@ -176,7 +176,7 @@ public class Model {
      * @author Sajti Tamás
      */
     boolean isPlayerDead(Color color) {
-        return false; //todo
+        return players.stream().filter( p -> p.getColor() == color ).count() == 0;
     }
 
 }
