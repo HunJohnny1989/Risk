@@ -23,6 +23,7 @@ public class Model {
 
     private int currentPlayerIndex;
     private List< Player> players;
+    private List< Player> livePlayers;
     private Phase currentPhase;
     private static Random random = new Random();
 
@@ -40,6 +41,7 @@ public class Model {
         for (int i = 0; i < playerNameList.length; i++) {
             players.add(new Player(playerNameList[i], Color.values()[i], randomMissionCard()));
         }
+        
         instance = this;
     }
     
@@ -86,7 +88,7 @@ public class Model {
      * @author Sajti Tamás
      */
     public Player getCurrentPlayer() {
-        return getCurrentPlayerInternal();
+        return players.get(currentPlayerIndex);
     }
 
     /**
@@ -100,8 +102,8 @@ public class Model {
      * @author Sajti Tamás
      */
     public void giveRiskCardIfNecessary() {
-        if (getCurrentPlayerInternal().hasOccupiedTerritoryThisRound()) {
-            getCurrentPlayerInternal().addRiskCard(randomRiskCard());
+        if (getCurrentPlayer().hasOccupiedTerritoryThisRound()) {
+            getCurrentPlayer().addRiskCard(randomRiskCard());
         }
     }
 
@@ -161,13 +163,6 @@ public class Model {
         return players;
     }
 
-    /**
-     * @author Sajti Tamás
-     */
-    private Player getCurrentPlayerInternal() {
-        return players.get(currentPlayerIndex);
-    }
-
     private MissionCard randomMissionCard() {
         return new MissionCard(Missions.getMissions().get(random.nextInt(Missions.getMissions().size())));
     }
@@ -175,6 +170,13 @@ public class Model {
     private RiskCard randomRiskCard() {   // todo
 //        random.nextInt( )
         return new RiskCard("");
+    }
+
+    /**
+     * @author Sajti Tamás
+     */
+    boolean isPlayerDead(Color color) {
+        return false; //todo
     }
 
 }

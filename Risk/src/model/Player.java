@@ -15,7 +15,7 @@ import java.util.Objects;
  *
  * @author orsi
  */
-public class Player implements MissionAgent, PlayerInterface {
+public class Player implements MissionAgent {
     
     private boolean hasOccupiedTerritoryThisRound;
     private String name;
@@ -28,15 +28,13 @@ public class Player implements MissionAgent, PlayerInterface {
     private int numOfArtillery;
     private List<Territory> occupiedTerritories;
     private List<Continent> occupiedContinents;
-    private List<Color> killedPlayers;
     private int troopCount;
     private boolean finishedAttack;
     private boolean finishedRegroup;
         
     public Player(String name, Color color, MissionCard missionCard){
         this.occupiedTerritories = new LinkedList<Territory>();
-        this.occupiedContinents = new LinkedList<Continent>();        
-        this.killedPlayers = new LinkedList<Color>();
+        this.occupiedContinents = new LinkedList<Continent>();       
         this.hasOccupiedTerritoryThisRound = false; //?
         this.name = name;
         this.remainingPlaceableTroopCount = 0; //?
@@ -92,7 +90,6 @@ public class Player implements MissionAgent, PlayerInterface {
     /**
     * @author Sajti Tamás
     */
-    @Override
     public BattleResult attack( Territory attackingTerritory, Territory defendingTerritory, int attackingTroopCount ){
         Battle battle = new Battle( attackingTerritory, defendingTerritory, attackingTroopCount );
         final BattleResult battleResult = battle.execute();
@@ -102,7 +99,6 @@ public class Player implements MissionAgent, PlayerInterface {
     /**
     * @author Sajti Tamás
     */
-    @Override
     public boolean isMissionCompleted(){
         return missionCard.isCompleted();
     }
@@ -110,7 +106,6 @@ public class Player implements MissionAgent, PlayerInterface {
     /**
     * @author orsi, Sajti Tamás
     */
-    @Override
     public void placeTroops( Territory territory, int troopCount ){
         //nem vegleges
         if(troopCount > this.remainingPlaceableTroopCount){
@@ -126,7 +121,6 @@ public class Player implements MissionAgent, PlayerInterface {
         }
     }
     
-    @Override
     public void redeemRiskCards(){
         //nem vegleges
     }
@@ -134,7 +128,6 @@ public class Player implements MissionAgent, PlayerInterface {
     /**
     * @author Sajti Tamás
     */
-    @Override
     public void transfer( Territory fromTerritory, Territory toTerritory, int troopCount ){
         fromTerritory.removeTroops( troopCount );
         toTerritory.addTroops( troopCount );
@@ -198,7 +191,6 @@ public class Player implements MissionAgent, PlayerInterface {
     /**
     * @author Sajti Tamás
     */
-    @Override
     public int getOccupiedTerritoryCount() {
         return occupiedTerritories.size();
     }
@@ -206,7 +198,6 @@ public class Player implements MissionAgent, PlayerInterface {
     /**
     * @author Sajti Tamás
     */
-    @Override
     public int getTerritoryCountWithAtLeastTwoTroops() {
         int count = 0;
         for( Territory t : occupiedTerritories )
@@ -220,7 +211,7 @@ public class Player implements MissionAgent, PlayerInterface {
     */
     @Override
     public boolean hasKilledPlayer( Color color ) {
-        return killedPlayers.contains( color );
+        return Model.getInstance().isPlayerDead( color );
     }
 
     /**
