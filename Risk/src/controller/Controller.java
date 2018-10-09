@@ -9,6 +9,7 @@ import javax.swing.UIManager;
 import model.*;
 import model.dto.BattleResult;
 import model.dto.GameField;
+import model.dto.Missions;
 import model.dto.Phase;
 import model.dto.Territory;
 import view.MainWindow;
@@ -51,7 +52,6 @@ public class Controller implements ControllerInterface {
 
         //TODO Kirajzolni Játékos adatait bekérő oldalt
         model = new Model("Eszti", "Orsi", "John", "Tomi");
-        //model = new Model("Eszti", "Orsi");
 
         /* Create and display the form */
         // EventQueue.invokeLater(() -> {

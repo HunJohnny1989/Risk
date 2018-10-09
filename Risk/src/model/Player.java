@@ -32,7 +32,7 @@ public class Player implements MissionAgent {
     private boolean finishedAttack;
     private boolean finishedRegroup;
         
-    public Player(String name, Color color, MissionCard missionCard){
+    public Player(String name, Color color){
         this.occupiedTerritories = new LinkedList<Territory>();
         this.occupiedContinents = new LinkedList<Continent>();       
         this.hasOccupiedTerritoryThisRound = false; //?
@@ -40,8 +40,11 @@ public class Player implements MissionAgent {
         this.remainingPlaceableTroopCount = 0; //?
         this.troopCount = 0;
         this.color = color;
-        this.missionCard = missionCard;
         this.riskCards = new ArrayList<RiskCard>();
+    }
+    
+    public void addMissionCard( MissionCard missionCard ) {
+        this.missionCard = missionCard;
     }
     
     public String getName(){
@@ -100,7 +103,7 @@ public class Player implements MissionAgent {
     * @author Sajti Tamás
     */
     public boolean isMissionCompleted(){
-        return missionCard.isCompleted();
+        return missionCard.isCompleted( this );
     }
     
     /**

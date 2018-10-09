@@ -38,11 +38,23 @@ public class Model {
         currentPlayerIndex = 0;
         currentPhase = Phase.PLACE_TROOPS;
         players = new LinkedList<>();
-        for (int i = 0; i < playerNameList.length; i++) {
-            players.add(new Player(playerNameList[i], Color.values()[i], randomMissionCard()));
-        }
         
+        initPlayers(playerNameList);       
+        handOutMissionCards( );                
         instance = this;
+    }
+
+    private void initPlayers(String[] playerNameList) {
+        for (int i = 0; i < playerNameList.length; i++) {
+            players.add(new Player(playerNameList[i], Color.values()[i]));
+        }
+    }
+
+    private void handOutMissionCards() {
+        Missions.init( getPlayers() );
+        for (int i = 0; i < players.size(); i++) {
+            players.get( i ).addMissionCard( Missions.getRandomMissionCard() );
+        }
     }
     
     /**
@@ -161,10 +173,6 @@ public class Model {
 
     public List<Player> getPlayers() {
         return players;
-    }
-
-    private MissionCard randomMissionCard() {
-        return new MissionCard(Missions.getMissions().get(random.nextInt(Missions.getMissions().size())));
     }
 
     private RiskCard randomRiskCard() {   // todo
