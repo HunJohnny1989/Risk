@@ -53,7 +53,7 @@ public class Model {
     private void handOutMissionCards() {
         Missions.init( getPlayers() );
         for (int i = 0; i < players.size(); i++) {
-            players.get( i ).addMissionCard( Missions.getRandomMissionCard() );
+            players.get( i ).addMissionCard( Missions.getRandomMissionCard(players.get(i)) );
         }
     }
     

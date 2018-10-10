@@ -19,7 +19,7 @@ public class Missions {
         
         // adding kill-a-color MissionCards for each player in the game
         for( Player p: players ) {
-            missions.add( new MissionCard( String.format( "Kill %s", p.getName() ),
+            missions.add( new MissionCard( p, String.format( "Kill %s", p.getName() ),
                                            ( (agent) -> agent.hasKilledPlayer( p.getColor() ) ) ) ); 
         }
         
@@ -40,8 +40,11 @@ public class Missions {
         return missions;
     }
 
-    public static MissionCard getRandomMissionCard() {
-        MissionCard card = missions.get( random.nextInt( missions.size() ) );
+    public static MissionCard getRandomMissionCard(Player player) {
+        MissionCard card;
+        do{
+            card = missions.get( random.nextInt( missions.size() ) );
+        }while(card.getPlayer().equals(player));
         missions.remove( card );
         return card;
     }
