@@ -63,7 +63,7 @@ public class Controller implements ControllerInterface {
         mainWindow.setGameField(field);
         mainWindow.setPLayer(model.getCurrentPlayer().getName(), model.getCurrentPlayer().getColor().name());
         mainWindow.setGamePhase(model.getCurrentPhase());
-        mainWindow.setMissionString(model.getCurrentPlayer().getMissionCard().getMission() + " (" + model.getCurrentPlayer().getMissionCard().getPlayer().getColor().name() + ")");
+        mainWindow.setMissionString(model.getCurrentPlayer().getMissionCard().getMission() );
 
     }
 
