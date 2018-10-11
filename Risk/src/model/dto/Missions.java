@@ -23,13 +23,14 @@ public class Missions {
                                            ( (agent) -> agent.hasKilledPlayer( p.getColor() ) ) ) ); 
         }
         
-        /*
+        
           missions.add( new MissionCard( String.format("Conquer Asia and South America"), 
-                                            ( (agent) -> agent.hasOccupiedContinent()));
-          missions.add(new MissionCard( String.format("Conquer Asia and Africa"),
+                                            ( (agent) -> agent.hasOccupiedContinent( new Continent( "Asia" ))
+                                                      && agent.hasOccupiedContinent( new Continent( "South America" ) ))));
+          /*missions.add(new MissionCard( String.format("Conquer Asia and Africa"),
                                             ( (agent) -> agent.hasOccupiedContinent()));                                           
           missions.add(new MissionCard( String.format("Conquer North America and Africa"),
-                                            ( (agent) -> agent.hasOccupiedContinent()));                                       
+                                            ( (agent) -> agent.hasOccupiedContinent()));   /*                                    
           missions.add(new MissionCard( String.format("Conquer North America and Australasia"),
                                             ( (agent) -> agent.hasOccupiedContinent()));   
           missions.add(new MissionCard( String.format("Conquer Europe and South America and a 3rd continent of your choice"),
