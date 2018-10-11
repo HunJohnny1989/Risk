@@ -1,15 +1,16 @@
 package model;
 
+import static java.lang.Math.random;
 import model.dto.BattleResult;
 import model.dto.Territory;
 import model.dto.Continent;
 import model.dto.MissionCard;
-import model.dto.RiskCard;
 import model.dto.Color;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 /**
  *
@@ -17,30 +18,25 @@ import java.util.Objects;
  */
 public class Player implements MissionAgent {
     
-    private boolean hasOccupiedTerritoryThisRound;
+    private static Random random = new Random();
+    
+    private boolean hasOccupiedTerritoryThisRound = false;
     private String name;
-    private int remainingPlaceableTroopCount;
+    private int remainingPlaceableTroopCount = 0;
     private Color color;
     private MissionCard missionCard;
-    private List<RiskCard> riskCards;
-    private int numOfInfantry;
-    private int numOfCavalry;
-    private int numOfArtillery;
-    private List<Territory> occupiedTerritories;
-    private List<Continent> occupiedContinents;
-    private int troopCount;
+    private int numOfInfantry = 0;
+    private int numOfCavalry = 0;
+    private int numOfArtillery = 0;
+    private List<Territory> occupiedTerritories = new LinkedList<Territory>();
+    private List<Continent> occupiedContinents = new LinkedList<Continent>();
+    private int troopCount = 0;
     private boolean finishedAttack;
     private boolean finishedRegroup;
         
-    public Player(String name, Color color){
-        this.occupiedTerritories = new LinkedList<Territory>();
-        this.occupiedContinents = new LinkedList<Continent>();       
-        this.hasOccupiedTerritoryThisRound = false; //?
+    public Player(String name, Color color){  
         this.name = name;
-        this.remainingPlaceableTroopCount = 0; //?
-        this.troopCount = 0;
         this.color = color;
-        this.riskCards = new ArrayList<RiskCard>();
     }
     
     public void addMissionCard( MissionCard missionCard ) {
@@ -66,25 +62,22 @@ public class Player implements MissionAgent {
     public MissionCard getMissionCard(){
         return this.missionCard;
     }
-    public List<RiskCard> getRiskCards(){
-        return this.riskCards;
-    }
     
     public void addPlaceableTroops(int num){
         this.remainingPlaceableTroopCount += num; //nem vegleges
     }
     
-    public void addRiskCard(RiskCard riskCard){
-        String type = riskCard.getType();
+    public void addRandomRiskCard(){
+        int randomType = random.nextInt( 3 );
         
-        switch(type){ //nem vegleges
-            case "artillery": 
+        switch(randomType){ //nem vegleges
+            case 0: 
                 this.numOfArtillery++;
                 break;
-            case "cavalry":
+            case 1:
                 this.numOfCavalry++;
                 break;
-            case "infantry":
+            default:
                 this.numOfInfantry++;
                 break;
         }

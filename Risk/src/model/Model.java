@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Random;
 import model.dto.Color;
 import model.dto.MissionCard;
-import model.dto.RiskCard;
 import model.dto.Territory;
 import model.dto.Phase;
 
@@ -115,7 +114,7 @@ public class Model {
      */
     public void giveRiskCardIfNecessary() {
         if (getCurrentPlayer().hasOccupiedTerritoryThisRound()) {
-            getCurrentPlayer().addRiskCard(randomRiskCard());
+            getCurrentPlayer().addRandomRiskCard();
         }
     }
 
@@ -173,11 +172,6 @@ public class Model {
 
     public List<Player> getPlayers() {
         return players;
-    }
-
-    private RiskCard randomRiskCard() {   // todo
-//        random.nextInt( )
-        return new RiskCard("");
     }
 
     /**
