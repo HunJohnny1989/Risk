@@ -28,13 +28,13 @@ public class Missions {
         
         
           missions.add(new MissionCard( String.format("Conquer Asia and South America"), 
-                       agent -> hasAgentOccupiedContinents( agent, ASIA, SOUTH_AMERICA) ));
+                       agent -> agent.hasOccupiedContinents( ASIA, SOUTH_AMERICA) ));
 //          missions.add(new MissionCard( String.format("Conquer Asia and Africa"),
 //                                            ( agent -> agent.hasOccupiedContinent()));                                           
 //          missions.add(new MissionCard( String.format("Conquer North America and Africa"),
 //                                            ( agent -> agent.hasOccupiedContinent()));   /*                                    
           missions.add(new MissionCard( String.format("Conquer North America and Australasia"),
-                       ( agent -> hasAgentOccupiedContinents( agent, NORTH_AMERICA, AUSTRALIA, ASIA) )));   
+                       ( agent -> agent.hasOccupiedContinents( NORTH_AMERICA, AUSTRALIA, ASIA) )));   
 //          missions.add(new MissionCard( String.format("Conquer Europe and South America and a 3rd continent of your choice"),
 //                                            ( agent -> agent.hasOccupiedContinent()));   
 //          missions.add(new MissionCard( String.format("Conquer Europe and Australasia and a 3rd continent of your choice"),
@@ -45,13 +45,6 @@ public class Missions {
 //          missions.add("Occupy 24 territories (no restriction to 2 or more armies in each)"); 
           
     }
-
-    private static boolean hasAgentOccupiedContinents(MissionAgent agent, Continent... continents ) {
-        return Stream.of( continents ).collect( () -> false,
-                (b, continent) -> agent.hasOccupiedContinent( continent ),
-                Boolean::logicalOr) ;
-    }
-    
     
     public static List< MissionCard > getMissions(){
         return missions;

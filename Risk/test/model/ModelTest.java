@@ -8,6 +8,8 @@ package model;
 import java.util.List;
 import model.dto.Color;
 import model.dto.Continent;
+import static model.dto.Continent.ASIA;
+import static model.dto.Continent.SOUTH_AMERICA;
 import model.dto.Phase;
 import model.dto.Territory;
 import org.junit.After;
@@ -75,6 +77,22 @@ public class ModelTest {
         
         assertEquals( continent.getName(), continentName );
         assertEquals( continent.getTroopBonusCount(), 2 );
+    }
+    
+    /**
+     * Test of hasOccupiedContinents method, of class Player.
+     */
+    @Test
+    public void testHasOccupiedContinents() {
+        System.out.println("hasOccupiedContinents");
+        
+        Player player = new Player( "Dummy", Color.BLACK );
+        player.occupyContinent( Continent.AFRICA );
+        player.occupyContinent( Continent.ASIA);
+        player.occupyContinent( Continent.AUSTRALIA );
+        
+        assertTrue( player.hasOccupiedContinents( Continent.ASIA, Continent.AUSTRALIA ) );
+        assertFalse( player.hasOccupiedContinents( Continent.ASIA, Continent.SOUTH_AMERICA ) );
     }
     
 }

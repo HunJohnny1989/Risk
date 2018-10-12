@@ -11,5 +11,5 @@ public interface MissionAgent {
     int getOccupiedTerritoryCount();
     int getTerritoryCountWithAtLeastTwoTroops();
     boolean hasKilledPlayer(Color color);
-    boolean hasOccupiedContinent(Continent continent);
+    boolean hasOccupiedContinents(Continent... continents);
 }

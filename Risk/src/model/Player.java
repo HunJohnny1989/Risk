@@ -7,10 +7,14 @@ import model.dto.Continent;
 import model.dto.MissionCard;
 import model.dto.Color;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  *
@@ -29,7 +33,7 @@ public class Player implements MissionAgent {
     private int numOfCavalry = 0;
     private int numOfArtillery = 0;
     private List<Territory> occupiedTerritories = new LinkedList<Territory>();
-    private List<Continent> occupiedContinents = new LinkedList<Continent>();
+    private Set<Continent> occupiedContinents = new HashSet<Continent>();
     private int troopCount = 0;
     private boolean finishedAttack;
     private boolean finishedRegroup;
@@ -171,9 +175,17 @@ public class Player implements MissionAgent {
         }
         if(hasAll){
             territory.getContinent().setOccupierPlayer(this);
-            this.occupiedContinents.add(territory.getContinent());
-                System.out.println(this.name + " player all occupied all territories from " + territory.getContinent().getName());
+            occupyContinent(territory.getContinent());
+            System.out.println(this.name + " player all occupied all territories from " + territory.getContinent().getName());
         }
+    }
+
+    /**
+    * @author Sajti Tamás
+    * for testing hasOccupiedContinents
+    */
+    void occupyContinent(Continent continent) {
+        this.occupiedContinents.add(continent);
     }
     
     private void removeOccupiedContinent(Territory territory){
@@ -214,8 +226,8 @@ public class Player implements MissionAgent {
     * @author Sajti Tamás
     */
     @Override
-    public boolean hasOccupiedContinent( Continent continent ) {
-        return occupiedContinents.contains( continent );
+    public boolean hasOccupiedContinents(Continent... continents ) {
+        return occupiedContinents.containsAll( Stream.of( continents ).collect( Collectors.toSet() ) );
     }
 
     /**
