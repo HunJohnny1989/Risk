@@ -52,6 +52,7 @@ public class ModelTest {
     @Test
     public void testIsPlayerDead() {
         System.out.println("isPlayerDead");
+        
         assertFalse(model.isPlayerDead(Color.GREEN));
         assertFalse(model.isPlayerDead(Color.BLUE));
         assertTrue(model.isPlayerDead(Color.BLACK));
@@ -68,8 +69,10 @@ public class ModelTest {
     @Test
     public void testParseContinent() {
         System.out.println("testParseContinent");
+        
         String continentName = "South America";
         Continent continent = Continent.parseContinent(continentName);
+        
         assertEquals( continent.getName(), continentName );
         assertEquals( continent.getTroopBonusCount(), 2 );
     }

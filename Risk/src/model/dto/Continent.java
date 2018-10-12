@@ -7,7 +7,7 @@ import model.Player;
 
 /**
  *
- * @author orsi
+ * @author orsi, Sajti Tamás
  */
 public enum Continent {
     NORTH_AMERICA("North America", 5)
@@ -83,9 +83,6 @@ public enum Continent {
         this.occupierPlayer = player;
     }
 
-    /**
-    * @author Sajti Tamás
-    */
     public void removePlayer() {
         occupierPlayer = null;
     }

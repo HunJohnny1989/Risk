@@ -7,6 +7,7 @@ import java.util.Random;
 import java.util.stream.Stream;
 import model.MissionAgent;
 import model.Player;
+import static model.dto.Continent.*;
 
 /**
  *
@@ -27,13 +28,13 @@ public class Missions {
         
         
           missions.add(new MissionCard( String.format("Conquer Asia and South America"), 
-                       agent -> hasAgentOccupiedContinents( agent, Continent.ASIA, Continent.SOUTH_AMERICA) ));
+                       agent -> hasAgentOccupiedContinents( agent, ASIA, SOUTH_AMERICA) ));
 //          missions.add(new MissionCard( String.format("Conquer Asia and Africa"),
 //                                            ( agent -> agent.hasOccupiedContinent()));                                           
 //          missions.add(new MissionCard( String.format("Conquer North America and Africa"),
 //                                            ( agent -> agent.hasOccupiedContinent()));   /*                                    
           missions.add(new MissionCard( String.format("Conquer North America and Australasia"),
-                       ( agent -> hasAgentOccupiedContinents( agent, Continent.NORTH_AMERICA, Continent.AUSTRALIA, Continent.ASIA) )));   
+                       ( agent -> hasAgentOccupiedContinents( agent, NORTH_AMERICA, AUSTRALIA, ASIA) )));   
 //          missions.add(new MissionCard( String.format("Conquer Europe and South America and a 3rd continent of your choice"),
 //                                            ( agent -> agent.hasOccupiedContinent()));   
 //          missions.add(new MissionCard( String.format("Conquer Europe and Australasia and a 3rd continent of your choice"),
