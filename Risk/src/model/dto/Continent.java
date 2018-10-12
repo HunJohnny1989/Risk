@@ -9,36 +9,49 @@ import model.Player;
  *
  * @author orsi
  */
-public class Continent {
+public enum Continent {
+    NORTH_AMERICA("North America", 5)
+    , SOUTH_AMERICA("South America", 2)
+    , EUROPE("Europe", 5)
+    , AFRICA("Africa", 3)
+    , ASIA("Asia", 7),
+    AUSTRALIA("Australia", 2);
+    
     private String name;
     private List<Territory> territories = new ArrayList<>(); //sajat korzetei
     private int numOfTerritories; //korzeteinek szama
     private Player occupierPlayer;
     private int troopBonusCount;
     
-    public Continent(String name){
+    private Continent(String name, int troopBonusCount) {
         this.name = name;
+        this.troopBonusCount = troopBonusCount;
+    }
+ 
+    public static Continent parseContinent(String name){
+        Continent continent;
         switch( name ) {
             case "North America":
             default:
-                troopBonusCount = 5;
+                continent = NORTH_AMERICA;
                 break;
             case "South America":
-                troopBonusCount = 2;
+                continent = SOUTH_AMERICA;
                 break;
             case "Europe":
-                troopBonusCount = 5;
+                continent = EUROPE;
                 break;
             case "Africa":
-                troopBonusCount = 3;
+                continent = AFRICA;
                 break;
             case "Asia":
-                troopBonusCount = 7;
+                continent = ASIA;
                 break;
             case "Australia":
-                troopBonusCount = 2;
+                continent = AUSTRALIA;
                 break;
         }
+        return continent;
     }
 
     public int getTroopBonusCount() {
@@ -68,37 +81,6 @@ public class Continent {
     
     public void setOccupierPlayer(Player player){
         this.occupierPlayer = player;
-    }
-
-    /**
-    * @author Sajti Tamás
-    */
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 53 * hash + Objects.hashCode(this.name);
-        return hash;
-    }
-
-    /**
-    * @author Sajti Tamás
-    */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Continent other = (Continent)obj;
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        return true;
     }
 
     /**

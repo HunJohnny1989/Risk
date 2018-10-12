@@ -7,6 +7,7 @@ package model;
 
 import java.util.List;
 import model.dto.Color;
+import model.dto.Continent;
 import model.dto.Phase;
 import model.dto.Territory;
 import org.junit.After;
@@ -17,8 +18,9 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
  * @author Sajti Tamás
+ * 
+ * For testing the model layer
  */
 public class ModelTest {
     
@@ -58,6 +60,18 @@ public class ModelTest {
         // blue loses
         model.playerLost(model.getPlayers().stream().filter( p -> p.getColor() == Color.BLUE ).findFirst().get());
         assertTrue(model.isPlayerDead(Color.BLUE));
+    }
+    
+    /**
+     * Test of parseContinent method, of class Continent.
+     */
+    @Test
+    public void testParseContinent() {
+        System.out.println("testParseContinent");
+        String continentName = "South America";
+        Continent continent = Continent.parseContinent(continentName);
+        assertEquals( continent.getName(), continentName );
+        assertEquals( continent.getTroopBonusCount(), 2 );
     }
     
 }

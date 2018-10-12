@@ -113,7 +113,7 @@ public class GameField {
         }
         
         if(!hasAlready){
-            Continent cont = new Continent(continent);
+            Continent cont = Continent.parseContinent(continent);
             territory.setContinent(cont);
             continents.add(cont);
             cont.addTerritory(territory);

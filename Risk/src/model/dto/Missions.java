@@ -27,13 +27,13 @@ public class Missions {
         
         
           missions.add(new MissionCard( String.format("Conquer Asia and South America"), 
-                       agent -> hasAgentOccupiedContinents( agent, "Asia", "South America") ));
+                       agent -> hasAgentOccupiedContinents( agent, Continent.ASIA, Continent.SOUTH_AMERICA) ));
 //          missions.add(new MissionCard( String.format("Conquer Asia and Africa"),
 //                                            ( agent -> agent.hasOccupiedContinent()));                                           
 //          missions.add(new MissionCard( String.format("Conquer North America and Africa"),
 //                                            ( agent -> agent.hasOccupiedContinent()));   /*                                    
           missions.add(new MissionCard( String.format("Conquer North America and Australasia"),
-                       ( agent -> hasAgentOccupiedContinents( agent, "North America", "Australia", "Asia") )));   
+                       ( agent -> hasAgentOccupiedContinents( agent, Continent.NORTH_AMERICA, Continent.AUSTRALIA, Continent.ASIA) )));   
 //          missions.add(new MissionCard( String.format("Conquer Europe and South America and a 3rd continent of your choice"),
 //                                            ( agent -> agent.hasOccupiedContinent()));   
 //          missions.add(new MissionCard( String.format("Conquer Europe and Australasia and a 3rd continent of your choice"),
@@ -45,9 +45,9 @@ public class Missions {
           
     }
 
-    private static boolean hasAgentOccupiedContinents(MissionAgent agent, String... continentNames ) {
-        return Stream.of( continentNames ).collect( () -> false,
-                (b, s) -> agent.hasOccupiedContinent( new Continent( s )),
+    private static boolean hasAgentOccupiedContinents(MissionAgent agent, Continent... continents ) {
+        return Stream.of( continents ).collect( () -> false,
+                (b, continent) -> agent.hasOccupiedContinent( continent ),
                 Boolean::logicalOr) ;
     }
     
