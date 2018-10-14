@@ -22,28 +22,27 @@ public class Missions {
         
         // adding kill-a-color MissionCards for each player in the game
         for( Player p: players ) {
-            missions.add( new MissionCard( String.format( "Kill %s ( %s )", p.getName(), p.getColor() ),
+            missions.add( new MissionCard(0, p.getName(), String.format( "Kill %s ( %s )", p.getName(), p.getColor() ),
                                            ( agent -> agent.hasKilledPlayer( p.getColor() ) ) ) ); 
         }
         
-        
-          missions.add(new MissionCard( String.format("Conquer Asia and South America"), 
-                       agent -> agent.hasOccupiedContinents( ASIA, SOUTH_AMERICA) ));
-//          missions.add(new MissionCard( String.format("Conquer Asia and Africa"),
-//                                            ( agent -> agent.hasOccupiedContinent()));                                           
-//          missions.add(new MissionCard( String.format("Conquer North America and Africa"),
-//                                            ( agent -> agent.hasOccupiedContinent()));   /*                                    
-          missions.add(new MissionCard( String.format("Conquer North America and Australasia"),
-                       ( agent -> agent.hasOccupiedContinents( NORTH_AMERICA, AUSTRALIA, ASIA) )));   
-//          missions.add(new MissionCard( String.format("Conquer Europe and South America and a 3rd continent of your choice"),
-//                                            ( agent -> agent.hasOccupiedContinent()));   
-//          missions.add(new MissionCard( String.format("Conquer Europe and Australasia and a 3rd continent of your choice"),
-//                                            ( agent -> agent.hasOccupiedContinent()));   
-//          missions.add(new MissionCard( String.format("Occupy 18 territories with at least 2 armies in each territory"),
-//                                            ( agent -> agent.hasOccupiedContinent()));   
-//       
-//          missions.add("Occupy 24 territories (no restriction to 2 or more armies in each)"); 
-          
+        missions.add(new MissionCard(1, String.format("Conquer Asia and South America"), 
+                     agent -> agent.hasOccupiedContinents( ASIA, SOUTH_AMERICA) ));
+        missions.add(new MissionCard(1, String.format("Conquer Asia and Africa"),
+                     agent -> agent.hasOccupiedContinents( ASIA, AFRICA) ));                                           
+        missions.add(new MissionCard(1, String.format("Conquer North America and Africa"),
+                     agent -> agent.hasOccupiedContinents( NORTH_AMERICA, AFRICA) ));                                       
+        missions.add(new MissionCard(1, String.format("Conquer North America and Australasia"),
+                     agent -> agent.hasOccupiedContinents( NORTH_AMERICA, AUSTRALIA, ASIA) ));   
+        missions.add(new MissionCard(1, String.format("Conquer Europe and South America and a 3rd continent of your choice"),
+                     agent -> agent.hasOccupiedContinents( EUROPE, SOUTH_AMERICA) ));   
+        missions.add(new MissionCard(1, String.format("Conquer Europe and Australasia and a 3rd continent of your choice"),
+                     agent -> agent.hasOccupiedContinents( EUROPE, AUSTRALIA, ASIA) ));   
+        missions.add(new MissionCard(1, String.format("Occupy 18 territories with at least 2 armies in each territory"),
+                     agent -> agent.getTerritoryCountWithAtLeastTwoTroops() >= 18 ));   
+        missions.add(new MissionCard(1, String.format("Occupy 24 territories (no restriction to 2 or more armies in each)"),
+                     agent -> agent.getOccupiedTerritoryCount() >= 24 )); 
+
     }
     
     public static List< MissionCard > getMissions(){
@@ -52,9 +51,10 @@ public class Missions {
 
     public static MissionCard getRandomMissionCard(Player player) {
         MissionCard card;
-        //do{
+        do{
             card = missions.get( random.nextInt( missions.size() ) );
-       // }while(card.getPlayer().equals(player));
+        }while(card.getType() == 0 && card.getPlayerName().equals(player.getName()));
+        
         missions.remove( card );
         return card;
     }
