@@ -21,6 +21,7 @@ public class PlayerDefeated extends javax.swing.JDialog {
     public PlayerDefeated(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents(); 
+        this.setLocationRelativeTo(parent);
     }
 
     /**
@@ -32,7 +33,7 @@ public class PlayerDefeated extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButton1 = new javax.swing.JButton();
+        jButtonOK = new javax.swing.JButton();
         jLabelPlayerDefeated = new javax.swing.JLabel();
 
         setTitle("Player is defeated");
@@ -40,7 +41,12 @@ public class PlayerDefeated extends javax.swing.JDialog {
         setResizable(false);
         setSize(new java.awt.Dimension(370, 127));
 
-        jButton1.setText("Ok");
+        jButtonOK.setText("Ok");
+        jButtonOK.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonOKActionPerformed(evt);
+            }
+        });
 
         jLabelPlayerDefeated.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabelPlayerDefeated.setText("Nobody is defeated.");
@@ -53,7 +59,7 @@ public class PlayerDefeated extends javax.swing.JDialog {
             .addComponent(jLabelPlayerDefeated, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(148, Short.MAX_VALUE)
-                .addComponent(jButton1)
+                .addComponent(jButtonOK)
                 .addGap(142, 142, 142))
         );
         layout.setVerticalGroup(
@@ -62,16 +68,20 @@ public class PlayerDefeated extends javax.swing.JDialog {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabelPlayerDefeated)
                 .addGap(32, 32, 32)
-                .addComponent(jButton1)
+                .addComponent(jButtonOK)
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButtonOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonOKActionPerformed
+        this.setVisible(false);
+    }//GEN-LAST:event_jButtonOKActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButtonOK;
     private javax.swing.JLabel jLabelPlayerDefeated;
     // End of variables declaration//GEN-END:variables
 

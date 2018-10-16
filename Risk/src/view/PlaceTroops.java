@@ -19,6 +19,7 @@ public class PlaceTroops extends javax.swing.JDialog {
     public PlaceTroops(java.awt.Frame parent, boolean modal, Surface surface) {
         super(parent, modal);
         initComponents(); 
+        this.setLocationRelativeTo(parent);
         numberOfTroops = 0;
         this.surface = surface;
     }
@@ -38,6 +39,7 @@ public class PlaceTroops extends javax.swing.JDialog {
         jButtonCancel = new javax.swing.JButton();
 
         setTitle("Place troops");
+        setResizable(false);
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
                 formComponentShown(evt);

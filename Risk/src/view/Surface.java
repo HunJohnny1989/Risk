@@ -45,6 +45,7 @@ public class Surface extends javax.swing.JPanel{
     private TexturePaint hatchTexturePaint;
     private Controller controller = new Controller();
     private boolean cancelledAction = false;
+    private PlayerDefeated playerDefeatedDialog;
 
     public Surface() {
         initComponents();
@@ -53,6 +54,7 @@ public class Surface extends javax.swing.JPanel{
         placeTroopsDialog = new PlaceTroops((JFrame) SwingUtilities.windowForComponent(this), true, this);
         attackTerritoryDialog = new AttackTerritory((JFrame) SwingUtilities.windowForComponent(this), true, this);
         regroupTroopsDialog = new RegroupTroops((JFrame) SwingUtilities.windowForComponent(this), true, this);
+        playerDefeatedDialog = new PlayerDefeated((JFrame) SwingUtilities.windowForComponent(this), true);
         playerColors = new HashMap<model.dto.Color, Color>() {
             {
                 put(model.dto.Color.BLACK, Color.BLACK);
@@ -157,10 +159,12 @@ public class Surface extends javax.swing.JPanel{
                 return;
             case PLACETROOPS:
                 repaint();
-                placeTroopsDialog.setLocation(evt.getPoint().x + 5, evt.getPoint().y);
                 placeTroopsDialog.setRange(1, controller.getPlayerRemainingTroopCount());
                 placeTroopsDialog.setVisible(true);
-                addTroopToTerritory(selectedTerritory, placeTroopsDialog.getNumberOfTroops());
+                if(selectedTerritory != null)
+                {
+                    addTroopToTerritory(selectedTerritory, placeTroopsDialog.getNumberOfTroops());
+                }
                 internalMapAction = InternalMapAction.NONE;
                 break;
             case SELECT_NEIGHBOUR_ATTACK:
@@ -171,7 +175,6 @@ public class Surface extends javax.swing.JPanel{
                 break;
             case ATTACK:
                 //TODO hány katonával támadsz még 1 panel mint a troopsdialog és kész
-                attackTerritoryDialog.setLocation(evt.getPoint().x + 5, evt.getPoint().y);
                 attackTerritoryDialog.setRange(1, selectedTerritory.getTroopCount() - 1);//Legalább egy katonának maradnia kell
                 attackTerritoryDialog.setVisible(true);
 
@@ -179,21 +182,25 @@ public class Surface extends javax.swing.JPanel{
                     cancelledAction = false;
                     return;
                 }
+                
+                model.Player attackedPlayer = targetedTerritory.getOccupierPlayer();
 
                 BattleResult result = controller.attackTerritory(selectedTerritory, targetedTerritory, attackTerritoryDialog.getNumberOfTroops());
 
-                if (result.hasTerritoryBeenConquered()) {
-                  /*regroupTroopsDialog.setLocation(evt.getPoint().x + 5, evt.getPoint().y);
-                    regroupTroopsDialog.setRange(1, attackTerritoryDialog.getNumberOfTroops() - result.getAttackerTroopLossCount());//Legalább egy katonának maradnia kell
-                    regroupTroopsDialog.setVisible(true);*/
+                if (result.hasTerritoryBeenConquered()) 
+                {
                     transferTroopToTerritory(selectedTerritory, targetedTerritory, attackTerritoryDialog.getNumberOfTroops() - result.getAttackerTroopLossCount());
                     subSelectedTerritories = selectedTerritory.getNeighbourEnemyTerritories();
+                    if(attackedPlayer.hasKilledPlayer(attackedPlayer.getColor()))
+                    {
+                        playerDefeatedDialog.setText(attackedPlayer.getName());
+                        playerDefeatedDialog.setVisible(true);
+                    }
                 }
 
                 internalMapAction = InternalMapAction.SELECT_NEIGHBOUR_ATTACK;
                 break;
             case REGROUP:
-                regroupTroopsDialog.setLocation(evt.getPoint().x + 5, evt.getPoint().y);
                 regroupTroopsDialog.setRange(1, selectedTerritory.getTroopCount() - 1);//Legalább egy katonának maradnia kell
                 regroupTroopsDialog.setVisible(true);
 
