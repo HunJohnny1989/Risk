@@ -31,4 +31,7 @@ public interface ControllerInterface {
     void finishAttack();
     
     void finishRegroup();
+    
+    Player getWinner();
+    
 }

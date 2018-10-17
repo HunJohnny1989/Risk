@@ -85,6 +85,15 @@ public class GameField {
         }
     }
     
+    public void resetTerritories()
+    {
+        for(Territory t : territories)
+        {
+            t.assignToPlayer(null);
+            t.setTroopCount(0);
+        }
+    }
+    
     public List<Territory> getTerritories(){
         return territories;
     }

@@ -46,6 +46,7 @@ public class Surface extends javax.swing.JPanel{
     private Controller controller = new Controller();
     private boolean cancelledAction = false;
     private PlayerDefeated playerDefeatedDialog;
+    private GameOver gameOverDialog;
 
     public Surface() {
         initComponents();
@@ -55,6 +56,7 @@ public class Surface extends javax.swing.JPanel{
         attackTerritoryDialog = new AttackTerritory((JFrame) SwingUtilities.windowForComponent(this), true, this);
         regroupTroopsDialog = new RegroupTroops((JFrame) SwingUtilities.windowForComponent(this), true, this);
         playerDefeatedDialog = new PlayerDefeated((JFrame) SwingUtilities.windowForComponent(this), true);
+        gameOverDialog = new GameOver((JFrame) SwingUtilities.windowForComponent(this), true);
         playerColors = new HashMap<model.dto.Color, Color>() {
             {
                 put(model.dto.Color.BLACK, Color.BLACK);
@@ -214,6 +216,16 @@ public class Surface extends javax.swing.JPanel{
                 break;
         }
         this.repaint();
+        
+        if(controller.getWinner() != null)
+        {
+            model.Player winner = controller.getWinner();
+            gameOverDialog.setText(winner.getName());
+            gameOverDialog.setVisible(true);
+            
+            Controller.startNewGame();
+            resetSurface();
+        }
     }//GEN-LAST:event_formMousePressed
 
 

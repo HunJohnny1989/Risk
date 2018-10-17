@@ -22,6 +22,7 @@ public class Controller implements ControllerInterface {
 
     private static Model model;
     private static MainWindow mainWindow;
+    private static GameField field;
 
     /**
      * @param args the command line arguments
@@ -50,21 +51,15 @@ public class Controller implements ControllerInterface {
         }
         //</editor-fold>
 
-        //TODO Kirajzolni Játékos adatait bekérő oldalt
-        model = new Model("Eszti", "Orsi", "John", "Tomi");
-
         /* Create and display the form */
         // EventQueue.invokeLater(() -> {
         mainWindow = new MainWindow();
         mainWindow.setVisible(true);
         //});
-        GameField field = new GameField("src\\Model\\MapShape.xml");
-        model.divideRandomTerritories(field.getTerritories());
+        
+        field = new GameField("src\\Model\\MapShape.xml");
+        startNewGame();
         mainWindow.setGameField(field);
-        mainWindow.setPLayer(model.getCurrentPlayer().getName(), model.getCurrentPlayer().getColor().name());
-        mainWindow.setGamePhase(model.getCurrentPhase());
-        mainWindow.setMissionString(model.getCurrentPlayer().getMissionCard().getMission() );
-
     }
 
     @Override
@@ -124,5 +119,32 @@ public class Controller implements ControllerInterface {
         mainWindow.setPLayer(model.getCurrentPlayer().getName(), model.getCurrentPlayer().getColor().name());
         mainWindow.setGamePhase(model.getCurrentPhase());
         mainWindow.setMissionString(model.getCurrentPlayer().getMissionCard().getMission());
+    }
+    
+    //author Eszti
+    @Override
+    public Player getWinner()
+    {
+        for(Player p : model.getPlayers())
+        {
+            if(!p.hasKilledPlayer(p.getColor()) && p.isMissionCompleted())
+            {
+                return p;
+            }
+        }
+        
+        return null;
+    }
+    
+    //author Eszti
+    public static void startNewGame()
+    {
+         //TODO Kirajzolni Játékos adatait bekérő oldalt
+        model = new Model("Eszti", "Orsi", "John", "Tomi");
+        field.resetTerritories();
+        model.divideRandomTerritories(field.getTerritories());
+        mainWindow.setPLayer(model.getCurrentPlayer().getName(), model.getCurrentPlayer().getColor().name());
+        mainWindow.setGamePhase(model.getCurrentPhase());
+        mainWindow.setMissionString(model.getCurrentPlayer().getMissionCard().getMission() );
     }
 }
