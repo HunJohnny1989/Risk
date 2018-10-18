@@ -287,5 +287,10 @@ public class Player implements MissionAgent {
     public void setFinishedRegroup(boolean finishedRegroup) {
         this.finishedRegroup = finishedRegroup;
     }
+
+    @Override
+    public int getOccupiedContinentCount() {
+        return occupiedContinents.size();
+    }
     
 }

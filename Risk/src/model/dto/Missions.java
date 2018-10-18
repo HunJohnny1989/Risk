@@ -35,9 +35,11 @@ public class Missions {
         missions.add(new MissionCard(1, String.format("Conquer North America and Australasia"),
                      agent -> agent.hasOccupiedContinents( NORTH_AMERICA, AUSTRALIA, ASIA) ));   
         missions.add(new MissionCard(1, String.format("Conquer Europe and South America and a 3rd continent of your choice"),
-                     agent -> agent.hasOccupiedContinents( EUROPE, SOUTH_AMERICA) ));   
+                     agent -> agent.hasOccupiedContinents( EUROPE, SOUTH_AMERICA) &&
+                             agent.getOccupiedContinentCount() > 2 ));   
         missions.add(new MissionCard(1, String.format("Conquer Europe and Australasia and a 3rd continent of your choice"),
-                     agent -> agent.hasOccupiedContinents( EUROPE, AUSTRALIA, ASIA) ));   
+                     agent -> agent.hasOccupiedContinents( EUROPE, AUSTRALIA, ASIA)  &&
+                             agent.getOccupiedContinentCount() > 2 ));   
         missions.add(new MissionCard(1, String.format("Occupy 18 territories with at least 2 armies in each territory"),
                      agent -> agent.getTerritoryCountWithAtLeastTwoTroops() >= 18 ));   
         missions.add(new MissionCard(1, String.format("Occupy 24 territories (no restriction to 2 or more armies in each)"),

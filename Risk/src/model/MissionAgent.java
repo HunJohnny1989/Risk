@@ -9,6 +9,7 @@ import model.dto.Color;
  */
 public interface MissionAgent {
     int getOccupiedTerritoryCount();
+    int getOccupiedContinentCount();
     int getTerritoryCountWithAtLeastTwoTroops();
     boolean hasKilledPlayer(Color color);
     boolean hasOccupiedContinents(Continent... continents);
