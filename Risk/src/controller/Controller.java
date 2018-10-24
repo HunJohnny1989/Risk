@@ -77,7 +77,7 @@ public class Controller implements ControllerInterface {
                 model.nextPhase();
                  mainWindow.setGamePhase(model.getCurrentPhase());
             }
-            mainWindow.setPLayer(model.getCurrentPlayer().getName(), model.getCurrentPlayer().getColor().name());
+            mainWindow.setPLayer(model.getCurrentPlayer());
             mainWindow.setMissionString(model.getCurrentPlayer().getMissionCard().getMission());
         }
     }
@@ -108,7 +108,7 @@ public class Controller implements ControllerInterface {
     @Override
     public void finishAttack(){
         model.finishAttack();
-        mainWindow.setPLayer(model.getCurrentPlayer().getName(), model.getCurrentPlayer().getColor().name());
+        mainWindow.setPLayer(model.getCurrentPlayer());
         mainWindow.setGamePhase(model.getCurrentPhase());
         mainWindow.setMissionString(model.getCurrentPlayer().getMissionCard().getMission());
     }
@@ -116,7 +116,7 @@ public class Controller implements ControllerInterface {
     @Override
     public void finishRegroup(){
         model.finisRegroup();
-        mainWindow.setPLayer(model.getCurrentPlayer().getName(), model.getCurrentPlayer().getColor().name());
+        mainWindow.setPLayer(model.getCurrentPlayer());
         mainWindow.setGamePhase(model.getCurrentPhase());
         mainWindow.setMissionString(model.getCurrentPlayer().getMissionCard().getMission());
     }
@@ -143,8 +143,10 @@ public class Controller implements ControllerInterface {
         model = new Model("Eszti", "Orsi", "John", "Tomi");
         field.resetTerritories();
         model.divideRandomTerritories(field.getTerritories());
-        mainWindow.setPLayer(model.getCurrentPlayer().getName(), model.getCurrentPlayer().getColor().name());
+        mainWindow.setPLayer(model.getCurrentPlayer());
         mainWindow.setGamePhase(model.getCurrentPhase());
         mainWindow.setMissionString(model.getCurrentPlayer().getMissionCard().getMission() );
+        mainWindow.refreshRiskCards(model.getCurrentPlayer());
+        mainWindow.setRiskCardsCanBeExchanged(false);
     }
 }

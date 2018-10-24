@@ -44,6 +44,11 @@ public class MainWindow extends JFrame {
         jSeparator2 = new javax.swing.JToolBar.Separator();
         jLabel3 = new javax.swing.JLabel();
         jLabelMission = new javax.swing.JLabel();
+        jSeparator3 = new javax.swing.JToolBar.Separator();
+        RiskCardLabel = new javax.swing.JLabel();
+        RiskCardComboBox = new javax.swing.JComboBox<>();
+        filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 0));
+        RiskCardExchangeButton = new javax.swing.JButton();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
         jButtonAction = new javax.swing.JButton();
 
@@ -60,11 +65,11 @@ public class MainWindow extends JFrame {
         surface1.setLayout(surface1Layout);
         surface1Layout.setHorizontalGroup(
             surface1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 520, Short.MAX_VALUE)
+            .addGap(0, 1094, Short.MAX_VALUE)
         );
         surface1Layout.setVerticalGroup(
             surface1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 195, Short.MAX_VALUE)
+            .addGap(0, 374, Short.MAX_VALUE)
         );
 
         toolBar.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -73,7 +78,6 @@ public class MainWindow extends JFrame {
 
         jLabel2.setText("Current activity: ");
         toolBar.add(jLabel2);
-        jLabel2.getAccessibleContext().setAccessibleName("Current activity: ");
 
         jLabelCurrentAction.setText("Nothing");
         toolBar.add(jLabelCurrentAction);
@@ -101,6 +105,34 @@ public class MainWindow extends JFrame {
         jLabelMission.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         jLabelMission.setName(""); // NOI18N
         toolBar.add(jLabelMission);
+
+        jSeparator3.setMaximumSize(new java.awt.Dimension(10, 32767));
+        jSeparator3.setMinimumSize(new java.awt.Dimension(10, 10));
+        jSeparator3.setPreferredSize(new java.awt.Dimension(20, 0));
+        toolBar.add(jSeparator3);
+
+        RiskCardLabel.setText("Your risk cards: ");
+        toolBar.add(RiskCardLabel);
+
+        RiskCardComboBox.setMaximumRowCount(3);
+        RiskCardComboBox.setMaximumSize(new java.awt.Dimension(150, 32767));
+        RiskCardComboBox.setMinimumSize(new java.awt.Dimension(150, 22));
+        RiskCardComboBox.setPreferredSize(new java.awt.Dimension(150, 22));
+        toolBar.add(RiskCardComboBox);
+        toolBar.add(filler2);
+
+        RiskCardExchangeButton.setText("Exchange");
+        RiskCardExchangeButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        RiskCardExchangeButton.setFocusable(false);
+        RiskCardExchangeButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        RiskCardExchangeButton.setMargin(new java.awt.Insets(5, 12, 5, 12));
+        RiskCardExchangeButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        RiskCardExchangeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RiskCardExchangeButtonActionPerformed(evt);
+            }
+        });
+        toolBar.add(RiskCardExchangeButton);
         toolBar.add(filler1);
 
         jButtonAction.setText("Finish attack");
@@ -120,15 +152,15 @@ public class MainWindow extends JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(surface1, javax.swing.GroupLayout.DEFAULT_SIZE, 520, Short.MAX_VALUE)
-            .addComponent(toolBar, javax.swing.GroupLayout.DEFAULT_SIZE, 520, Short.MAX_VALUE)
+            .addComponent(surface1, javax.swing.GroupLayout.DEFAULT_SIZE, 1094, Short.MAX_VALUE)
+            .addComponent(toolBar, javax.swing.GroupLayout.DEFAULT_SIZE, 1094, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(toolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(surface1, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE))
+                .addComponent(surface1, javax.swing.GroupLayout.DEFAULT_SIZE, 374, Short.MAX_VALUE))
         );
 
         surface1.getAccessibleContext().setAccessibleDescription("");
@@ -146,10 +178,27 @@ public class MainWindow extends JFrame {
         surface1.resetSurface();
     }//GEN-LAST:event_jButtonActionActionPerformed
 
+    private void RiskCardExchangeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RiskCardExchangeButtonActionPerformed
+        this.controller.getCurrentPlayer().redeemRiskCards();
+        this.refreshRiskCards(this.controller.getCurrentPlayer());
+        this.setRiskCardsCanBeExchanged(this.controller.getCurrentPlayer().canRiskCardsBeRedeemed());
+    }//GEN-LAST:event_RiskCardExchangeButtonActionPerformed
+
+    public void refreshRiskCards(model.Player player)
+    {
+        this.RiskCardComboBox.removeAllItems();
+        this.RiskCardComboBox.addItem(player.getNumOfInfantry() + " Infantry");
+        this.RiskCardComboBox.addItem(player.getNumOfCavalry()+ " Cavalry");
+        this.RiskCardComboBox.addItem(player.getNumOfArtillery()+ " Artillery");
+    }
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> RiskCardComboBox;
+    private javax.swing.JButton RiskCardExchangeButton;
+    private javax.swing.JLabel RiskCardLabel;
     private javax.swing.Box.Filler filler1;
+    private javax.swing.Box.Filler filler2;
     private javax.swing.JButton jButtonAction;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -159,6 +208,7 @@ public class MainWindow extends JFrame {
     private javax.swing.JLabel jLabelMission;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator2;
+    private javax.swing.JToolBar.Separator jSeparator3;
     private view.Surface surface1;
     private javax.swing.JToolBar toolBar;
     // End of variables declaration//GEN-END:variables
@@ -168,8 +218,17 @@ public class MainWindow extends JFrame {
         surface1.setGameField(gameField);
     }
 
-    public void setPLayer(String name, String color) {
-        jLabelCurrentPlayer.setText(name + " (" + color + ")");
+    public void setPLayer(model.Player player) {
+        jLabelCurrentPlayer.setText(player.getName() + " (" + player.getColor() + ")");
+        this.refreshRiskCards(player);
+        if(controller.getCurrentPhase() == model.dto.Phase.PLACE_TROOPS)
+        {
+            this.setRiskCardsCanBeExchanged(controller.getCurrentPlayer().canRiskCardsBeRedeemed());
+        }
+        else
+        {
+            this.setRiskCardsCanBeExchanged(false);
+        }
     }
         
     public void setGamePhase(Phase gamePhase){
@@ -204,5 +263,10 @@ public class MainWindow extends JFrame {
     public void setMissionString(String missionString)
     {
         this.jLabelMission.setText(missionString);
+    }
+    
+    public void setRiskCardsCanBeExchanged(Boolean exchangable)
+    {
+        this.RiskCardExchangeButton.setVisible(exchangable);
     }
 }

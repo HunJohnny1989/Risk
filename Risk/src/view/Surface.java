@@ -365,6 +365,8 @@ public class Surface extends javax.swing.JPanel{
     public void setCancelledAction(boolean cancelledAction) {
         this.cancelledAction = cancelledAction;
     }
+    
+
 
 }
 
