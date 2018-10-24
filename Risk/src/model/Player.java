@@ -42,6 +42,85 @@ public class Player implements MissionAgent {
         this.name = name;
         this.color = color;
     }
+
+    /**
+    * @author Sajti Tamás
+    */
+    public int getNumOfInfantry() {
+        return numOfInfantry;
+    }
+
+    /**
+    * @author Sajti Tamás
+    */
+    public int getNumOfCavalry() {
+        return numOfCavalry;
+    }
+
+    /**
+    * @author Sajti Tamás
+    */
+    public int getNumOfArtillery() {
+        return numOfArtillery;
+    }
+    
+    /**
+    * @author Sajti Tamás
+    */
+    public boolean canRiskCardsBeRedeemed() {
+        return hasArtilleryToRedeem() || hasCavalryToRedeem() || hasInfantryToRedeem() ||
+               hasEveryKindOfRiskCard();
+    }
+
+    private boolean hasInfantryToRedeem() {
+        return numOfInfantry > 2;
+    }
+
+    private boolean hasCavalryToRedeem() {
+        return numOfCavalry > 2;
+    }
+
+    private boolean hasArtilleryToRedeem() {
+        return numOfArtillery > 2;
+    }
+
+    private boolean hasEveryKindOfRiskCard() {
+        return numOfArtillery > 0 && numOfCavalry > 0 && numOfInfantry > 0;
+    }
+    
+    /**
+    * @author Sajti Tamás
+    */
+    public void redeemRiskCards(){
+        if( hasEveryKindOfRiskCard() ) {
+            redeemRiskCardsEveryKind();
+            return;
+        }
+        if( hasArtilleryToRedeem() ) {
+            redeemArtillery();
+            return;
+        }
+        if( hasCavalryToRedeem() ) {
+            redeemCavalry();
+            return;
+        }
+        if( hasInfantryToRedeem() ) {
+            redeemInfantry();
+            return;
+        }
+    }
+    
+    private void redeemArtillery() {
+    }
+
+    private void redeemCavalry() {
+    }
+
+    private void redeemInfantry() {
+    }
+
+    private void redeemRiskCardsEveryKind() {
+    }
     
     public void addMissionCard( MissionCard missionCard ) {
         this.missionCard = missionCard;
@@ -119,10 +198,6 @@ public class Player implements MissionAgent {
             }
             territory.addTroops( troopCount );
         }
-    }
-    
-    public void redeemRiskCards(){
-        //nem vegleges
     }
     
     /**
@@ -292,5 +367,5 @@ public class Player implements MissionAgent {
     public int getOccupiedContinentCount() {
         return occupiedContinents.size();
     }
-    
+
 }
