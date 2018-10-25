@@ -52,7 +52,7 @@ public class Model {
     private void handOutMissionCards() {
         Missions.init( getPlayers() );
         for (int i = 0; i < players.size(); i++) {
-            players.get( i ).addMissionCard( Missions.getRandomMissionCard(players.get(i)) );
+            players.get( i ).setMissionCard( Missions.getRandomMissionCard(players.get(i)) );
         }
     }
     
@@ -165,7 +165,8 @@ public class Model {
         if (allFinished) {
             for (Player p : players) {
                 p.setFinishedRegroup(false);
-                p.setRemainingPlaceableTroopCount(Math.max( 3, p.getOccupiedTerritoryCount() / 3 ) + p.getContinentalTroopBonusTotal() );
+                p.setRemainingPlaceableTroopCount(Math.max( 3, p.getOccupiedTerritoryCount() / 3 ) +
+                        p.getContinentalTroopBonusTotal() );
             }            
             nextPhase();
         }

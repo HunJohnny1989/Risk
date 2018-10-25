@@ -72,18 +72,30 @@ public class Player implements MissionAgent {
                hasEveryKindOfRiskCard();
     }
 
+    /**
+    * @author Sajti Tamás
+    */
     private boolean hasInfantryToRedeem() {
         return numOfInfantry > 2;
     }
 
+    /**
+    * @author Sajti Tamás
+    */
     private boolean hasCavalryToRedeem() {
         return numOfCavalry > 2;
     }
 
+    /**
+    * @author Sajti Tamás
+    */
     private boolean hasArtilleryToRedeem() {
         return numOfArtillery > 2;
     }
 
+    /**
+    * @author Sajti Tamás
+    */
     private boolean hasEveryKindOfRiskCard() {
         return numOfArtillery > 0 && numOfCavalry > 0 && numOfInfantry > 0;
     }
@@ -110,19 +122,41 @@ public class Player implements MissionAgent {
         }
     }
     
+    /**
+    * @author Sajti Tamás
+    */
     private void redeemArtillery() {
+        numOfArtillery -= 3;
+        remainingPlaceableTroopCount += 8;
     }
 
+    /**
+    * @author Sajti Tamás
+    */
     private void redeemCavalry() {
+        numOfCavalry -= 3;
+        remainingPlaceableTroopCount += 6;
     }
 
+    /**
+    * @author Sajti Tamás
+    */
     private void redeemInfantry() {
+        numOfInfantry -= 3;
+        remainingPlaceableTroopCount += 4;
     }
 
+    /**
+    * @author Sajti Tamás
+    */
     private void redeemRiskCardsEveryKind() {
+        numOfArtillery--;
+        numOfCavalry--;
+        numOfInfantry--;
+        remainingPlaceableTroopCount += 10;
     }
     
-    public void addMissionCard( MissionCard missionCard ) {
+    public void setMissionCard( MissionCard missionCard ) {
         this.missionCard = missionCard;
     }
     
@@ -144,10 +178,6 @@ public class Player implements MissionAgent {
     
     public MissionCard getMissionCard(){
         return this.missionCard;
-    }
-    
-    public void addPlaceableTroops(int num){
-        this.remainingPlaceableTroopCount += num; //nem vegleges
     }
     
     public void addRandomRiskCard(){
