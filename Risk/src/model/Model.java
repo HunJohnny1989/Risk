@@ -136,6 +136,7 @@ public class Model {
     }
 
     public void finishAttack() {
+        giveRiskCardIfNecessary();
         getCurrentPlayer().setFinishedAttack(true);
         boolean allFinished = true;
         for (Player p : players) {
