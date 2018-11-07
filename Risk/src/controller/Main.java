@@ -12,6 +12,7 @@ import model.dto.GameField;
 import network.Client;
 import network.Server;
 import view.MainWindow;
+import view.LobbyWindow;
 
 /**
  *
@@ -24,20 +25,28 @@ public class Main {
     private static GameField field;
 
     public static void main(String args[]) throws IOException {
-        //serverm();
-
-        clientm();
+        LobbyWindow lobbyWindow = new LobbyWindow();
+        lobbyWindow.setVisible(true);
+        while(lobbyWindow.isVisible());
+        if(lobbyWindow.isNewGame())
+        {
+            serverm(lobbyWindow.getNumberOfPlayer());   
+        }
+        else
+        {
+            clientm(lobbyWindow.getName());
+        }
     }
 
-    private static Socket clientm() throws IOException {
+    private static Socket clientm(String name) throws IOException {
 
-        Socket s = new Client("Józsi1").getSocket();
+        Socket s = new Client(name).getSocket();
 
         return s;
     }
 
-    private static void serverm() throws IOException {
-        Server s = new Server(2);
+    private static void serverm(int players) throws IOException {
+        Server s = new Server(players);
     }
 
 }
