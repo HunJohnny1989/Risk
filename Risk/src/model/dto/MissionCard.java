@@ -1,5 +1,6 @@
 package model.dto;
 
+import java.io.Serializable;
 import java.util.function.Function;
 import model.MissionAgent;
 import model.Player;
@@ -8,7 +9,9 @@ import model.Player;
  *
  * @author orsi, Sajti Tamás
  */
-public class MissionCard {  //feladatkartya
+public class MissionCard  implements Serializable{  //feladatkartya
+    
+    private static final long serialVersionUID = 1L;
     private int type;
     private String mission; //kuldetes
     private Function< MissionAgent, Boolean > condition;

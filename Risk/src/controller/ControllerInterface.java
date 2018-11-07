@@ -18,7 +18,7 @@ public interface ControllerInterface {
     
     int getPlayerRemainingTroopCount();
     
-    void removeAvailableTroops(int troopCount);
+    void addTroopToTerritory(Territory territory, int troopCount);
     
     Player getCurrentPlayer();
     

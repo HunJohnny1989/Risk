@@ -21,48 +21,54 @@ public class Model {
 
     private static Model instance;
 
-    private int currentPlayerIndex;
+    private int currentPlayerId;
     private List< Player> players;
     private Phase currentPhase;
     private static Random random = new Random();
+    private Missions missions;
 
     public static Model getInstance() {
         return instance;
     }
 
+    public Model() {
+        players = new LinkedList<>();
+        instance = this;        
+    }
+
     /**
      * @author Sajti Tamás
      */
-    public Model(String... playerNameList) {
-        currentPlayerIndex = 0;
+    public Model(String[] playerNameList) {
         currentPhase = Phase.PLACE_TROOPS;
         players = new LinkedList<>();
-        
-        initPlayers(playerNameList);       
-        handOutMissionCards( );                
+
+        initPlayers(playerNameList);
+        currentPlayerId = players.get(0).getPlayerId();
+        handOutMissionCards();
         instance = this;
     }
 
     private void initPlayers(String[] playerNameList) {
         for (int i = 0; i < playerNameList.length; i++) {
-            players.add(new Player(playerNameList[i], Color.values()[i]));
+            players.add(new Player(i, playerNameList[i], Color.values()[i]));
         }
     }
 
     private void handOutMissionCards() {
-        Missions.init( getPlayers() );
+        Missions.init(getPlayers());
         for (int i = 0; i < players.size(); i++) {
-            players.get( i ).setMissionCard( Missions.getRandomMissionCard(players.get(i)) );
+            players.get(i).setMissionCard(Missions.getRandomMissionCard(players.get(i)));
         }
     }
-    
+
     /**
      * @author orsi
      */
     public String getCurrentPhaseName() {
         return getCurrentPhase().toString();
     }
-    
+
     /**
      * @author Sajti Tamás
      */
@@ -99,7 +105,30 @@ public class Model {
      * @author Sajti Tamás
      */
     public Player getCurrentPlayer() {
-        return players.get(currentPlayerIndex);
+        for (Player p : players) {
+            if (p.getPlayerId() == currentPlayerId) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    public Player searchPlayer(int playerId) {
+        for (Player p : players) {
+            if (p.getPlayerId() == playerId) {
+                return p;
+            }
+        }
+        return null;
+    }
+    
+    public int searchPlayerId(String playerName) {
+        for (Player p : players) {
+            if (p.getName().equals(playerName)) {
+                return p.getPlayerId();
+            }
+        }
+        return -1;
     }
 
     /**
@@ -122,7 +151,9 @@ public class Model {
      * @author Sajti Tamás
      */
     public void selectNextPlayer() {
+        int currentPlayerIndex = players.indexOf(getCurrentPlayer());
         currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+        this.currentPlayerId = players.get(currentPlayerIndex).getPlayerId();
     }
 
     public void nextPhase() {
@@ -150,10 +181,17 @@ public class Model {
             }
             nextPhase();
         }
-        
+
         selectNextPlayer();
     }
     
+    public boolean allTroopPlaced(){
+        for(Player p : players){
+            if(p.getRemainingPlaceableTroopCount() > 0) return false;
+        }
+        return true;
+    }
+
     public void finisRegroup() {
         getCurrentPlayer().setFinishedRegroup(true);
         boolean allFinished = true;
@@ -165,9 +203,9 @@ public class Model {
         if (allFinished) {
             for (Player p : players) {
                 p.setFinishedRegroup(false);
-                p.setRemainingPlaceableTroopCount(Math.max( 3, p.getOccupiedTerritoryCount() / 3 ) +
-                        p.getContinentalTroopBonusTotal() );
-            }            
+                p.setRemainingPlaceableTroopCount(Math.max(3, p.getOccupiedTerritoryCount() / 3)
+                        + p.getContinentalTroopBonusTotal());
+            }
             nextPhase();
         }
         selectNextPlayer();
@@ -181,7 +219,23 @@ public class Model {
      * @author Sajti Tamás
      */
     boolean isPlayerDead(Color color) {
-        return players.stream().filter( p -> p.getColor() == color ).count() == 0;
+        return players.stream().filter(p -> p.getColor() == color).count() == 0;
     }
 
+    public void setCurrentPlayerId(int currentPlayerId) {
+        this.currentPlayerId = currentPlayerId;
+    }
+
+    public void setPlayers(List<Player> players) {
+        this.players = players;
+    }
+
+    public void setCurrentPhase(Phase currentPhase) {
+        this.currentPhase = currentPhase;
+    }
+
+    public int getCurrentPlayerId() {
+        return currentPlayerId;
+    }
+    
 }

@@ -18,6 +18,7 @@ import javax.swing.SwingUtilities;
 import model.dto.GameField;
 import model.dto.Territory;
 import controller.ControllerInterface;
+import model.Player;
 import model.dto.BattleResult;
 import model.dto.Phase;
 
@@ -25,7 +26,7 @@ import model.dto.Phase;
  *
  * @author Eszti
  */
-public class Surface extends javax.swing.JPanel{
+public class Surface extends javax.swing.JPanel {
 
     /**
      * Creates new form Surface
@@ -43,14 +44,15 @@ public class Surface extends javax.swing.JPanel{
     private static final int VERTICALPADDING = 60;
     private HashMap<model.dto.Color, Color> playerColors;
     private TexturePaint hatchTexturePaint;
-    private Controller controller = new Controller();
+    private Controller controller;
     private boolean cancelledAction = false;
     private PlayerDefeated playerDefeatedDialog;
     private GameOver gameOverDialog;
 
-    public Surface() {
+    public Surface(Controller controller) {
         initComponents();
         internalMapAction = InternalMapAction.NONE;
+        this.controller = controller;
 
         placeTroopsDialog = new PlaceTroops((JFrame) SwingUtilities.windowForComponent(this), true, this);
         attackTerritoryDialog = new AttackTerritory((JFrame) SwingUtilities.windowForComponent(this), true, this);
@@ -99,8 +101,11 @@ public class Surface extends javax.swing.JPanel{
     }// </editor-fold>//GEN-END:initComponents
 
     private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
-        if (field == null)
-        {
+        if (field == null) {
+            return;
+        }
+        if (controller.getCurrentPlayer().getPlayerId() != controller.getClientPlayerId()) {
+            resetSurface();
             return;
         }
         if (evt.getClickCount() > 1) {
@@ -123,7 +128,7 @@ public class Surface extends javax.swing.JPanel{
                 } else {
                     selectedTerritory = territory;
                 }
-                if (territory.getOccupierPlayer().equals(controller.getCurrentPlayer())) {
+                if (territory.getOccupierPlayerId() == controller.getCurrentPlayer().getPlayerId()) {
                     myTerritory = true;
                 }
             }
@@ -163,8 +168,7 @@ public class Surface extends javax.swing.JPanel{
                 repaint();
                 placeTroopsDialog.setRange(1, controller.getPlayerRemainingTroopCount());
                 placeTroopsDialog.setVisible(true);
-                if(selectedTerritory != null)
-                {
+                if (selectedTerritory != null) {
                     addTroopToTerritory(selectedTerritory, placeTroopsDialog.getNumberOfTroops());
                 }
                 internalMapAction = InternalMapAction.NONE;
@@ -184,22 +188,20 @@ public class Surface extends javax.swing.JPanel{
                     cancelledAction = false;
                     return;
                 }
-                
-                model.Player attackedPlayer = targetedTerritory.getOccupierPlayer();
+
+                model.Player attackedPlayer = controller.getModel().searchPlayer(targetedTerritory.getOccupierPlayerId());
 
                 BattleResult result = controller.attackTerritory(selectedTerritory, targetedTerritory, attackTerritoryDialog.getNumberOfTroops());
 
-                if (result.hasTerritoryBeenConquered()) 
-                {
+                if (result.hasTerritoryBeenConquered()) {
                     transferTroopToTerritory(selectedTerritory, targetedTerritory, attackTerritoryDialog.getNumberOfTroops() - result.getAttackerTroopLossCount());
                     subSelectedTerritories = selectedTerritory.getNeighbourEnemyTerritories();
-                    if(attackedPlayer.hasKilledPlayer(attackedPlayer.getColor()))
-                    {
+                    if (attackedPlayer.hasKilledPlayer(attackedPlayer.getColor())) {
                         playerDefeatedDialog.setText(attackedPlayer.getName());
                         playerDefeatedDialog.setVisible(true);
                     }
                 }
-
+                targetedTerritory = null;
                 internalMapAction = InternalMapAction.SELECT_NEIGHBOUR_ATTACK;
                 break;
             case REGROUP:
@@ -216,14 +218,13 @@ public class Surface extends javax.swing.JPanel{
                 break;
         }
         this.repaint();
-        
-        if(controller.getWinner() != null)
-        {
+
+        if (controller.getWinner() != null) {
             model.Player winner = controller.getWinner();
             gameOverDialog.setText(winner.getName());
             gameOverDialog.setVisible(true);
-            
-            Controller.startNewGame();
+
+            //Controller.startNewGame();
             resetSurface();
         }
     }//GEN-LAST:event_formMousePressed
@@ -266,31 +267,28 @@ public class Surface extends javax.swing.JPanel{
         for (Territory territory : field.getTerritories()) {
             g2d.setPaint(new Color(210, 180, 140));
             g2d.fill(territory.getShape());
-            if (territory.getOccupierPlayer() != null) {
-                
-                colorOccupiedContinent(territory, g2d);       
-                
-                g2d.setPaint(playerColors.get(territory.getOccupierPlayer().getColor()));
-                if (territory.getCenterPoint() != null) {
-                    g2d.drawString(Integer.toString(territory.getTroopCount()), territory.getCenterPoint().x, territory.getCenterPoint().y);
-                }
+
+            colorOccupiedContinent(territory, g2d);
+
+            g2d.setPaint(playerColors.get(getTerritoryOccupier(territory).getColor()));
+            if (territory.getCenterPoint() != null) {
+                g2d.drawString(Integer.toString(territory.getTroopCount()), territory.getCenterPoint().x, territory.getCenterPoint().y);
             }
+
         }
         if (selectedTerritory != null) {
             g2d.setPaint(this.hatchTexturePaint);
             g2d.fill(selectedTerritory.getShape());
             g2d.setPaint(Color.BLACK);
             g2d.draw(selectedTerritory.getShape());
-            if (selectedTerritory.getOccupierPlayer() != null) {
-                g2d.setPaint(playerColors.get(selectedTerritory.getOccupierPlayer().getColor()));
-                if (selectedTerritory.getCenterPoint() != null) {
-                    g2d.drawString(Integer.toString(selectedTerritory.getTroopCount()), selectedTerritory.getCenterPoint().x, selectedTerritory.getCenterPoint().y);
-                }
+            g2d.setPaint(playerColors.get(getTerritoryOccupier(selectedTerritory).getColor()));
+            if (selectedTerritory.getCenterPoint() != null) {
+                g2d.drawString(Integer.toString(selectedTerritory.getTroopCount()), selectedTerritory.getCenterPoint().x, selectedTerritory.getCenterPoint().y);
             }
         }
         if (subSelectedTerritories != null) {
             for (Territory territory : subSelectedTerritories) {
-                Color playerColor = playerColors.get(territory.getOccupierPlayer().getColor());
+                Color playerColor = playerColors.get(getTerritoryOccupier(territory).getColor());
                 g2d.setPaint(playerColor);
                 g2d.draw(territory.getShape());
                 /*g2d.setPaint(this.hatchTexturePaint);
@@ -307,17 +305,21 @@ public class Surface extends javax.swing.JPanel{
         }
         g2d.dispose();
     }
-    
+
+    private Player getTerritoryOccupier(Territory territory) {
+        return controller.getModel().searchPlayer(territory.getOccupierPlayerId());
+    }
+
     /**
-    *
-    * @author orsi
-    */
-    private void colorOccupiedContinent(Territory territory, Graphics2D g2d){
-        if(territory.getContinent().getOccupierPlayer() != null){
-                    Color c = playerColors.get(territory.getOccupierPlayer().getColor());
-                    g2d.setPaint(new Color(c.getRed(), c.getGreen(), c.getBlue(), 0x33));
-                    g2d.fill(territory.getShape());
-                }
+     *
+     * @author orsi
+     */
+    private void colorOccupiedContinent(Territory territory, Graphics2D g2d) {
+        if (territory.getContinent().getOccupierPlayerId() != -1) {
+            Color c = playerColors.get(getTerritoryOccupier(territory).getColor());
+            g2d.setPaint(new Color(c.getRed(), c.getGreen(), c.getBlue(), 0x33));
+            g2d.fill(territory.getShape());
+        }
     }
 
     @Override
@@ -336,11 +338,7 @@ public class Surface extends javax.swing.JPanel{
     }
 
     private void addTroopToTerritory(Territory territory, int count) {
-        controller.removeAvailableTroops(count);
-        if(territory == null){
-            System.out.println("ajaj");
-        }
-        territory.addTroops(count);
+        controller.addTroopToTerritory(territory, count);
     }
 
     private void transferTroopToTerritory(Territory from, Territory to, int count) {
@@ -365,8 +363,6 @@ public class Surface extends javax.swing.JPanel{
     public void setCancelledAction(boolean cancelledAction) {
         this.cancelledAction = cancelledAction;
     }
-    
-
 
 }
 

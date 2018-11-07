@@ -29,7 +29,7 @@ public class ModelTest {
     Model model;
     
     public ModelTest() {
-        model = new Model("Eszti", "Orsi", "John", "Tomi");
+        model = new Model(new String[]{"Eszti", "Orsi", "John", "Tomi"});
     }
     
     @BeforeClass
@@ -86,7 +86,7 @@ public class ModelTest {
     public void testHasOccupiedContinents() {
         System.out.println("hasOccupiedContinents");
         
-        Player player = new Player( "Dummy", Color.BLACK );
+        Player player = new Player(0, "Dummy", Color.BLACK );
         player.occupyContinent( Continent.AFRICA );
         player.occupyContinent( Continent.ASIA);
         player.occupyContinent( Continent.AUSTRALIA );

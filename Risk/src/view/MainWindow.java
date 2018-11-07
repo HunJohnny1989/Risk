@@ -4,23 +4,26 @@
  * and open the template in the editor.
  */
 package view;
+
 import controller.Controller;
 import java.awt.*;
 import javax.swing.*;
 import model.dto.GameField;
 import model.dto.Phase;
+
 /**
  *
  * @author Eszti
  */
 public class MainWindow extends JFrame {
-    
-    private Controller controller = new Controller();
+
+    private Controller controller;
 
     /**
      * Creates new form MainWindow
      */
-    public MainWindow() {
+    public MainWindow(Controller controller) {
+        this.controller = controller;
         initComponents();
         this.jButtonAction.setVisible(false);
     }
@@ -34,7 +37,7 @@ public class MainWindow extends JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        surface1 = new view.Surface();
+        surface1 = new view.Surface(controller);
         toolBar = new javax.swing.JToolBar();
         jLabel2 = new javax.swing.JLabel();
         jLabelCurrentAction = new javax.swing.JLabel();
@@ -169,12 +172,17 @@ public class MainWindow extends JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonActionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonActionActionPerformed
-        if(Phase.ATTACK.equals(controller.getCurrentPhase())){
-            controller.finishAttack();    
-        }else{
+        if (controller.getCurrentPlayer().getPlayerId() != controller.getClientPlayerId()) {
+            return;
+        }
+        if (Phase.ATTACK.equals(controller.getCurrentPhase())) {
+            surface1.resetSurface();
+            controller.finishAttack();
+        } else {
+            surface1.resetSurface();
             controller.finishRegroup();
         }
-        
+
         surface1.resetSurface();
     }//GEN-LAST:event_jButtonActionActionPerformed
 
@@ -184,14 +192,13 @@ public class MainWindow extends JFrame {
         this.setRiskCardsCanBeExchanged(this.controller.getCurrentPlayer().canRiskCardsBeRedeemed());
     }//GEN-LAST:event_RiskCardExchangeButtonActionPerformed
 
-    public void refreshRiskCards(model.Player player)
-    {
+    public void refreshRiskCards(model.Player player) {
         this.RiskCardComboBox.removeAllItems();
         this.RiskCardComboBox.addItem(player.getNumOfInfantry() + " Infantry");
-        this.RiskCardComboBox.addItem(player.getNumOfCavalry()+ " Cavalry");
-        this.RiskCardComboBox.addItem(player.getNumOfArtillery()+ " Artillery");
+        this.RiskCardComboBox.addItem(player.getNumOfCavalry() + " Cavalry");
+        this.RiskCardComboBox.addItem(player.getNumOfArtillery() + " Artillery");
     }
-    
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> RiskCardComboBox;
@@ -212,30 +219,25 @@ public class MainWindow extends JFrame {
     private view.Surface surface1;
     private javax.swing.JToolBar toolBar;
     // End of variables declaration//GEN-END:variables
-    
-    public void setGameField(GameField gameField)
-    {
+
+    public void setGameField(GameField gameField) {
         surface1.setGameField(gameField);
     }
 
     public void setPLayer(model.Player player) {
         jLabelCurrentPlayer.setText(player.getName() + " (" + player.getColor() + ")");
         this.refreshRiskCards(player);
-        if(controller.getCurrentPhase() == model.dto.Phase.PLACE_TROOPS)
-        {
+        if (controller.getCurrentPhase() == model.dto.Phase.PLACE_TROOPS) {
             this.setRiskCardsCanBeExchanged(controller.getCurrentPlayer().canRiskCardsBeRedeemed());
-        }
-        else
-        {
+        } else {
             this.setRiskCardsCanBeExchanged(false);
         }
     }
-        
-    public void setGamePhase(Phase gamePhase){
+
+    public void setGamePhase(Phase gamePhase) {
         jLabelCurrentAction.setText(gamePhase.toString());
         String actionButtonString = null;
-        switch(gamePhase)
-        {
+        switch (gamePhase) {
             case PLACE_TROOPS:
                 actionButtonString = null;
                 break;
@@ -248,25 +250,25 @@ public class MainWindow extends JFrame {
         }
         this.setActionButtonString(actionButtonString);
     }
-    
-    public void setActionButtonString(String actionButtonString)
-    {
-        if (actionButtonString == null){
+
+    public void setActionButtonString(String actionButtonString) {
+        if (actionButtonString == null) {
             this.jButtonAction.setVisible(false);
-        }
-        else{
+        } else {
             this.jButtonAction.setText(actionButtonString);
             this.jButtonAction.setVisible(true);
-        }        
+        }
     }
-    
-    public void setMissionString(String missionString)
-    {
+
+    public void setMissionString(String missionString) {
         this.jLabelMission.setText(missionString);
     }
-    
-    public void setRiskCardsCanBeExchanged(Boolean exchangable)
-    {
+
+    public void setRiskCardsCanBeExchanged(Boolean exchangable) {
         this.RiskCardExchangeButton.setVisible(exchangable);
+    }
+
+    public void repaint() {
+        this.surface1.repaint();
     }
 }

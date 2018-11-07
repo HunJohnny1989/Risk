@@ -20,12 +20,13 @@ public enum Continent {
     private String name;
     private List<Territory> territories = new ArrayList<>(); //sajat korzetei
     private int numOfTerritories; //korzeteinek szama
-    private Player occupierPlayer;
+    private int occupierPlayerId;
     private int troopBonusCount;
     
     private Continent(String name, int troopBonusCount) {
         this.name = name;
         this.troopBonusCount = troopBonusCount;
+        this.occupierPlayerId = -1;
     }
  
     public static Continent parseContinent(String name){
@@ -70,8 +71,8 @@ public enum Continent {
         return this.numOfTerritories;
     }
    
-    public Player getOccupierPlayer(){
-        return this.occupierPlayer;
+    public int getOccupierPlayerId(){
+        return this.occupierPlayerId;
     }
     
     public void addTerritory(Territory territory){
@@ -79,12 +80,12 @@ public enum Continent {
         numOfTerritories++;
     }
     
-    public void setOccupierPlayer(Player player){
-        this.occupierPlayer = player;
+    public void setOccupierPlayerId(int playerId){
+        this.occupierPlayerId = playerId;
     }
 
     public void removePlayer() {
-        occupierPlayer = null;
+        this.occupierPlayerId = -1;
     }
     
 }

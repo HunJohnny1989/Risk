@@ -5,13 +5,18 @@
  */
 package controller;
 
-import javax.swing.UIManager;
+import java.util.ArrayList;
+import java.util.List;
 import model.*;
 import model.dto.BattleResult;
 import model.dto.GameField;
-import model.dto.Missions;
 import model.dto.Phase;
 import model.dto.Territory;
+import network.Client;
+import network.MessageDTO;
+import network.PlayerDTO;
+import network.TerritoryDTO;
+import network.converter.PlayerConverter;
 import view.MainWindow;
 
 /**
@@ -20,46 +25,17 @@ import view.MainWindow;
  */
 public class Controller implements ControllerInterface {
 
+    private int clientPlayerId;
     private static Model model;
     private static MainWindow mainWindow;
     private static GameField field;
+    private Client client;
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+    public Controller() {
+    }
 
-        /* Create and display the form */
-        // EventQueue.invokeLater(() -> {
-        mainWindow = new MainWindow();
-        mainWindow.setVisible(true);
-        //});
-        
-        field = new GameField("src\\Model\\MapShape.xml");
-        startNewGame();
-        mainWindow.setGameField(field);
+    public Controller(Client client) {
+        this.client = client;
     }
 
     @Override
@@ -68,18 +44,38 @@ public class Controller implements ControllerInterface {
     }
 
     @Override
-    public void removeAvailableTroops(int troopCount) {
+    public void addTroopToTerritory(Territory territory, int troopCount) {
         Player currentPlayer = model.getCurrentPlayer();
         currentPlayer.setRemainingPlaceableTroopCount(currentPlayer.getRemainingPlaceableTroopCount() - troopCount);
         if (currentPlayer.getRemainingPlaceableTroopCount() == 0) {
+            model.getCurrentPlayer().setRemainingPlaceableTroopCount(0);
             model.selectNextPlayer();
-            if (model.getCurrentPlayer().getRemainingPlaceableTroopCount() == 0) {
+            if (model.allTroopPlaced()) {
                 model.nextPhase();
-                 mainWindow.setGamePhase(model.getCurrentPhase());
+                mainWindow.setGamePhase(model.getCurrentPhase());
             }
             mainWindow.setPLayer(model.getCurrentPlayer());
-            mainWindow.setMissionString(model.getCurrentPlayer().getMissionCard().getMission());
+            //mainWindow.setMissionString(model.searchPlayer(clientPlayerId).getMissionCard().getMission());
         }
+        territory.addTroops(troopCount);
+        //Broadcast action
+        MessageDTO msg = new MessageDTO();
+        msg.setAction("addTroopToTerritory");
+        msg.setCurrentPlayerId(model.getCurrentPlayerId());
+        msg.setCurrentPhase(model.getCurrentPhase());
+        List<TerritoryDTO> ts = new ArrayList<TerritoryDTO>();
+        TerritoryDTO tdto = new TerritoryDTO();
+        tdto.setName(territory.getName());
+        tdto.setTroopCount(territory.getTroopCount());
+        ts.add(tdto);
+        msg.setTerritories(ts);
+        List<PlayerDTO> pls = new ArrayList<PlayerDTO>();
+        for (Player p : model.getPlayers()) {
+            PlayerDTO pdto = PlayerConverter.getDTO(p);
+            pls.add(pdto);
+        }
+        msg.setPlayers(pls);
+        client.sendMessage(msg);
     }
 
     @Override
@@ -94,59 +90,136 @@ public class Controller implements ControllerInterface {
 
     @Override
     public BattleResult attackTerritory(Territory from, Territory to, int troopCount) {
-        BattleResult result = model.getCurrentPlayer().attack(from, to, troopCount);
+        BattleResult result = model.getCurrentPlayer().attack(from, to, troopCount, model);
         from.removeTroops(result.getAttackerTroopLossCount());
         to.removeTroops(result.getDefenderTroopLossCount());
+        //Broadcast action
+        MessageDTO msg = new MessageDTO();
+        msg.setAction("setTerritory");
+        List<TerritoryDTO> ts = new ArrayList<TerritoryDTO>();
+        TerritoryDTO fromDTO = new TerritoryDTO();
+        fromDTO.setName(from.getName());
+        fromDTO.setTroopCount(from.getTroopCount());
+        fromDTO.setOccupierPlayerId(from.getOccupierPlayerId());
+        ts.add(fromDTO);
+        TerritoryDTO toDTO = new TerritoryDTO();
+        toDTO.setName(to.getName());
+        toDTO.setTroopCount(to.getTroopCount());
+        toDTO.setOccupierPlayerId(to.getOccupierPlayerId());
+        ts.add(toDTO);
+        msg.setTerritories(ts);
+        client.sendMessage(msg);
         return result;
     }
 
     @Override
     public void transfer(Territory from, Territory to, int troopCount) {
         model.getCurrentPlayer().transfer(from, to, troopCount);
+        //Broadcast action
+        MessageDTO msg = new MessageDTO();
+        msg.setAction("setTerritory");
+        List<TerritoryDTO> ts = new ArrayList<TerritoryDTO>();
+        TerritoryDTO fromDTO = new TerritoryDTO();
+        fromDTO.setName(from.getName());
+        fromDTO.setTroopCount(from.getTroopCount());
+        fromDTO.setOccupierPlayerId(from.getOccupierPlayerId());
+        ts.add(fromDTO);
+        TerritoryDTO toDTO = new TerritoryDTO();
+        toDTO.setName(to.getName());
+        toDTO.setTroopCount(to.getTroopCount());
+        toDTO.setOccupierPlayerId(to.getOccupierPlayerId());
+        ts.add(toDTO);
+        msg.setTerritories(ts);
+        client.sendMessage(msg);
     }
-    
+
     @Override
-    public void finishAttack(){
+    public void finishAttack() {
         model.finishAttack();
         mainWindow.setPLayer(model.getCurrentPlayer());
         mainWindow.setGamePhase(model.getCurrentPhase());
-        mainWindow.setMissionString(model.getCurrentPlayer().getMissionCard().getMission());
+        //mainWindow.setMissionString(model.searchPlayer(clientPlayerId).getMissionCard().getMission());
+        //Broadcast action
+        client.sendMessage(finishAction());
     }
-    
+
+    private MessageDTO finishAction() {
+        MessageDTO msg = new MessageDTO();
+        msg.setAction("finishAction");
+        msg.setCurrentPhase(model.getCurrentPhase());
+        msg.setCurrentPlayerId(model.getCurrentPlayerId());
+        msg.setPlayers(new ArrayList<>());
+        for (Player p : model.getPlayers()) {
+            PlayerDTO pdto = PlayerConverter.getDTO(p);
+            msg.getPlayers().add(pdto);
+        }
+        return msg;
+    }
+
     @Override
-    public void finishRegroup(){
+    public void finishRegroup() {
         model.finisRegroup();
         mainWindow.setPLayer(model.getCurrentPlayer());
         mainWindow.setGamePhase(model.getCurrentPhase());
-        mainWindow.setMissionString(model.getCurrentPlayer().getMissionCard().getMission());
+        //mainWindow.setMissionString(model.searchPlayer(clientPlayerId).getMissionCard().getMission());
+        //Broadcast action
+        client.sendMessage(finishAction());
     }
-    
+
     //author Eszti
     @Override
-    public Player getWinner()
-    {
-        for(Player p : model.getPlayers())
-        {
-            if(!p.hasKilledPlayer(p.getColor()) && p.isMissionCompleted())
-            {
+    public Player getWinner() {
+        for (Player p : model.getPlayers()) {
+            if (!p.hasKilledPlayer(p.getColor()) && p.isMissionCompleted()) {
                 return p;
             }
         }
-        
+
         return null;
     }
-    
+
+    public Model getModel() {
+        return model;
+    }
+
+    public MainWindow getMainWindow() {
+        return mainWindow;
+    }
+
+    public GameField getField() {
+        return field;
+    }
+
     //author Eszti
-    public static void startNewGame()
-    {
-         //TODO Kirajzolni Játékos adatait bekérő oldalt
-        model = new Model("Eszti", "Orsi", "John", "Tomi");
+    public void startNewGame(String... playerNameList) {
+        //TODO Kirajzolni Játékos adatait bekérő oldalt
+        model = new Model(playerNameList);
+        field = new GameField("/model/MapShape.xml");
+        mainWindow = new MainWindow(this);
         field.resetTerritories();
         model.divideRandomTerritories(field.getTerritories());
-        mainWindow.setPLayer(model.getCurrentPlayer());
-        mainWindow.setGamePhase(model.getCurrentPhase());
-        mainWindow.setMissionString(model.getCurrentPlayer().getMissionCard().getMission() );
         mainWindow.refreshRiskCards(model.getCurrentPlayer());
         mainWindow.setRiskCardsCanBeExchanged(false);
     }
+
+    public static void setModel(Model model) {
+        Controller.model = model;
+    }
+
+    public static void setMainWindow(MainWindow mainWindow) {
+        Controller.mainWindow = mainWindow;
+    }
+
+    public static void setField(GameField field) {
+        Controller.field = field;
+    }
+
+    public int getClientPlayerId() {
+        return clientPlayerId;
+    }
+
+    public void setClientPlayerId(int clientPlayerId) {
+        this.clientPlayerId = clientPlayerId;
+    }
+
 }

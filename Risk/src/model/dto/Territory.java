@@ -2,7 +2,6 @@ package model.dto;
 
 import java.awt.geom.*;
 import java.util.ArrayList;
-import model.dto.Continent;
 import java.util.List;
 import java.util.Scanner;
 import model.Player;
@@ -16,7 +15,7 @@ public class Territory {
     private String name;
     private int troopCount;
     private List<Territory> neighbourTerritories; //szomszedos korzetek
-    private Player occupierPlayer;
+    private int occupierPlayerId;
     private Continent continent;
     private GeneralPath shape;
     private Point2D.Float centerPoint;
@@ -38,14 +37,18 @@ public class Territory {
         createShape(shape);
     }
 
+    public void setOccupierPlayerId(int occupierPlayerId) {
+        this.occupierPlayerId = occupierPlayerId;
+    }
+
     /**
      *
      * @author orsi
      */
-    public void setContinent(Continent continent){
+    public void setContinent(Continent continent) {
         this.continent = continent;
     }
-    
+
     public Continent getContinent() {
         return continent;
     }
@@ -58,8 +61,8 @@ public class Territory {
         return this.name;
     }
 
-    public Player getOccupierPlayer() {
-        return this.occupierPlayer;
+    public int getOccupierPlayerId() {
+        return this.occupierPlayerId;
     }
 
     public List<Territory> getNeighbourTerritories() {
@@ -70,19 +73,19 @@ public class Territory {
         List<Territory> ours = new ArrayList<Territory>();
         if (neighbourTerritories != null) {
             for (Territory t : this.neighbourTerritories) {
-                if (t.getOccupierPlayer().equals(occupierPlayer)) {
+                if (t.getOccupierPlayerId() == occupierPlayerId) {
                     ours.add(t);
                 }
             }
         }
         return ours;
     }
-    
-        public List<Territory> getNeighbourEnemyTerritories() {
+
+    public List<Territory> getNeighbourEnemyTerritories() {
         List<Territory> enemies = new ArrayList<Territory>();
         if (neighbourTerritories != null) {
             for (Territory t : this.neighbourTerritories) {
-                if (!t.getOccupierPlayer().equals(occupierPlayer)) {
+                if (t.getOccupierPlayerId() != occupierPlayerId) {
                     enemies.add(t);
                 }
             }
@@ -94,7 +97,7 @@ public class Territory {
      * @author Sajti Tamás
      */
     public void assignToPlayer(Player player) {
-        occupierPlayer = player;
+        occupierPlayerId = player == null ? -1 : player.getPlayerId();
     }
 
     /**
@@ -161,5 +164,5 @@ public class Territory {
     public void setTroopCount(int troopCount) {
         this.troopCount = troopCount;
     }
-    
+
 }
