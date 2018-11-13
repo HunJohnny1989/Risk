@@ -5,12 +5,14 @@
  */
 package controller;
 
+import java.awt.Dialog;
 import java.io.IOException;
 import java.net.Socket;
 import model.Model;
 import model.dto.GameField;
 import network.Client;
 import network.Server;
+import view.GameOver;
 import view.MainWindow;
 import view.LobbyWindow;
 
@@ -25,16 +27,20 @@ public class Main {
     private static GameField field;
 
     public static void main(String args[]) throws IOException {
-        LobbyWindow lobbyWindow = new LobbyWindow();
+        LobbyWindow lobbyWindow = new LobbyWindow(null, true);
         lobbyWindow.setVisible(true);
-        while(lobbyWindow.isVisible());
-        if(lobbyWindow.isNewGame())
+        switch(lobbyWindow.getChosenOption())
         {
-            serverm(lobbyWindow.getNumberOfPlayer());   
-        }
-        else
-        {
-            clientm(lobbyWindow.getName());
+            case NEWSERVER:
+                serverm(lobbyWindow.getNumberOfPlayer()); 
+                break;
+             
+            case NEWCLIENT:
+                clientm(lobbyWindow.getName());
+                break;
+                
+            default:
+                break;
         }
     }
 

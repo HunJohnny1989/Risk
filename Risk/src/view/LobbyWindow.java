@@ -5,19 +5,27 @@
  */
 package view;
 
+import static view.ChooseOptions.NOTHING;
+
 /**
  *
  * @author Eszter
  */
-public class LobbyWindow extends javax.swing.JFrame {
+public class LobbyWindow extends javax.swing.JDialog {
 
-    private Boolean newGame = false;
+    private ChooseOptions actOption = NOTHING;
     
     /**
      * Creates new form LobbyWindow
      */
     public LobbyWindow() {
         initComponents();
+    }
+    
+    public LobbyWindow(java.awt.Frame parent, boolean modal) {
+        super(parent, modal);
+        initComponents(); 
+        this.setLocationRelativeTo(parent);
     }
 
     /**
@@ -54,7 +62,7 @@ public class LobbyWindow extends javax.swing.JFrame {
             .addGap(0, 100, Short.MAX_VALUE)
         );
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Log in");
         setMaximumSize(new java.awt.Dimension(500, 400));
         setPreferredSize(new java.awt.Dimension(380, 370));
@@ -192,13 +200,13 @@ public class LobbyWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void JButtonCreateNewGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JButtonCreateNewGameActionPerformed
-        newGame = true;
+        actOption = ChooseOptions.NEWSERVER;
         setVisible(false);
         
     }//GEN-LAST:event_JButtonCreateNewGameActionPerformed
 
     private void JButtonConnectToGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JButtonConnectToGameActionPerformed
-        newGame = false;
+        actOption = ChooseOptions.NEWCLIENT;
         setVisible(false);
     }//GEN-LAST:event_JButtonConnectToGameActionPerformed
 
@@ -217,9 +225,9 @@ public class LobbyWindow extends javax.swing.JFrame {
         return this.jTextFieldHostAddress.getText();
     }
     
-    public Boolean isNewGame()
+    public ChooseOptions getChosenOption()
     {
-        return newGame;
+        return actOption;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
