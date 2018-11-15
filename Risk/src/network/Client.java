@@ -121,7 +121,7 @@ public class Client {
         controller.getModel().setCurrentPlayerId(msg.getCurrentPlayerId());
         controller.getModel().setCurrentPhase(msg.getCurrentPhase());
         controller.getMainWindow().setGamePhase(msg.getCurrentPhase());
-        controller.getMainWindow().setPLayer(controller.getModel().getCurrentPlayer());
+        controller.getMainWindow().setPlayer(controller.getModel().getCurrentPlayer());
         controller.getMainWindow().repaint();
     }
 
@@ -151,7 +151,7 @@ public class Client {
         controller.getModel().setCurrentPlayerId(msg.getCurrentPlayerId());
         controller.getModel().setCurrentPhase(msg.getCurrentPhase());
         controller.getMainWindow().setGamePhase(msg.getCurrentPhase());
-        controller.getMainWindow().setPLayer(controller.getModel().getCurrentPlayer());
+        controller.getMainWindow().setPlayer(controller.getModel().getCurrentPlayer());
         //controller.getMainWindow().setMissionString(controller.getModel().searchPlayer(controller.getClientPlayerId()).getMissionCard().getMission());
         for (TerritoryDTO tdto : msg.getTerritories()) {
             for (Territory t : controller.getField().getTerritories()) {
@@ -192,7 +192,7 @@ public class Client {
                 }
             }
         }
-        mainWindow.setPLayer(controller.getModel().searchPlayer(msg.getCurrentPlayerId()));
+        mainWindow.setPlayer(controller.getModel().searchPlayer(msg.getCurrentPlayerId()));
         mainWindow.setGamePhase(msg.getCurrentPhase());
         //controller.getMainWindow().setMissionString(controller.getModel().searchPlayer(controller.getClientPlayerId()).getMissionCard().getMission());
         //mainWindow.refreshRiskCards(model.getCurrentPlayer());

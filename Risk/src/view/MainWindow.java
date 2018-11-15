@@ -224,7 +224,7 @@ public class MainWindow extends JFrame {
         surface1.setGameField(gameField);
     }
 
-    public void setPLayer(model.Player player) {
+    public void setPlayer(model.Player player) {
         jLabelCurrentPlayer.setText(player.getName() + " (" + player.getColor() + ")");
         this.refreshRiskCards(player);
         if (controller.getCurrentPhase() == model.dto.Phase.PLACE_TROOPS) {

@@ -192,7 +192,7 @@ public class Model {
         return true;
     }
 
-    public void finisRegroup() {
+    public void finishRegroup() {
         getCurrentPlayer().setFinishedRegroup(true);
         boolean allFinished = true;
         for (Player p : players) {

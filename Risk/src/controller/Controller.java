@@ -48,13 +48,12 @@ public class Controller implements ControllerInterface {
         Player currentPlayer = model.getCurrentPlayer();
         currentPlayer.setRemainingPlaceableTroopCount(currentPlayer.getRemainingPlaceableTroopCount() - troopCount);
         if (currentPlayer.getRemainingPlaceableTroopCount() == 0) {
-            model.getCurrentPlayer().setRemainingPlaceableTroopCount(0);
             model.selectNextPlayer();
             if (model.allTroopPlaced()) {
                 model.nextPhase();
                 mainWindow.setGamePhase(model.getCurrentPhase());
             }
-            mainWindow.setPLayer(model.getCurrentPlayer());
+            mainWindow.setPlayer(model.getCurrentPlayer());
             //mainWindow.setMissionString(model.searchPlayer(clientPlayerId).getMissionCard().getMission());
         }
         territory.addTroops(troopCount);
@@ -136,7 +135,7 @@ public class Controller implements ControllerInterface {
     @Override
     public void finishAttack() {
         model.finishAttack();
-        mainWindow.setPLayer(model.getCurrentPlayer());
+        mainWindow.setPlayer(model.getCurrentPlayer());
         mainWindow.setGamePhase(model.getCurrentPhase());
         //mainWindow.setMissionString(model.searchPlayer(clientPlayerId).getMissionCard().getMission());
         //Broadcast action
@@ -158,8 +157,8 @@ public class Controller implements ControllerInterface {
 
     @Override
     public void finishRegroup() {
-        model.finisRegroup();
-        mainWindow.setPLayer(model.getCurrentPlayer());
+        model.finishRegroup();
+        mainWindow.setPlayer(model.getCurrentPlayer());
         mainWindow.setGamePhase(model.getCurrentPhase());
         //mainWindow.setMissionString(model.searchPlayer(clientPlayerId).getMissionCard().getMission());
         //Broadcast action
@@ -192,7 +191,6 @@ public class Controller implements ControllerInterface {
 
     //author Eszti
     public void startNewGame(String... playerNameList) {
-        //TODO Kirajzolni Játékos adatait bekérő oldalt
         model = new Model(playerNameList);
         field = new GameField("/model/MapShape.xml");
         mainWindow = new MainWindow(this);
