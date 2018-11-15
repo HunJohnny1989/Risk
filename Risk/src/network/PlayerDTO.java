@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import model.dto.Color;
+import model.dto.MissionCard;
 
 /**
  *
@@ -22,6 +23,7 @@ public class PlayerDTO implements Serializable {
     private String name;
     private int remainingPlaceableTroopCount = 0;
     private Color color;
+    private MissionCard missionCard;
     private int numOfInfantry = 0;
     private int numOfCavalry = 0;
     private int numOfArtillery = 0;
@@ -30,6 +32,14 @@ public class PlayerDTO implements Serializable {
     private List<String> occupiedContinentNames;
     private boolean finishedAttack;
     private boolean finishedRegroup;
+
+    public MissionCard getMissionCard() {
+        return missionCard;
+    }
+
+    public void setMissionCard(MissionCard missionCard) {
+        this.missionCard = missionCard;
+    }
 
     public String getName() {
         return name;

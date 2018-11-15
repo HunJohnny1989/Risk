@@ -9,7 +9,7 @@ import model.Player;
  *
  * @author orsi, Sajti Tamás
  */
-public class MissionCard  implements Serializable{  //feladatkartya
+public class MissionCard implements Serializable{  //feladatkartya
     
     private static final long serialVersionUID = 1L;
     private int type;
@@ -25,6 +25,26 @@ public class MissionCard  implements Serializable{  //feladatkartya
     
     public MissionCard(int type, String playerName, String mission, Function< MissionAgent, Boolean > condition ){
         this(type, mission, condition);
+        this.playerName = playerName;
+    }
+
+    public Function<MissionAgent, Boolean> getCondition() {
+        return condition;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public void setMission(String mission) {
+        this.mission = mission;
+    }
+
+    public void setCondition(Function<MissionAgent, Boolean> condition) {
+        this.condition = condition;
+    }
+
+    public void setPlayerName(String playerName) {
         this.playerName = playerName;
     }
     

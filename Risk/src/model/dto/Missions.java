@@ -1,9 +1,11 @@
 package model.dto;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Function;
 import java.util.stream.Stream;
 import model.MissionAgent;
 import model.Player;
@@ -23,27 +25,28 @@ public class Missions {
         // adding kill-a-color MissionCards for each player in the game
         for( Player p: players ) {
             missions.add( new MissionCard(0, p.getName(), String.format( "Kill %s ( %s )", p.getName(), p.getColor() ),
-                                           ( agent -> agent.hasKilledPlayer( p.getColor() ) ) ) ); 
+                (Function<MissionAgent, Boolean> & Serializable)( agent -> agent.hasKilledPlayer( p.getColor() ) ) ) ); 
+                // casting to (Function<MissionAgent, Boolean> & Serializable) for it to be Serializable
         }
         
         missions.add(new MissionCard(1, String.format("Conquer Asia and South America"), 
-                     agent -> agent.hasOccupiedContinents( ASIA, SOUTH_AMERICA) ));
+                     (Function<MissionAgent, Boolean> & Serializable)agent -> agent.hasOccupiedContinents( ASIA, SOUTH_AMERICA) ));
         missions.add(new MissionCard(1, String.format("Conquer Asia and Africa"),
-                     agent -> agent.hasOccupiedContinents( ASIA, AFRICA) ));                                           
+                     (Function<MissionAgent, Boolean> & Serializable)agent -> agent.hasOccupiedContinents( ASIA, AFRICA) ));                                           
         missions.add(new MissionCard(1, String.format("Conquer North America and Africa"),
-                     agent -> agent.hasOccupiedContinents( NORTH_AMERICA, AFRICA) ));                                       
+                     (Function<MissionAgent, Boolean> & Serializable)agent -> agent.hasOccupiedContinents( NORTH_AMERICA, AFRICA) ));                                       
         missions.add(new MissionCard(1, String.format("Conquer North America and Australasia"),
-                     agent -> agent.hasOccupiedContinents( NORTH_AMERICA, AUSTRALIA, ASIA) ));   
+                     (Function<MissionAgent, Boolean> & Serializable)agent -> agent.hasOccupiedContinents( NORTH_AMERICA, AUSTRALIA, ASIA) ));   
         missions.add(new MissionCard(1, String.format("Conquer Europe and South America and a 3rd continent of your choice"),
-                     agent -> agent.hasOccupiedContinents( EUROPE, SOUTH_AMERICA) &&
+                     (Function<MissionAgent, Boolean> & Serializable)agent -> agent.hasOccupiedContinents( EUROPE, SOUTH_AMERICA) &&
                              agent.getOccupiedContinentCount() > 2 ));   
         missions.add(new MissionCard(1, String.format("Conquer Europe and Australasia and a 3rd continent of your choice"),
-                     agent -> agent.hasOccupiedContinents( EUROPE, AUSTRALIA, ASIA)  &&
+                     (Function<MissionAgent, Boolean> & Serializable)agent -> agent.hasOccupiedContinents( EUROPE, AUSTRALIA, ASIA)  &&
                              agent.getOccupiedContinentCount() > 2 ));   
         missions.add(new MissionCard(1, String.format("Occupy 18 territories with at least 2 armies in each territory"),
-                     agent -> agent.getTerritoryCountWithAtLeastTwoTroops() >= 18 ));   
+                     (Function<MissionAgent, Boolean> & Serializable)agent -> agent.getTerritoryCountWithAtLeastTwoTroops() >= 18 ));   
         missions.add(new MissionCard(1, String.format("Occupy 24 territories (no restriction to 2 or more armies in each)"),
-                     agent -> agent.getOccupiedTerritoryCount() >= 24 )); 
+                     (Function<MissionAgent, Boolean> & Serializable)agent -> agent.getOccupiedTerritoryCount() >= 24 )); 
 
     }
     

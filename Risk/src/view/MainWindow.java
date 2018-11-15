@@ -224,11 +224,19 @@ public class MainWindow extends JFrame {
         surface1.setGameField(gameField);
     }
 
-    public void setPlayer(model.Player player) {
+    public void setCurrentPlayer(model.Player player) {
         jLabelCurrentPlayer.setText(player.getName() + " (" + player.getColor() + ")");
+        if (controller.getCurrentPhase() == model.dto.Phase.PLACE_TROOPS) {
+            this.setRiskCardsCanBeExchanged(player.canRiskCardsBeRedeemed());
+        } else {
+            this.setRiskCardsCanBeExchanged(false);
+        }
+    }
+
+    public void setClientPlayer(model.Player player) {
         this.refreshRiskCards(player);
         if (controller.getCurrentPhase() == model.dto.Phase.PLACE_TROOPS) {
-            this.setRiskCardsCanBeExchanged(controller.getCurrentPlayer().canRiskCardsBeRedeemed());
+            this.setRiskCardsCanBeExchanged(player.canRiskCardsBeRedeemed());
         } else {
             this.setRiskCardsCanBeExchanged(false);
         }

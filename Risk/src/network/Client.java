@@ -121,7 +121,8 @@ public class Client {
         controller.getModel().setCurrentPlayerId(msg.getCurrentPlayerId());
         controller.getModel().setCurrentPhase(msg.getCurrentPhase());
         controller.getMainWindow().setGamePhase(msg.getCurrentPhase());
-        controller.getMainWindow().setPlayer(controller.getModel().getCurrentPlayer());
+        controller.getMainWindow().setCurrentPlayer(controller.getModel().getCurrentPlayer());
+        controller.getMainWindow().setClientPlayer(controller.getModel().searchPlayer(controller.getClientPlayerId()));
         controller.getMainWindow().repaint();
     }
 
@@ -151,8 +152,8 @@ public class Client {
         controller.getModel().setCurrentPlayerId(msg.getCurrentPlayerId());
         controller.getModel().setCurrentPhase(msg.getCurrentPhase());
         controller.getMainWindow().setGamePhase(msg.getCurrentPhase());
-        controller.getMainWindow().setPlayer(controller.getModel().getCurrentPlayer());
-        //controller.getMainWindow().setMissionString(controller.getModel().searchPlayer(controller.getClientPlayerId()).getMissionCard().getMission());
+        controller.getMainWindow().setCurrentPlayer(controller.getModel().getCurrentPlayer());
+        controller.getMainWindow().setMissionString(controller.getModel().searchPlayer(controller.getClientPlayerId()).getMissionCard().getMission());
         for (TerritoryDTO tdto : msg.getTerritories()) {
             for (Territory t : controller.getField().getTerritories()) {
                 if (tdto.getName().equals(t.getName())) {
@@ -192,11 +193,9 @@ public class Client {
                 }
             }
         }
-        mainWindow.setPlayer(controller.getModel().searchPlayer(msg.getCurrentPlayerId()));
+        mainWindow.setCurrentPlayer(controller.getModel().getCurrentPlayer());
+        mainWindow.setClientPlayer(controller.getModel().searchPlayer(controller.getClientPlayerId()));
         mainWindow.setGamePhase(msg.getCurrentPhase());
-        //controller.getMainWindow().setMissionString(controller.getModel().searchPlayer(controller.getClientPlayerId()).getMissionCard().getMission());
-        //mainWindow.refreshRiskCards(model.getCurrentPlayer());
-        //mainWindow.setRiskCardsCanBeExchanged(false);
 
         mainWindow.setGameField(field);
     }

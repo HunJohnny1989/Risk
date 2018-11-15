@@ -26,6 +26,7 @@ public class PlayerConverter {
 
     public static PlayerDTO getDTO(Player player) {
         PlayerDTO dto = new PlayerDTO();
+        dto.setMissionCard(player.getMissionCard());
         dto.setColor(player.getColor());
         dto.setName(player.getName());
         dto.setNumOfArtillery(player.getNumOfArtillery());
@@ -41,6 +42,7 @@ public class PlayerConverter {
 
     public static Player getPlayer(PlayerDTO dto, GameField field) {
         Player player = new Player(dto.getPlayerId(), dto.getName(), dto.getColor());
+        player.setMissionCard( dto.getMissionCard() );
         List<Territory> occupiedTerritories = new LinkedList<Territory>();
         for (Territory t : field.getTerritories()) {
             if (t.getOccupierPlayerId() == dto.getPlayerId()) {

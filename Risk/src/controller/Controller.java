@@ -53,8 +53,7 @@ public class Controller implements ControllerInterface {
                 model.nextPhase();
                 mainWindow.setGamePhase(model.getCurrentPhase());
             }
-            mainWindow.setPlayer(model.getCurrentPlayer());
-            //mainWindow.setMissionString(model.searchPlayer(clientPlayerId).getMissionCard().getMission());
+            mainWindow.setCurrentPlayer(model.getCurrentPlayer());
         }
         territory.addTroops(troopCount);
         //Broadcast action
@@ -135,9 +134,8 @@ public class Controller implements ControllerInterface {
     @Override
     public void finishAttack() {
         model.finishAttack();
-        mainWindow.setPlayer(model.getCurrentPlayer());
+        mainWindow.setCurrentPlayer(model.getCurrentPlayer());
         mainWindow.setGamePhase(model.getCurrentPhase());
-        //mainWindow.setMissionString(model.searchPlayer(clientPlayerId).getMissionCard().getMission());
         //Broadcast action
         client.sendMessage(finishAction());
     }
@@ -158,9 +156,8 @@ public class Controller implements ControllerInterface {
     @Override
     public void finishRegroup() {
         model.finishRegroup();
-        mainWindow.setPlayer(model.getCurrentPlayer());
+        mainWindow.setCurrentPlayer(model.getCurrentPlayer());
         mainWindow.setGamePhase(model.getCurrentPhase());
-        //mainWindow.setMissionString(model.searchPlayer(clientPlayerId).getMissionCard().getMission());
         //Broadcast action
         client.sendMessage(finishAction());
     }
@@ -196,7 +193,7 @@ public class Controller implements ControllerInterface {
         mainWindow = new MainWindow(this);
         field.resetTerritories();
         model.divideRandomTerritories(field.getTerritories());
-        mainWindow.refreshRiskCards(model.getCurrentPlayer());
+        mainWindow.refreshRiskCards(model.searchPlayer(getClientPlayerId()));
         mainWindow.setRiskCardsCanBeExchanged(false);
     }
 

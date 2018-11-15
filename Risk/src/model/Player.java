@@ -222,9 +222,7 @@ public class Player implements MissionAgent, Serializable {
      */
     public void placeTroops(Territory territory, int troopCount) {
         //nem vegleges
-        if (troopCount > this.remainingPlaceableTroopCount) {
-            //nincs annyi had, adjon errort vagy valami
-        } else {
+        if (troopCount <= this.remainingPlaceableTroopCount) {
             this.remainingPlaceableTroopCount = this.remainingPlaceableTroopCount - troopCount;
             this.occupiedTerritories.add(territory);
             if (territory.getTroopCount() == 0) {
