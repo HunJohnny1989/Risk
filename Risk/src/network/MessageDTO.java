@@ -23,6 +23,7 @@ public class MessageDTO implements Serializable {
     private Phase currentPhase;
     private List<PlayerDTO> players;
     private List<TerritoryDTO> territories;
+    private String chatMessage;
 
     public String getAction() {
         return action;
@@ -70,6 +71,18 @@ public class MessageDTO implements Serializable {
 
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
+    }
+    
+    /**
+    *
+    * @author orsi1
+    */
+    public void setChatMessage(String chatMessage){
+        this.chatMessage = chatMessage;
+    }
+    
+    public String getChatMessage(){
+        return this.chatMessage;
     }
 
 }

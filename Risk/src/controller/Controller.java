@@ -161,6 +161,17 @@ public class Controller implements ControllerInterface {
         //Broadcast action
         client.sendMessage(finishAction());
     }
+    
+    /**
+    *
+    * @author orsi1
+    */
+    public void sendChatMessage(String message){
+        MessageDTO msg = new MessageDTO();
+        msg.setAction("chatMessage");
+        msg.setChatMessage(message);
+        client.sendMessage(msg);
+    }
 
     //author Eszti
     @Override

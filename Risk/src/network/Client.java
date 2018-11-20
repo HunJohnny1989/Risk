@@ -18,6 +18,7 @@ import model.Player;
 import model.dto.GameField;
 import model.dto.Territory;
 import network.converter.PlayerConverter;
+import view.ChatWindow;
 import view.MainWindow;
 
 /**
@@ -30,6 +31,7 @@ public class Client {
     private ObjectInputStream sInput;
     private ObjectOutputStream sOutput;
     private Controller controller;
+    private ChatWindow chatWindow;
 
     public Client(String name) {
         System.out.println("Connecting");
@@ -113,9 +115,20 @@ public class Client {
             case "finishAction":
                 finishAction(msg);
                 break;
+            case "chatMessage":
+                readChatMessage(msg);
+                break;
         }
     }
 
+    /**
+    *
+    * @author orsi1
+    */
+    private void readChatMessage(MessageDTO msg){
+        chatWindow.setIncoming(msg.getChatMessage());
+    }
+    
     private void finishAction(MessageDTO msg) {
         setPlayers(msg);
         controller.getModel().setCurrentPlayerId(msg.getCurrentPlayerId());
@@ -170,6 +183,10 @@ public class Client {
         MainWindow mainWindow = new MainWindow(controller);
         controller.setMainWindow(mainWindow);
         mainWindow.setVisible(true);
+        
+        chatWindow = new ChatWindow(controller);
+        chatWindow.setName(msg.getPlayerName());
+        chatWindow.setVisible(true);
 
         GameField field = new GameField("/model/MapShape.xml");
         controller.setField(field);

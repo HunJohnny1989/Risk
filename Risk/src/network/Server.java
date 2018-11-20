@@ -153,6 +153,10 @@ public class Server {
                     case "finishAction":
                         broadcast(msg);
                         break;
+                    case "chatMessage":
+                        broadcast(msg);
+                        //System.out.println(msg.getChatMessage());
+                        break;
                 }
             }
             // remove myself from the arrayList containing the list of the
