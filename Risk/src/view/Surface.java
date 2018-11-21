@@ -49,8 +49,12 @@ public class Surface extends javax.swing.JPanel {
     private PlayerDefeated playerDefeatedDialog;
     private GameOver gameOverDialog;
 
-    public Surface(Controller controller) {
+    public Surface() {
         initComponents();
+    }    
+    
+    public Surface(Controller controller) {
+        this();
         internalMapAction = InternalMapAction.NONE;
         this.controller = controller;
 
@@ -126,11 +130,18 @@ public class Surface extends javax.swing.JPanel {
                 if (internalMapAction.equals(InternalMapAction.SELECT_NEIGHBOUR_ATTACK) || internalMapAction.equals(InternalMapAction.SELECT_NEIGHBOUR_REGROUP)) {
                     targetedTerritory = territory;
                 } else {
-                    selectedTerritory = territory;
+                    if (!internalMapAction.equals(InternalMapAction.NONE) || !controller.getCurrentPhase().equals(Phase.ATTACK) || territory.getTroopCount() > 1)
+                    {
+                        selectedTerritory = territory;
+                    }
+                    else{
+                        break;
+                    }
                 }
                 if (territory.getOccupierPlayerId() == controller.getCurrentPlayer().getPlayerId()) {
                     myTerritory = true;
                 }
+                break;
             }
         }
 
@@ -202,7 +213,14 @@ public class Surface extends javax.swing.JPanel {
                     }
                 }
                 targetedTerritory = null;
-                internalMapAction = InternalMapAction.SELECT_NEIGHBOUR_ATTACK;
+                if (selectedTerritory.getTroopCount() < 2){
+                    selectedTerritory = null;
+                    internalMapAction = InternalMapAction.NONE;
+                    subSelectedTerritories.clear();
+                }
+                else{
+                    internalMapAction = InternalMapAction.SELECT_NEIGHBOUR_ATTACK;
+                }
                 break;
             case REGROUP:
                 regroupTroopsDialog.setRange(1, selectedTerritory.getTroopCount() - 1);//Legalább egy katonának maradnia kell

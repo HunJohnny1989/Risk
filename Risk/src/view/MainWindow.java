@@ -243,6 +243,7 @@ public class MainWindow extends JFrame {
     }
 
     public void setGamePhase(Phase gamePhase) {
+        this.surface1.resetSurface();
         jLabelCurrentAction.setText(gamePhase.toString());
         String actionButtonString = null;
         switch (gamePhase) {
@@ -256,7 +257,14 @@ public class MainWindow extends JFrame {
                 actionButtonString = "Cancel regroupping";
                 break;
         }
-        this.setActionButtonString(actionButtonString);
+        if(controller.getCurrentPlayer().getPlayerId() == controller.getClientPlayerId())
+        {
+            this.setActionButtonString(actionButtonString);
+        }
+        else
+        {
+            this.setActionButtonString(null);
+        }
     }
 
     public void setActionButtonString(String actionButtonString) {

@@ -196,6 +196,10 @@ public class Client {
         model.setCurrentPhase(msg.getCurrentPhase());
         model.setCurrentPlayerId(msg.getCurrentPlayerId());
         for (PlayerDTO pdto : msg.getPlayers()) {
+            if(pdto.getName().equalsIgnoreCase(msg.getPlayerName()))
+            {
+                mainWindow.setTitle(String.format("Risk - %s (%s)", msg.getPlayerName(), pdto.getColor()));
+            }
             Player p = PlayerConverter.getPlayer(pdto, controller.getField());
             model.getPlayers().add(p);
         }
