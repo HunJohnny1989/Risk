@@ -36,13 +36,14 @@ public class Client {
     private Controller controller;
     private ChatWindow chatWindow;
     private boolean windowIsClosed = false;
+    private static final int PORT = 32123;  //szerver portja
 
     public Client(String name) {
         System.out.println("Connecting");
         windowIsClosed = false;
         try {
 
-            socket = new Socket("localhost", 7777);
+            socket = new Socket("localhost", PORT);
             System.out.println("Connection succesfull");
 
             sOutput = new ObjectOutputStream(socket.getOutputStream());

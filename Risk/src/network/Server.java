@@ -30,10 +30,11 @@ public class Server {
     private ArrayList<ClientThread> clients;
     private int playerCount;
     private List<String> playerNames;
-    private Controller controller;
+    private Controller controller;    
+    private static final int PORT = 32123; 
 
     public Server(int playerCount) throws IOException {
-        serverSocket = new ServerSocket(7777);
+        serverSocket = new ServerSocket(PORT);
         clients = new ArrayList<>();
         playerNames = new ArrayList<>();
         this.playerCount = playerCount;
