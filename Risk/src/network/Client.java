@@ -6,12 +6,15 @@
 package network;
 
 import controller.Controller;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import model.Model;
 import model.Player;
@@ -32,9 +35,11 @@ public class Client {
     private ObjectOutputStream sOutput;
     private Controller controller;
     private ChatWindow chatWindow;
+    private boolean windowIsClosed = false;
 
     public Client(String name) {
         System.out.println("Connecting");
+        windowIsClosed = false;
         try {
 
             socket = new Socket("localhost", 7777);
@@ -85,7 +90,7 @@ public class Client {
     class ListenFromServer extends Thread {
 
         public void run() {
-            while (true) {
+            while (!windowIsClosed) {
                 try {
                     MessageDTO msg = (MessageDTO) sInput.readObject();
                     handleEvent(msg);
@@ -183,6 +188,7 @@ public class Client {
         MainWindow mainWindow = new MainWindow(controller);
         controller.setMainWindow(mainWindow);
         mainWindow.setVisible(true);
+        closeWindowListener(mainWindow);
         
         chatWindow = new ChatWindow(controller);
         chatWindow.setName(msg.getPlayerName());
@@ -232,5 +238,28 @@ public class Client {
             e.printStackTrace();
         }
     }
-
+    
+    public void closeWindowListener(JFrame frame){
+        frame.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                if (JOptionPane.showConfirmDialog(frame, 
+                    "Are you sure you want to close this window?", "Close Window?", 
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
+                    System.out.println("The window is closed");
+                    closeConnection();
+                }
+            }
+        });
+    }
+    
+    public void closeConnection(){
+        windowIsClosed = true;
+        MessageDTO closeMsg = new MessageDTO();
+        closeMsg.setCurrentPlayerId(controller.getClientPlayerId());
+        closeMsg.setPlayerName(controller.getModel().searchPlayer(controller.getClientPlayerId()).getName());
+        closeMsg.setAction("closeConnection");
+        sendMessage(closeMsg);
+    }
 }

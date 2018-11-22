@@ -14,6 +14,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.Player;
 import model.dto.Territory;
 import network.converter.PlayerConverter;
@@ -107,6 +109,7 @@ public class Server {
         String playerName;
 
         MessageDTO msg;
+        boolean alive = true;
 
         ClientThread(Socket socket) {
 
@@ -129,7 +132,6 @@ public class Server {
 
         public void run() {
 
-            boolean alive = true;
             while (alive) {
                 try {
                     System.out.println("várás ");
@@ -157,6 +159,9 @@ public class Server {
                         broadcast(msg);
                         //System.out.println(msg.getChatMessage());
                         break;
+                    case "closeConnection":
+                        closeClientConnection(msg);
+                        break;
                 }
             }
             // remove myself from the arrayList containing the list of the
@@ -164,8 +169,45 @@ public class Server {
             //remove(id);
             //close();
         }
+        
+        /**
+        *
+        * @author orsi1
+        */
+        private void closeClientConnection(MessageDTO msg) {
+            System.out.println("client close connection: " + msg.getPlayerName());
+            int removslCtIndex = 0;
+            boolean foundCt = false;
+            for(ClientThread ct : clients){
+                if(ct.playerName.equals(msg.getPlayerName())){
+                    foundCt = true;
+                    ct.alive = false;
+                    removslCtIndex = clients.indexOf(ct);
+                }
+            }
+            if(foundCt){
+                ClientThread ct = clients.get(removslCtIndex);
+                clients.remove(ct);
+                System.out.println("Disconnected Client " + msg.getPlayerName() + " removed from list.");
+                ct.closeClient();
+                closeServerSocket();
+            }
+        }
+        
+        private void closeServerSocket(){
+            if(clients.isEmpty()){
+                try {
+                    
+                    System.out.println("Server closed connection");
+                    serverSocket.close();
+                    System.exit(0);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
 
-        private void close() {
+        private void closeClient() {
             try {
                 if (sOutput != null) {
                     sOutput.close();
@@ -188,7 +230,7 @@ public class Server {
 
         private boolean writeMsg(MessageDTO msg) {
             if (!socket.isConnected()) {
-                close();
+                closeClient();
                 return false;
             }
             try {
