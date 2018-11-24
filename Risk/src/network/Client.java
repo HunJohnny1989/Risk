@@ -37,13 +37,17 @@ public class Client {
     private ChatWindow chatWindow;
     private volatile boolean windowIsClosed = false;
     private static final int PORT = 32123;  //szerver portja
+    private static String ipAddress = "localhost";
 
-    public Client(String name) {
+    public Client(String name, String ipAddress) {
         System.out.println("Connecting");
         windowIsClosed = false;
-        try {
-
-            socket = new Socket("localhost", PORT);
+        try {            
+            if(ipAddress.length() > 0){ 
+                Client.ipAddress = ipAddress;
+            }
+            System.out.println("Trying connect to server with ip address: " + Client.ipAddress);
+            socket = new Socket(Client.ipAddress, PORT);
             System.out.println("Connection succesfull");
 
             sOutput = new ObjectOutputStream(socket.getOutputStream());

@@ -36,7 +36,7 @@ public class Main {
                 break;
              
             case NEWCLIENT:
-                clientm(lobbyWindow.getName());
+                clientm(lobbyWindow.getName(), lobbyWindow.getHostAddress());
                 break;
                 
             default:
@@ -44,9 +44,9 @@ public class Main {
         }
     }
 
-    private static Socket clientm(String name) throws IOException {
+    private static Socket clientm(String name, String ipAddress) throws IOException {
 
-        Socket s = new Client(name).getSocket();
+        Socket s = new Client(name, ipAddress).getSocket();
 
         return s;
     }
