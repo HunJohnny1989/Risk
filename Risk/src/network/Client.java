@@ -35,7 +35,7 @@ public class Client {
     private ObjectOutputStream sOutput;
     private Controller controller;
     private ChatWindow chatWindow;
-    private boolean windowIsClosed = false;
+    private volatile boolean windowIsClosed = false;
     private static final int PORT = 32123;  //szerver portja
 
     public Client(String name) {
@@ -50,6 +50,7 @@ public class Client {
             sInput = new ObjectInputStream(socket.getInputStream());
 
             sOutput.writeObject(name);
+            sOutput.flush();
 
             buildGui();
             startClient();
@@ -92,9 +93,13 @@ public class Client {
 
         public void run() {
             while (!windowIsClosed) {
-                try {
+                try {                    
                     MessageDTO msg = (MessageDTO) sInput.readObject();
                     handleEvent(msg);
+                } catch(EOFException eof)
+                {
+                    if(!windowIsClosed) eof.printStackTrace();
+                    //end of file reached, do nothing
                 } catch (IOException e) {
                     e.printStackTrace();
                     break;
@@ -184,7 +189,7 @@ public class Client {
         controller.getMainWindow().repaint();
     }
 
-    private void initGame(MessageDTO msg) {
+    private synchronized void initGame(MessageDTO msg) {
         controller = new Controller(this);
         MainWindow mainWindow = new MainWindow(controller);
         controller.setMainWindow(mainWindow);
@@ -232,9 +237,10 @@ public class Client {
         return socket;
     }
 
-    public void sendMessage(MessageDTO msg) {
+    public synchronized void sendMessage(MessageDTO msg) {
         try {
             sOutput.writeObject(msg);
+            sOutput.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -255,12 +261,13 @@ public class Client {
         });
     }
     
-    public void closeConnection(){
+    public synchronized void closeConnection(){
         windowIsClosed = true;
         MessageDTO closeMsg = new MessageDTO();
         closeMsg.setCurrentPlayerId(controller.getClientPlayerId());
         closeMsg.setPlayerName(controller.getModel().searchPlayer(controller.getClientPlayerId()).getName());
         closeMsg.setAction("closeConnection");
         sendMessage(closeMsg);
+        System.exit(0);
     }
 }

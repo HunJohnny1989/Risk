@@ -87,7 +87,7 @@ public class Server {
         return msg;
     }
 
-    private synchronized void broadcast(MessageDTO message) {
+    private void broadcast(MessageDTO message) {
 
         if (message == null) {
             return;
@@ -123,6 +123,7 @@ public class Server {
                 playerNames.add(playerName);
                 System.out.println("Connection accepted from: " + playerName);
                 sOutput.writeObject(msg);
+                sOutput.flush();
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -186,6 +187,7 @@ public class Server {
                     removslCtIndex = clients.indexOf(ct);
                 }
             }
+            
             if(foundCt){
                 ClientThread ct = clients.get(removslCtIndex);
                 clients.remove(ct);
@@ -193,6 +195,7 @@ public class Server {
                 ct.closeClient();
                 closeServerSocket();
             }
+            
         }
         
         private void closeServerSocket(){
@@ -208,7 +211,7 @@ public class Server {
             }
         }
 
-        private void closeClient() {
+        private synchronized void closeClient() {
             try {
                 if (sOutput != null) {
                     sOutput.close();
@@ -229,7 +232,7 @@ public class Server {
             }
         }
 
-        private boolean writeMsg(MessageDTO msg) {
+        private synchronized boolean writeMsg(MessageDTO msg) {
             if (!socket.isConnected()) {
                 closeClient();
                 return false;
@@ -237,6 +240,7 @@ public class Server {
             try {
                 msg.setPlayerName(playerName);
                 sOutput.writeObject(msg);
+                sOutput.flush();
             } catch (IOException e) {
                 e.printStackTrace();
             }
