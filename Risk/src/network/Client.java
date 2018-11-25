@@ -53,8 +53,10 @@ public class Client {
             sOutput = new ObjectOutputStream(socket.getOutputStream());
             sInput = new ObjectInputStream(socket.getInputStream());
 
-            sOutput.writeObject(name);
-            sOutput.flush();
+            if( name.length() > 0 ) {
+                sOutput.writeObject(name);
+                sOutput.flush();
+            }
 
             buildGui();
             startClient();

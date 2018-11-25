@@ -54,7 +54,7 @@ public class Server {
             int i = 0;
             while (i < playerCount) {
                 Socket socket = serverSocket.accept();
-                ClientThread ct = new ClientThread(socket);
+                ClientThread ct = new ClientThread(socket, i + 1);
                 clients.add(ct);
                 ct.start();
                 i++;
@@ -112,14 +112,17 @@ public class Server {
         MessageDTO msg;
         boolean alive = true;
 
-        ClientThread(Socket socket) {
+        ClientThread(Socket socket, int clientNumber) {
 
             this.socket = socket;
             try {
 
                 sOutput = new ObjectOutputStream(socket.getOutputStream());
                 sInput = new ObjectInputStream(socket.getInputStream());
-                playerName = (String) sInput.readObject();
+                if( sInput.available() > 0 )
+                    playerName = (String) sInput.readObject();
+                else
+                    playerName = "player" + clientNumber;
                 playerNames.add(playerName);
                 System.out.println("Connection accepted from: " + playerName);
                 sOutput.writeObject(msg);
@@ -162,6 +165,7 @@ public class Server {
                         //System.out.println(msg.getChatMessage());
                         break;
                     case "closeConnection":
+                    default:
                         closeClientConnection(msg);
                         break;
                 }
