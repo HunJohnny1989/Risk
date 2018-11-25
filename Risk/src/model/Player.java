@@ -283,7 +283,7 @@ public class Player implements MissionAgent, Serializable {
         if (hasAll) {
             territory.getContinent().setOccupierPlayerId(playerId);
             occupyContinent(territory.getContinent());
-            System.out.println(this.name + " player all occupied all territories from " + territory.getContinent().getName());
+            System.out.println(this.name + " occupied all territories from " + territory.getContinent().getName());
         }
     }
 

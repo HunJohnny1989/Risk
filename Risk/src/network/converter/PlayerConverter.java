@@ -37,6 +37,7 @@ public class PlayerConverter {
         dto.setRemainingPlaceableTroopCount(player.getRemainingPlaceableTroopCount());
         dto.setFinishedAttack(player.isFinishedAttack());
         dto.setFinishedRegroup(player.isFinishedRegroup());
+        dto.setOccupiedContinents(player.getOccupiedContinents());
         return dto;
     }
 
@@ -49,14 +50,8 @@ public class PlayerConverter {
                 occupiedTerritories.add(t);
             }
         }
-        player.setOccupiedTerritories(occupiedTerritories);
-        Set<Continent> occupiedContinents = new HashSet<Continent>();
-        for (Continent c : field.getContinents()) {
-            if (c.getOccupierPlayerId() == dto.getPlayerId()) {
-                occupiedContinents.add(c);
-            }
-        }
-        player.setOccupiedContinents(occupiedContinents);
+        player.setOccupiedTerritories(occupiedTerritories);        
+        player.setOccupiedContinents(dto.getOccupiedContinents());        
         player.setNumOfArtillery(dto.getNumOfArtillery());
         player.setNumOfCavalry(dto.getNumOfCavalry());
         player.setNumOfInfantry(dto.getNumOfInfantry());

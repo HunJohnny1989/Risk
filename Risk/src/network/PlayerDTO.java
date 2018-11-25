@@ -8,7 +8,9 @@ package network;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import model.dto.Color;
+import model.dto.Continent;
 import model.dto.MissionCard;
 
 /**
@@ -29,7 +31,7 @@ public class PlayerDTO implements Serializable {
     private int numOfArtillery = 0;
     private int troopCount = 0;
     private List<String> occupiedTerritoryNames;
-    private List<String> occupiedContinentNames;
+    private Set<Continent> occupiedContinents;
     private boolean finishedAttack;
     private boolean finishedRegroup;
 
@@ -113,12 +115,12 @@ public class PlayerDTO implements Serializable {
         this.occupiedTerritoryNames = occupiedTerritoryNames;
     }
 
-    public List<String> getOccupiedContinentNames() {
-        return occupiedContinentNames;
+    public Set<Continent> getOccupiedContinents() {
+        return occupiedContinents;
     }
 
-    public void setOccupiedContinentNames(List<String> occupiedContinentNames) {
-        this.occupiedContinentNames = occupiedContinentNames;
+    public void setOccupiedContinents(Set<Continent> occupiedContinents) {
+        this.occupiedContinents = occupiedContinents;
     }
 
     public boolean isFinishedAttack() {

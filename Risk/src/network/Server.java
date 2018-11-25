@@ -88,10 +88,6 @@ public class Server {
     }
 
     private void broadcast(MessageDTO message) {
-
-        if (message == null) {
-            return;
-        }
         for (int i = clients.size(); --i >= 0;) {
             ClientThread ct = clients.get(i);
             if (!ct.writeMsg(message)) {
@@ -141,7 +137,6 @@ public class Server {
                 try {
                     System.out.println("várás ");
                     msg = (MessageDTO) sInput.readObject();
-
                 } catch (IOException e) {
                     e.printStackTrace();
                     break;
@@ -150,25 +145,26 @@ public class Server {
                     break;
                 }
 
-                switch (msg.getAction()) {
-                    case "addTroopToTerritory":
-                        broadcast(msg);
-                        break;
-                    case "setTerritory":
-                        broadcast(msg);
-                        break;
-                    case "finishAction":
-                        broadcast(msg);
-                        break;
-                    case "chatMessage":
-                        broadcast(msg);
-                        //System.out.println(msg.getChatMessage());
-                        break;
-                    case "closeConnection":
-                    default:
-                        closeClientConnection(msg);
-                        break;
-                }
+                if( msg != null )
+                    switch (msg.getAction()) {
+                        case "addTroopToTerritory":
+                            broadcast(msg);
+                            break;
+                        case "setTerritory":
+                            broadcast(msg);
+                            break;
+                        case "finishAction":
+                            broadcast(msg);
+                            break;
+                        case "chatMessage":
+                            broadcast(msg);
+                            //System.out.println(msg.getChatMessage());
+                            break;
+                        case "closeConnection":
+                        default:
+                            closeClientConnection(msg);
+                            break;
+                    }
             }
             // remove myself from the arrayList containing the list of the
             // connected Clients

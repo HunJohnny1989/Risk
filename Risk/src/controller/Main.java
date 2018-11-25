@@ -22,10 +22,6 @@ import view.LobbyWindow;
  */
 public class Main {
 
-    private static Model model;
-    private static MainWindow mainWindow;
-    private static GameField field;
-
     public static void main(String args[]) throws IOException {
         LobbyWindow lobbyWindow = new LobbyWindow(null, true);
         lobbyWindow.setVisible(true);
