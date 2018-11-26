@@ -213,8 +213,7 @@ public class Player implements MissionAgent, Serializable {
      * @author Sajti Tamás
      */
     public boolean isMissionCompleted() {
-        return false;
-        //return missionCard.isCompleted( this );
+        return missionCard.isCompleted( this );
     }
 
     /**

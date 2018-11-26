@@ -191,7 +191,6 @@ public class Surface extends javax.swing.JPanel {
                 subSelectedTerritories = selectedTerritory.getNeighbourPlayerTerritories();
                 break;
             case ATTACK:
-                //TODO hány katonával támadsz még 1 panel mint a troopsdialog és kész
                 attackTerritoryDialog.setRange(1, selectedTerritory.getTroopCount() - 1);//Legalább egy katonának maradnia kell
                 attackTerritoryDialog.setVisible(true);
 
