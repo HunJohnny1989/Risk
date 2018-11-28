@@ -5,6 +5,7 @@
  */
 package view;
 
+import javax.swing.JOptionPane;
 import static view.ChooseOptions.NOTHING;
 
 /**
@@ -206,6 +207,11 @@ public class LobbyWindow extends javax.swing.JDialog {
     }//GEN-LAST:event_JButtonCreateNewGameActionPerformed
 
     private void JButtonConnectToGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JButtonConnectToGameActionPerformed
+        if (getName().isEmpty())
+        {
+            JOptionPane.showMessageDialog(this, "Player name is missing", "Risk - Client", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         actOption = ChooseOptions.NEWCLIENT;
         setVisible(false);
     }//GEN-LAST:event_JButtonConnectToGameActionPerformed

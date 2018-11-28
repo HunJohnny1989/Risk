@@ -162,7 +162,7 @@ public class Surface extends javax.swing.JPanel {
                 }
                 break;
             case REGROUP:
-                if (internalMapAction.equals(InternalMapAction.NONE) && myTerritory) {
+                if (internalMapAction.equals(InternalMapAction.NONE) && myTerritory && selectedTerritory.getTroopCount() > 1) {
                     internalMapAction = InternalMapAction.SELECT_NEIGHBOUR_REGROUP;
                 } else if (internalMapAction.equals(InternalMapAction.SELECT_NEIGHBOUR_REGROUP) && subSelectedTerritories != null && subSelectedTerritories.contains(targetedTerritory)) {
                     internalMapAction = InternalMapAction.REGROUP;
@@ -171,16 +171,19 @@ public class Surface extends javax.swing.JPanel {
                 }
                 break;
         }
-
+        int numberOfTroops = 1;
         switch (internalMapAction) {
             case NONE:
                 return;
             case PLACETROOPS:
                 repaint();
-                placeTroopsDialog.setRange(1, controller.getPlayerRemainingTroopCount());
-                placeTroopsDialog.setVisible(true);
+                if (controller.getPlayerRemainingTroopCount() > 1){
+                    placeTroopsDialog.setRange(1, controller.getPlayerRemainingTroopCount());
+                    placeTroopsDialog.setVisible(true);
+                    numberOfTroops = placeTroopsDialog.getNumberOfTroops();
+                }
                 if (selectedTerritory != null) {
-                    addTroopToTerritory(selectedTerritory, placeTroopsDialog.getNumberOfTroops());
+                    addTroopToTerritory(selectedTerritory, numberOfTroops);
                 }
                 internalMapAction = InternalMapAction.NONE;
                 break;
@@ -191,20 +194,23 @@ public class Surface extends javax.swing.JPanel {
                 subSelectedTerritories = selectedTerritory.getNeighbourPlayerTerritories();
                 break;
             case ATTACK:
-                attackTerritoryDialog.setRange(1, selectedTerritory.getTroopCount() - 1);//Legalább egy katonának maradnia kell
-                attackTerritoryDialog.setVisible(true);
+                if(selectedTerritory.getTroopCount() > 2) {
+                    attackTerritoryDialog.setRange(1, selectedTerritory.getTroopCount() - 1);//Legalább egy katonának maradnia kell
+                    attackTerritoryDialog.setVisible(true);
+                    numberOfTroops = attackTerritoryDialog.getNumberOfTroops();
+                }
 
-                if (cancelledAction || attackTerritoryDialog.getNumberOfTroops() == 0) {
+                if (cancelledAction || numberOfTroops == 0) {
                     cancelledAction = false;
                     return;
                 }
 
                 model.Player attackedPlayer = controller.getModel().searchPlayer(targetedTerritory.getOccupierPlayerId());
 
-                BattleResult result = controller.attackTerritory(selectedTerritory, targetedTerritory, attackTerritoryDialog.getNumberOfTroops());
+                BattleResult result = controller.attackTerritory(selectedTerritory, targetedTerritory, numberOfTroops);
 
                 if (result.hasTerritoryBeenConquered()) {
-                    transferTroopToTerritory(selectedTerritory, targetedTerritory, attackTerritoryDialog.getNumberOfTroops() - result.getAttackerTroopLossCount());
+                    transferTroopToTerritory(selectedTerritory, targetedTerritory, numberOfTroops - result.getAttackerTroopLossCount());
                     subSelectedTerritories = selectedTerritory.getNeighbourEnemyTerritories();
                     if (attackedPlayer.hasKilledPlayer(attackedPlayer.getColor())) {
                         playerDefeatedDialog.setText(attackedPlayer.getName());
@@ -222,16 +228,20 @@ public class Surface extends javax.swing.JPanel {
                 }
                 break;
             case REGROUP:
-                regroupTroopsDialog.setRange(1, selectedTerritory.getTroopCount() - 1);//Legalább egy katonának maradnia kell
-                regroupTroopsDialog.setVisible(true);
+                if (selectedTerritory.getTroopCount() > 2)
+                {
+                    regroupTroopsDialog.setRange(1, selectedTerritory.getTroopCount() - 1);//Legalább egy katonának maradnia kell
+                    regroupTroopsDialog.setVisible(true);
+                    numberOfTroops = regroupTroopsDialog.getNumberOfTroops();
+                }
 
-                if (cancelledAction || regroupTroopsDialog.getNumberOfTroops() == 0) {
+                if (cancelledAction || numberOfTroops == 0) {
                     cancelledAction = false;
                     return;
                 }
-                controller.transfer(selectedTerritory, targetedTerritory, regroupTroopsDialog.getNumberOfTroops());
-                targetedTerritory = null;
-                internalMapAction = InternalMapAction.SELECT_NEIGHBOUR_REGROUP;
+                controller.transfer(selectedTerritory, targetedTerritory, numberOfTroops);
+                resetSurface();
+                controller.finishRegroup();
                 break;
         }
         this.repaint();

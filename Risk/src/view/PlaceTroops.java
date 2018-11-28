@@ -5,6 +5,11 @@
  */
 package view;
 
+import java.util.Hashtable;
+import javax.swing.JLabel;
+import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+
 /**
  *
  * @author Eszti
@@ -13,6 +18,7 @@ public class PlaceTroops extends javax.swing.JDialog {
 
     private int numberOfTroops;
     private Surface surface;
+    private Hashtable<Integer, JLabel> table;
     /**
      * Creates new form PlaceTroops
      */
@@ -22,6 +28,7 @@ public class PlaceTroops extends javax.swing.JDialog {
         this.setLocationRelativeTo(parent);
         numberOfTroops = 0;
         this.surface = surface;
+        table = new Hashtable<Integer, JLabel>();
     }
 
     /**
@@ -37,6 +44,7 @@ public class PlaceTroops extends javax.swing.JDialog {
         jSliderNumberOfTroops = new javax.swing.JSlider();
         jButtonPlace = new javax.swing.JButton();
         jButtonCancel = new javax.swing.JButton();
+        jLabelNumberOfTroops = new javax.swing.JLabel();
 
         setTitle("Place troops");
         setResizable(false);
@@ -48,13 +56,17 @@ public class PlaceTroops extends javax.swing.JDialog {
 
         jLabel1.setText("Number of troops:");
 
-        jSliderNumberOfTroops.setMajorTickSpacing(1);
         jSliderNumberOfTroops.setMaximum(10);
         jSliderNumberOfTroops.setMinimum(1);
-        jSliderNumberOfTroops.setMinorTickSpacing(1);
         jSliderNumberOfTroops.setPaintLabels(true);
         jSliderNumberOfTroops.setPaintTicks(true);
+        jSliderNumberOfTroops.setSnapToTicks(true);
         jSliderNumberOfTroops.setValue(1);
+        jSliderNumberOfTroops.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSliderNumberOfTroopsStateChanged(evt);
+            }
+        });
 
         jButtonPlace.setText("Place");
         jButtonPlace.addActionListener(new java.awt.event.ActionListener() {
@@ -70,14 +82,23 @@ public class PlaceTroops extends javax.swing.JDialog {
             }
         });
 
+        jLabelNumberOfTroops.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
+        jLabelNumberOfTroops.setText("Troops");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addComponent(jLabel1)
-                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addComponent(jLabel1)
+                        .addGap(18, 18, 18))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabelNumberOfTroops)
+                        .addGap(38, 38, 38)))
                 .addComponent(jSliderNumberOfTroops, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(27, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
@@ -93,12 +114,14 @@ public class PlaceTroops extends javax.swing.JDialog {
                 .addGap(21, 21, 21)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
-                    .addComponent(jSliderNumberOfTroops, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jSliderNumberOfTroops, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabelNumberOfTroops)))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButtonPlace)
                     .addComponent(jButtonCancel))
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         pack();
@@ -119,11 +142,38 @@ public class PlaceTroops extends javax.swing.JDialog {
         numberOfTroops = 0;
         this.jSliderNumberOfTroops.setValue(this.jSliderNumberOfTroops.getMinimum());
     }//GEN-LAST:event_formComponentShown
+
+    private void jSliderNumberOfTroopsStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSliderNumberOfTroopsStateChanged
+        if (!this.jSliderNumberOfTroops.getValueIsAdjusting()) {
+            this.jLabelNumberOfTroops.setText(Integer.toString(this.jSliderNumberOfTroops.getValue()));
+        }
+    }//GEN-LAST:event_jSliderNumberOfTroopsStateChanged
     
     public void setRange(int min, int max)
     {
         jSliderNumberOfTroops.setMinimum(min);
         jSliderNumberOfTroops.setMaximum(max);
+        table.clear();
+        
+        if (max - min <=10)
+        {
+            for(int i = min; i <= max; i++)
+            {
+                table.put(i, new JLabel(Integer.toString(i)));
+            }
+            jSliderNumberOfTroops.setMinorTickSpacing(1);
+        }
+        else
+        {
+            table.put(min, new JLabel(Integer.toString(min)));
+            for(int i = (min / 5 + 1)*5; i < max; i+=5)
+            {
+                table.put(i, new JLabel(Integer.toString(i)));
+            }
+            table.put(max, new JLabel(Integer.toString(max)));
+            jSliderNumberOfTroops.setMinorTickSpacing(0);
+        }
+        jSliderNumberOfTroops.setLabelTable(table);
     }
     
     public void setValue(int value){
@@ -134,11 +184,12 @@ public class PlaceTroops extends javax.swing.JDialog {
     {
         return numberOfTroops;
     }
-
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonCancel;
     protected javax.swing.JButton jButtonPlace;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabelNumberOfTroops;
     private javax.swing.JSlider jSliderNumberOfTroops;
     // End of variables declaration//GEN-END:variables
 }
