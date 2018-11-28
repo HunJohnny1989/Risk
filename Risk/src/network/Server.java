@@ -115,10 +115,7 @@ public class Server {
 
                 sOutput = new ObjectOutputStream(socket.getOutputStream());
                 sInput = new ObjectInputStream(socket.getInputStream());
-                if( sInput.available() > 0 )
-                    playerName = (String) sInput.readObject();
-                else
-                    playerName = "player" + clientNumber;
+                playerName = (String) sInput.readObject();
                 playerNames.add(playerName);
                 System.out.println("Connection accepted from: " + playerName);
                 sOutput.writeObject(msg);
