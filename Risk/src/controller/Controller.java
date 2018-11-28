@@ -148,7 +148,8 @@ public class Controller implements ControllerInterface {
         msg.setPlayers(new ArrayList<>());
         for (Player p : model.getPlayers()) {
             PlayerDTO pdto = PlayerConverter.getDTO(p);
-            msg.getPlayers().add(pdto);
+            //msg.getPlayers().add(pdto);
+            msg.addPlayer(pdto);
         }
         return msg;
     }

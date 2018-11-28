@@ -65,6 +65,11 @@ public class Model {
     /**
      * @author orsi
      */
+    
+    public void addPlayer(Player player){
+        this.players.add(player);
+    }
+    
     public String getCurrentPhaseName() {
         return getCurrentPhase().toString();
     }

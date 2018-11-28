@@ -219,7 +219,8 @@ public class Client {
                 mainWindow.setTitle(String.format("Risk - %s (%s)", msg.getPlayerName(), pdto.getColor()));
             }
             Player p = PlayerConverter.getPlayer(pdto, controller.getField());
-            model.getPlayers().add(p);
+            //model.getPlayers().add(p);
+            model.addPlayer(p);
         }
         controller.setClientPlayerId(controller.getModel().searchPlayerId(msg.getPlayerName()));
 

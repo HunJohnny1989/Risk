@@ -77,6 +77,14 @@ public class MessageDTO implements Serializable {
     *
     * @author orsi1
     */
+    public void addPlayer(PlayerDTO player){
+        this.players.add(player);
+    }
+    
+    public void addTerritory(TerritoryDTO territory){
+        this.territories.add(territory);
+    }
+    
     public void setChatMessage(String chatMessage){
         this.chatMessage = chatMessage;
     }

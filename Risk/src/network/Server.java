@@ -22,7 +22,7 @@ import network.converter.PlayerConverter;
 
 /**
  *
- * @author Johnny
+ * @author Johnny + orsi
  */
 public class Server {
 
@@ -74,7 +74,8 @@ public class Server {
         msg.setCurrentPlayerId(controller.getModel().getCurrentPlayer().getPlayerId());
         for (Player p : controller.getModel().getPlayers()) {
             PlayerDTO pdto = PlayerConverter.getDTO(p);
-            msg.getPlayers().add(pdto);
+            //msg.getPlayers().add(pdto);
+            msg.addPlayer(pdto);
         }
         msg.setTerritories(new ArrayList<>());
         for (Territory t : controller.getField().getTerritories()) {
@@ -82,7 +83,8 @@ public class Server {
             tdto.setName(t.getName());
             tdto.setOccupierPlayerId(t.getOccupierPlayerId());
             tdto.setTroopCount(t.getTroopCount());
-            msg.getTerritories().add(tdto);
+            //msg.getTerritories().add(tdto);
+            msg.addTerritory(tdto);
         }
         return msg;
     }
